@@ -20,5 +20,5 @@ global:
  
 tests:
   aurora-mysql:
-    parameter_input: quickstart-amazon-aurora-mysql.json
-    template_file: quickstart-amazon-aurora-mysql-master.template.ymal
+    parameter_input: amazon-aurora-mysql.json
+    template_file: aurora_mysql-master.template.ymal
