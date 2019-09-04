@@ -6,7 +6,6 @@ Metadata:
     - Label:
         default: Network configuration
       Parameters:
-      - KeyPairName
       - AvailabilityZones
       - VPCCIDR
       - PrivateSubnet1CIDR
@@ -17,6 +16,7 @@ Metadata:
         default: Linux bastion configuration
       Parameters:
        - EnableBastion
+       - KeyPairName
        - RemoteAccessCIDR
     - Label:
         default: Database configuration
