@@ -393,6 +393,7 @@ Parameters:
     Type: String
     Default: '2'
     AllowedValues:
+    - '1'
     - '2'
     - '4'
     - '8'
@@ -406,6 +407,7 @@ Parameters:
     Type: String
     Default: '64'
     AllowedValues:
+    - '1'
     - '2'
     - '4'
     - '8'
