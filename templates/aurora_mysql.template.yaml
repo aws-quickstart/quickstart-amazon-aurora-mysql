@@ -319,7 +319,7 @@ Parameters:
     Default: 3306
     Description: "The port the instance will listen for connections on. Serverless engine mode supports port 3306."
     Type: Number
-    ConstraintDescription: 'Must be in the range [1115-65535].'
+    ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
   DBMultiAZ: 
