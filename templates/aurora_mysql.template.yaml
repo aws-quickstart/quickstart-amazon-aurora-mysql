@@ -736,69 +736,6 @@ Resources:
       Period: 60
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
-  MaxUsedTxIDsAlarm1:
-    Type: "AWS::CloudWatch::Alarm"
-    Condition: IsServerlessDisabled
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'Maximum Used Transaction IDs'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          Ref: AuroraDB1
-      MetricName: 'MaximumUsedTransactionIDs'
-      Statistic: Average
-      Namespace: 'AWS/RDS'
-      Threshold: 600000000
-      Unit: Count
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-  MaxUsedTxIDsAlarm2:
-    Condition: IsDBMultiAZ
-    Type: "AWS::CloudWatch::Alarm"
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'Maximum Used Transaction IDs'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          Ref: AuroraDB2
-      MetricName: 'MaximumUsedTransactionIDs'
-      Statistic: Average
-      Namespace: 'AWS/RDS'
-      Threshold: 600000000
-      Unit: Count
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
-  MaxUsedTxIDsAlarm3:
-    Condition: IsDBMultiAZ
-    Type: "AWS::CloudWatch::Alarm"
-    Properties:
-      ActionsEnabled: true
-      AlarmActions:
-      - Ref: DBSNSTopic
-      AlarmDescription: 'Maximum Used Transaction IDs'
-      Dimensions:
-      - Name: DBInstanceIdentifier
-        Value:
-          Ref: AuroraDB3
-      MetricName: 'MaximumUsedTransactionIDs'
-      Statistic: Average
-      Namespace: 'AWS/RDS'
-      Threshold: 600000000
-      Unit: Count
-      ComparisonOperator: 'GreaterThanOrEqualToThreshold'
-      Period: 60
-      EvaluationPeriods: 5
-      TreatMissingData: 'notBreaching'
   FreeLocalStorageAlarm1:
     Type: "AWS::CloudWatch::Alarm"
     Condition: IsServerlessDisabled
