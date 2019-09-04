@@ -572,14 +572,14 @@ Resources:
   DBParamGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
-      Description: !Join [ "- ", [ "Aurora MS Database Instance Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
+      Description: !Join [ "- ", [ "Aurora MySQL DB Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:
         general_log: 0 
   RDSDBClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
-      Description: !Join [ "- ", [ "Aurora MS Cluster Parameter Group for  Cloudformation Stack ", !Ref DBName ] ]
+      Description: !Join [ "- ", [ "Aurora MySQL Cluster Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:        
         time_zone: UTC      
