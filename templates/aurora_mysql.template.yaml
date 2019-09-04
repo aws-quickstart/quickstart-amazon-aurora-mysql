@@ -116,13 +116,17 @@ Mappings:
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.03.4":
       "family" : "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.0":
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.1":
       "family" : "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.04.1.2":
+    "Aurora-MySQL5.7-2.04.2":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.3":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.4":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.5":
       "family" : "aurora-mysql5.7"
   
   DBEngineVersionMap: 
@@ -142,14 +146,18 @@ Mappings:
       "engineversion" : "5.7.mysql_aurora.2.03.3"
     "Aurora-MySQL5.7-2.03.4":
       "engineversion" : "5.7.mysql_aurora.2.03.4"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "engineversion" : "5.7.mysql_aurora.2.03.4.2"
     "Aurora-MySQL5.7-2.04.0":
       "engineversion" : "5.7.mysql_aurora.2.04.0"
     "Aurora-MySQL5.7-2.04.1":
       "engineversion" : "5.7.mysql_aurora.2.04.1"
-    "Aurora-MySQL5.7-2.04.1.2":
-      "engineversion" : "5.7.mysql_aurora.2.04.1.2"
+    "Aurora-MySQL5.7-2.04.2":
+      "engineversion" : "5.7.mysql_aurora.2.04.2"
+    "Aurora-MySQL5.7-2.04.3":
+      "engineversion" : "5.7.mysql_aurora.2.04.3"
+    "Aurora-MySQL5.7-2.04.4":
+      "engineversion" : "5.7.mysql_aurora.2.04.4"
+    "Aurora-MySQL5.7-2.04.5":
+      "engineversion" : "5.7.mysql_aurora.2.04.5"
 
   DBEngineNameMap:    
     "Aurora-MySQL5.6.10a": 
@@ -168,13 +176,17 @@ Mappings:
       "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.03.4":
       "enginename" : "aurora-mysql"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.04.0":
       "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.04.1":
       "enginename" : "aurora-mysql"
-    "Aurora-MySQL5.7-2.04.1.2":
+    "Aurora-MySQL5.7-2.04.2":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.3":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.4":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.5":
       "enginename" : "aurora-mysql"
 Conditions:
   IsServerlessEnabled:
@@ -259,10 +271,12 @@ Parameters:
     - 'Aurora-MySQL5.7-2.03.2'
     - 'Aurora-MySQL5.7-2.03.3'
     - 'Aurora-MySQL5.7-2.03.4'
-    - 'Aurora-MySQL5.7-2.03.4.2'
     - 'Aurora-MySQL5.7-2.04.0'
     - 'Aurora-MySQL5.7-2.04.1'
-    - 'Aurora-MySQL5.7-2.04.1.2'  
+    - 'Aurora-MySQL5.7-2.04.2'
+    - 'Aurora-MySQL5.7-2.04.3'
+    - 'Aurora-MySQL5.7-2.04.4'
+    - 'Aurora-MySQL5.7-2.04.5'
   DBEngineMode:
     Description: The engine mode of the cluster. Serverless available for Aurora-MySQL5.6.10a. Parallel Query available for Aurora MySQL5.6-x.
     Type: String
