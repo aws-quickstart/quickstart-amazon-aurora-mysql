@@ -496,7 +496,6 @@ Resources:
       - Endpoint: !Ref NotificationList
         Protocol: email
   EncryptionKey:
-    Condition: UseDatabaseEncryption
     DeletionPolicy: Retain
     Type: AWS::KMS::Key
     Properties:
@@ -510,11 +509,27 @@ Resources:
                 - !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action: 'kms:*'
             Resource: '*'
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+            - 'kms:Encrypt'
+            - 'kms:Decrypt'
+            - 'kms:ReEncrypt*'
+            - 'kms:GenerateDataKey*'
+            - 'kms:CreateGrant'
+            - 'kms:ListGrants'
+            - 'kms:DescribeKey'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:CallerAccount': !Ref 'AWS::AccountId'
+                'kms:ViaService': !Sub 'rds.${AWS::Region}.amazonaws.com'
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
   EncryptionKeyAlias:
-    Condition: UseDatabaseEncryption
+    DeletionPolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
       AliasName: !Sub "alias/${AWS::StackName}"
@@ -530,6 +545,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: true
+      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
+      PerformanceInsightsRetentionPeriod: 7
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -565,6 +583,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: true
+      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
+      PerformanceInsightsRetentionPeriod: 7
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -600,6 +621,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: true
+      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
+      PerformanceInsightsRetentionPeriod: 7
       CopyTagsToSnapshot: true
       Tags:
         -
