@@ -473,6 +473,22 @@ Parameters:
       - other
       - ''
 Resources:
+  MonitoringIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "monitoring.rds.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
   DBSNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -512,6 +528,8 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -545,6 +563,8 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -578,6 +598,8 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"] 
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
       CopyTagsToSnapshot: true
       Tags:
         -
