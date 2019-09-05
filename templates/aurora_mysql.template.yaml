@@ -194,21 +194,43 @@ Conditions:
     - !Ref DBEngineMode
     - 'serverless'       
   IsServerlessDisabled:
-    !Equals
-    - !Ref DBEngineMode
-    - 'provisioned'    
+    !Not
+      - !Equals
+        - !Ref DBEngineMode
+        - 'serverless'
   IsDBMultiAZ:
     !And
       - !Equals
         - !Ref DBMultiAZ
         - 'true'
       - !Or  
-        - !Equals 
+        - !Equals
           - !Ref DBEngineMode
           - 'provisioned'
-        - !Equals 
+        - !Equals
           - !Ref DBEngineMode
           - 'parallelquery'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'global'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'multimaster'
+  IsDBMultiAZButNotMultiMaster:
+    !And
+      - !Equals
+        - !Ref DBMultiAZ
+        - 'true'
+      - !Or
+        - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'parallelquery'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'global'
   DoCreateDatabase:
     !Not
       - !Equals
@@ -284,7 +306,9 @@ Parameters:
     AllowedValues:
     - 'provisioned'
     - 'parallelquery'
-    - 'serverless'      
+    - 'serverless'
+    - 'global'
+    - 'multimaster'
   DBInstanceClass: 
     AllowedValues: 
     - db.r5.12xlarge
@@ -546,7 +570,7 @@ Resources:
           Value: !Ref Compliance
     Type: "AWS::RDS::DBInstance"
   AuroraDB3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -725,7 +749,7 @@ Resources:
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
   CPUUtilizationAlarm3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: true
@@ -788,7 +812,7 @@ Resources:
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
   FreeLocalStorageAlarm3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: true
@@ -820,6 +844,7 @@ Resources:
       SourceType: 'db-cluster'
   DatabaseInstanceEventSubscription:
     Type: 'AWS::RDS::EventSubscription'
+    Condition: IsServerlessDisabled
     Properties:
       EventCategories:
       - availability
@@ -832,7 +857,7 @@ Resources:
       - recovery
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:             
-      - !If [IsServerlessDisabled, !Ref AuroraDB1, !Ref "AWS::NoValue"]
+      - !Ref AuroraDB1
       - !If [IsDBMultiAZ, !Ref AuroraDB2, !Ref "AWS::NoValue"]
-      - !If [IsDBMultiAZ, !Ref AuroraDB3, !Ref "AWS::NoValue"]
+      - !If [IsDBMultiAZButNotMultiMaster, !Ref AuroraDB3, !Ref "AWS::NoValue"]
       SourceType: 'db-instance'

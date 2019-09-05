@@ -224,13 +224,15 @@ Parameters:
     - 'Aurora-MySQL5.7-2.04.4'
     - 'Aurora-MySQL5.7-2.04.5'
   DBEngineMode:
-    Description: The engine mode of the cluster. Serverless available for Aurora-MySQL5.6.10a. Parallel Query available for Aurora MySQL5.6-x.
+    Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
     Default: 'provisioned'
     AllowedValues:
     - 'provisioned'
     - 'parallelquery'
     - 'serverless'
+    - 'global'
+    - 'multimaster'
   DBInstanceClass: 
     AllowedValues: 
     - db.r5.12xlarge
