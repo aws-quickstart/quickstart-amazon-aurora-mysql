@@ -673,7 +673,10 @@ Resources:
       Description: !Join [ "- ", [ "Aurora MySQL DB Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:
-        general_log: 0 
+        general_log: 0
+        slow_query_log: 1
+        long_query_time: 10
+        log_output: 'FILE'
   RDSDBClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
