@@ -232,7 +232,7 @@ Conditions:
           - !Ref DBEngineMode
           - 'global'
   EnableIAMDBAuth:
-    - !Or
+    !Or
       - !Equals
         - !Ref DBEngineMode
         - 'provisioned'
@@ -242,6 +242,14 @@ Conditions:
       - !Equals
         - !Ref DBEngineMode
         - 'multimaster'
+  EnableBackTrack:
+    !And
+      - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+      - !Equals
+          - !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
+          - 'aurora5.6'
   DoCreateDatabase:
     !Not
       - !Equals
@@ -700,6 +708,7 @@ Resources:
       Port: !Ref DBPort
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
       EnableIAMDatabaseAuthentication: !If [EnableIAMDBAuth, true, !Ref 'AWS::NoValue']
+      BacktrackWindow: !If [EnableBackTrack, 259200, !Ref 'AWS::NoValue']
       Tags: 
         - 
           Key: Name
