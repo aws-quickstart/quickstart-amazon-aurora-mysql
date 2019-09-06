@@ -714,6 +714,7 @@ Resources:
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
       EnableIAMDatabaseAuthentication: !If [EnableIAMDBAuth, true, !Ref 'AWS::NoValue']
       BacktrackWindow: !If [EnableBackTrack, 259200, !Ref 'AWS::NoValue']
+      EnableCloudwatchLogsExports: ['error','slowquery', 'audit']
       Tags: 
         - 
           Key: Name
