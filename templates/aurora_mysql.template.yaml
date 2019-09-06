@@ -677,6 +677,8 @@ Resources:
         slow_query_log: 1
         long_query_time: 10
         log_output: 'FILE'
+        innodb_print_all_deadlocks: 1
+        log_warnings: 2
   RDSDBClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
