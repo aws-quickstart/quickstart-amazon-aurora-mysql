@@ -15,20 +15,20 @@ Metadata:
         default: Database configuration
       Parameters:
       - DBName
-      - DBAutoMinorVersionUpgrade
-      - DBBackupRetentionPeriod
-      - DBEngineVersion
-      - DBEngineMode      
-      - DBInstanceClass
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
-      - DBAccessCIDR
+      - DBAutoMinorVersionUpgrade
+      - DBBackupRetentionPeriod
+      - DBEngineVersion
+      - DBEngineMode
       - DBMultiAZ
+      - DBInstanceClass
       - DBAllocatedStorageEncrypted
       - NotificationList
+      - DBAccessCIDR
     - Label:
-        default: Severless 
+        default: Serverless (Applicable only for Database Engine Mode = Serverless)
       Parameters:                  
         - ServerlessMinCapacityUnit                                
         - ServerlessMaxCapacityUnit
@@ -242,6 +242,14 @@ Conditions:
       - !Equals
         - !Ref DBEngineMode
         - 'multimaster'
+  EnablePI:
+    !And
+      - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+      - !Equals
+          - !Ref DBEngineMode
+          - 'global'
   EnableBackTrack:
     !And
       - !Equals
@@ -319,7 +327,7 @@ Parameters:
     - 'Aurora-MySQL5.7-2.04.4'
     - 'Aurora-MySQL5.7-2.04.5'
   DBEngineMode:
-    Description: The engine mode of the cluster. Serverless available for Aurora-MySQL5.6.10a. Parallel Query available for Aurora MySQL5.6-x.
+    Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -341,9 +349,9 @@ Parameters:
     - db.r4.2xlarge
     - db.r4.xlarge
     - db.r4.large
-    ConstraintDescription: "Must select a valid database instance type."
+    ConstraintDescription: "Must select a valid database instance class."
     Default: db.r4.large
-    Description: "The name of the compute and memory capacity class of the database instance."
+    Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
   DBAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
@@ -379,7 +387,7 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+    Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
   DBName: 
     AllowedPattern: "[a-zA-Z0-9]*"
@@ -548,7 +556,6 @@ Resources:
         - Key: Name
           Value: !Ref AWS::StackName
   EncryptionKeyAlias:
-    DeletionPolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
       AliasName: !Sub "alias/${AWS::StackName}"
@@ -564,9 +571,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
-      EnablePerformanceInsights: true
-      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
-      PerformanceInsightsRetentionPeriod: 7
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -602,9 +609,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
-      EnablePerformanceInsights: true
-      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
-      PerformanceInsightsRetentionPeriod: 7
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -640,9 +647,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
-      EnablePerformanceInsights: true
-      PerformanceInsightsKMSKeyId: !Ref EncryptionKey
-      PerformanceInsightsRetentionPeriod: 7
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -714,7 +721,7 @@ Resources:
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
       EnableIAMDatabaseAuthentication: !If [EnableIAMDBAuth, true, !Ref 'AWS::NoValue']
       BacktrackWindow: !If [EnableBackTrack, 259200, !Ref 'AWS::NoValue']
-      EnableCloudwatchLogsExports: ['error','slowquery', 'audit']
+      EnableCloudwatchLogsExports: !If [IsServerlessDisabled, ['error','slowquery', 'audit'], !Ref 'AWS::NoValue']
       Tags: 
         - 
           Key: Name
@@ -937,7 +944,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDB1
+          Ref: AuroraDB2
       MetricName: 'FreeableMemory'
       Statistic: Average
       Namespace: 'AWS/RDS'
@@ -958,7 +965,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDB1
+          Ref: AuroraDB3
       MetricName: 'FreeableMemory'
       Statistic: Average
       Namespace: 'AWS/RDS'
