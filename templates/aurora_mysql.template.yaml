@@ -673,19 +673,19 @@ Resources:
       Description: !Join [ "- ", [ "Aurora MySQL DB Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:
-        general_log: 0
         slow_query_log: 1
         long_query_time: 10
         log_output: 'FILE'
         innodb_print_all_deadlocks: 1
-        log_warnings: 2
   RDSDBClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: !Join [ "- ", [ "Aurora MySQL Cluster Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:        
-        time_zone: UTC      
+        time_zone: UTC
+        server_audit_logging: 1
+        server_audit_events: 'QUERY_DCL,QUERY_DDL,CONNECT'
   AuroraDBCluster: 
     Type: "AWS::RDS::DBCluster"
     Properties: 
