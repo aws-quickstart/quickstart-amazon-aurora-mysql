@@ -905,6 +905,69 @@ Resources:
       Period: 60
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm1:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsServerlessDisabled
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB1
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm2:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsDBMultiAZ
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB1
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm3:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsDBMultiAZButNotMultiMaster
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB1
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
   DatabaseClusterEventSubscription:
     Type: 'AWS::RDS::EventSubscription'
     Properties:
