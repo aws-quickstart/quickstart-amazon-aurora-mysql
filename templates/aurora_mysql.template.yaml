@@ -15,20 +15,20 @@ Metadata:
         default: Database configuration
       Parameters:
       - DBName
-      - DBAutoMinorVersionUpgrade
-      - DBBackupRetentionPeriod
-      - DBEngineVersion
-      - DBEngineMode      
-      - DBInstanceClass
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
-      - DBAccessCIDR
+      - DBAutoMinorVersionUpgrade
+      - DBBackupRetentionPeriod
+      - DBEngineVersion
+      - DBEngineMode
       - DBMultiAZ
+      - DBInstanceClass
       - DBAllocatedStorageEncrypted
       - NotificationList
+      - DBAccessCIDR
     - Label:
-        default: Severless 
+        default: Serverless (Applicable only for Database Engine Mode = Serverless)
       Parameters:                  
         - ServerlessMinCapacityUnit                                
         - ServerlessMaxCapacityUnit
@@ -116,13 +116,17 @@ Mappings:
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.03.4":
       "family" : "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.0":
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.1":
       "family" : "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.04.1.2":
+    "Aurora-MySQL5.7-2.04.2":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.3":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.4":
+      "family" : "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.5":
       "family" : "aurora-mysql5.7"
   
   DBEngineVersionMap: 
@@ -142,14 +146,18 @@ Mappings:
       "engineversion" : "5.7.mysql_aurora.2.03.3"
     "Aurora-MySQL5.7-2.03.4":
       "engineversion" : "5.7.mysql_aurora.2.03.4"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "engineversion" : "5.7.mysql_aurora.2.03.4.2"
     "Aurora-MySQL5.7-2.04.0":
       "engineversion" : "5.7.mysql_aurora.2.04.0"
     "Aurora-MySQL5.7-2.04.1":
       "engineversion" : "5.7.mysql_aurora.2.04.1"
-    "Aurora-MySQL5.7-2.04.1.2":
-      "engineversion" : "5.7.mysql_aurora.2.04.1.2"
+    "Aurora-MySQL5.7-2.04.2":
+      "engineversion" : "5.7.mysql_aurora.2.04.2"
+    "Aurora-MySQL5.7-2.04.3":
+      "engineversion" : "5.7.mysql_aurora.2.04.3"
+    "Aurora-MySQL5.7-2.04.4":
+      "engineversion" : "5.7.mysql_aurora.2.04.4"
+    "Aurora-MySQL5.7-2.04.5":
+      "engineversion" : "5.7.mysql_aurora.2.04.5"
 
   DBEngineNameMap:    
     "Aurora-MySQL5.6.10a": 
@@ -168,13 +176,17 @@ Mappings:
       "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.03.4":
       "enginename" : "aurora-mysql"
-    "Aurora-MySQL5.7-2.03.4.2":
-      "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.04.0":
       "enginename" : "aurora-mysql"
     "Aurora-MySQL5.7-2.04.1":
       "enginename" : "aurora-mysql"
-    "Aurora-MySQL5.7-2.04.1.2":
+    "Aurora-MySQL5.7-2.04.2":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.3":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.4":
+      "enginename" : "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.5":
       "enginename" : "aurora-mysql"
 Conditions:
   IsServerlessEnabled:
@@ -182,21 +194,70 @@ Conditions:
     - !Ref DBEngineMode
     - 'serverless'       
   IsServerlessDisabled:
-    !Equals
-    - !Ref DBEngineMode
-    - 'provisioned'    
+    !Not
+      - !Equals
+        - !Ref DBEngineMode
+        - 'serverless'
   IsDBMultiAZ:
     !And
       - !Equals
         - !Ref DBMultiAZ
         - 'true'
       - !Or  
-        - !Equals 
+        - !Equals
           - !Ref DBEngineMode
           - 'provisioned'
-        - !Equals 
+        - !Equals
           - !Ref DBEngineMode
           - 'parallelquery'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'global'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'multimaster'
+  IsDBMultiAZButNotMultiMaster:
+    !And
+      - !Equals
+        - !Ref DBMultiAZ
+        - 'true'
+      - !Or
+        - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'parallelquery'
+        - !Equals
+          - !Ref DBEngineMode
+          - 'global'
+  EnableIAMDBAuth:
+    !Or
+      - !Equals
+        - !Ref DBEngineMode
+        - 'provisioned'
+      - !Equals
+        - !Ref DBEngineMode
+        - 'global'
+      - !Equals
+        - !Ref DBEngineMode
+        - 'multimaster'
+  EnablePI:
+    !And
+      - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+      - !Equals
+          - !Ref DBEngineMode
+          - 'global'
+  EnableBackTrack:
+    !And
+      - !Equals
+          - !Ref DBEngineMode
+          - 'provisioned'
+      - !Equals
+          - !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
+          - 'aurora5.6'
   DoCreateDatabase:
     !Not
       - !Equals
@@ -259,18 +320,22 @@ Parameters:
     - 'Aurora-MySQL5.7-2.03.2'
     - 'Aurora-MySQL5.7-2.03.3'
     - 'Aurora-MySQL5.7-2.03.4'
-    - 'Aurora-MySQL5.7-2.03.4.2'
     - 'Aurora-MySQL5.7-2.04.0'
     - 'Aurora-MySQL5.7-2.04.1'
-    - 'Aurora-MySQL5.7-2.04.1.2'  
+    - 'Aurora-MySQL5.7-2.04.2'
+    - 'Aurora-MySQL5.7-2.04.3'
+    - 'Aurora-MySQL5.7-2.04.4'
+    - 'Aurora-MySQL5.7-2.04.5'
   DBEngineMode:
-    Description: The engine mode of the cluster. Serverless available for Aurora-MySQL5.6.10a. Parallel Query available for Aurora MySQL5.6-x.
+    Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
     Default: 'provisioned'
     AllowedValues:
     - 'provisioned'
     - 'parallelquery'
-    - 'serverless'      
+    - 'serverless'
+    - 'global'
+    - 'multimaster'
   DBInstanceClass: 
     AllowedValues: 
     - db.r5.12xlarge
@@ -284,14 +349,9 @@ Parameters:
     - db.r4.2xlarge
     - db.r4.xlarge
     - db.r4.large
-    - db.r3.8xlarge
-    - db.r3.4xlarge
-    - db.r3.2xlarge
-    - db.r3.xlarge
-    - db.r3.large  
-    ConstraintDescription: "Must select a valid database instance type."
+    ConstraintDescription: "Must select a valid database instance class."
     Default: db.r4.large
-    Description: "The name of the compute and memory capacity class of the database instance."
+    Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
   DBAccessCIDR:
     AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
@@ -327,7 +387,7 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+    Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
   DBName: 
     AllowedPattern: "[a-zA-Z0-9]*"
@@ -440,6 +500,22 @@ Parameters:
       - other
       - ''
 Resources:
+  MonitoringIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "monitoring.rds.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole
   DBSNSTopic:
     Type: AWS::SNS::Topic
     Properties:
@@ -447,7 +523,6 @@ Resources:
       - Endpoint: !Ref NotificationList
         Protocol: email
   EncryptionKey:
-    Condition: UseDatabaseEncryption
     DeletionPolicy: Retain
     Type: AWS::KMS::Key
     Properties:
@@ -461,11 +536,26 @@ Resources:
                 - !Sub "arn:aws:iam::${AWS::AccountId}:root"
             Action: 'kms:*'
             Resource: '*'
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+            - 'kms:Encrypt'
+            - 'kms:Decrypt'
+            - 'kms:ReEncrypt*'
+            - 'kms:GenerateDataKey*'
+            - 'kms:CreateGrant'
+            - 'kms:ListGrants'
+            - 'kms:DescribeKey'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:CallerAccount': !Ref 'AWS::AccountId'
+                'kms:ViaService': !Sub 'rds.${AWS::Region}.amazonaws.com'
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
   EncryptionKeyAlias:
-    Condition: UseDatabaseEncryption
     Type: AWS::KMS::Alias
     Properties:
       AliasName: !Sub "alias/${AWS::StackName}"
@@ -479,6 +569,11 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -512,6 +607,11 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -537,7 +637,7 @@ Resources:
           Value: !Ref Compliance
     Type: "AWS::RDS::DBInstance"
   AuroraDB3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -545,6 +645,11 @@ Resources:
       Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"] 
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
+      MonitoringInterval: 1
+      MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
+      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -575,14 +680,19 @@ Resources:
       Description: !Join [ "- ", [ "Aurora MySQL DB Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:
-        general_log: 0 
+        slow_query_log: 1
+        long_query_time: 10
+        log_output: 'FILE'
+        innodb_print_all_deadlocks: 1
   RDSDBClusterParameterGroup:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: !Join [ "- ", [ "Aurora MySQL Cluster Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
       Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
       Parameters:        
-        time_zone: UTC      
+        time_zone: UTC
+        server_audit_logging: 1
+        server_audit_events: 'QUERY_DCL,QUERY_DDL,CONNECT'
   AuroraDBCluster: 
     Type: "AWS::RDS::DBCluster"
     Properties: 
@@ -609,6 +719,9 @@ Resources:
       MasterUsername: !Ref DBMasterUsername
       Port: !Ref DBPort
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
+      EnableIAMDatabaseAuthentication: !If [EnableIAMDBAuth, true, !Ref 'AWS::NoValue']
+      BacktrackWindow: !If [EnableBackTrack, 259200, !Ref 'AWS::NoValue']
+      EnableCloudwatchLogsExports: !If [IsServerlessDisabled, ['error','slowquery', 'audit'], !Ref 'AWS::NoValue']
       Tags: 
         - 
           Key: Name
@@ -716,7 +829,7 @@ Resources:
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
   CPUUtilizationAlarm3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: true
@@ -779,7 +892,7 @@ Resources:
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
   FreeLocalStorageAlarm3:
-    Condition: IsDBMultiAZ
+    Condition: IsDBMultiAZButNotMultiMaster
     Type: "AWS::CloudWatch::Alarm"
     Properties:
       ActionsEnabled: true
@@ -799,6 +912,69 @@ Resources:
       Period: 60
       EvaluationPeriods: 5
       TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm1:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsServerlessDisabled
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB1
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm2:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsDBMultiAZ
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB2
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
+  FreeableMemoryAlarm3:
+    Type: "AWS::CloudWatch::Alarm"
+    Condition: IsDBMultiAZButNotMultiMaster
+    Properties:
+      ActionsEnabled: true
+      AlarmActions:
+      - Ref: DBSNSTopic
+      AlarmDescription: 'Freeable Memory'
+      Dimensions:
+      - Name: DBInstanceIdentifier
+        Value:
+          Ref: AuroraDB3
+      MetricName: 'FreeableMemory'
+      Statistic: Average
+      Namespace: 'AWS/RDS'
+      Threshold: 2147483648
+      Unit: Bytes
+      ComparisonOperator: 'LessThanOrEqualToThreshold'
+      Period: 60
+      EvaluationPeriods: 5
+      TreatMissingData: 'notBreaching'
   DatabaseClusterEventSubscription:
     Type: 'AWS::RDS::EventSubscription'
     Properties:
@@ -811,6 +987,7 @@ Resources:
       SourceType: 'db-cluster'
   DatabaseInstanceEventSubscription:
     Type: 'AWS::RDS::EventSubscription'
+    Condition: IsServerlessDisabled
     Properties:
       EventCategories:
       - availability
@@ -823,7 +1000,7 @@ Resources:
       - recovery
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:             
-      - !If [IsServerlessDisabled, !Ref AuroraDB1, !Ref "AWS::NoValue"]
+      - !Ref AuroraDB1
       - !If [IsDBMultiAZ, !Ref AuroraDB2, !Ref "AWS::NoValue"]
-      - !If [IsDBMultiAZ, !Ref AuroraDB3, !Ref "AWS::NoValue"]
+      - !If [IsDBMultiAZButNotMultiMaster, !Ref AuroraDB3, !Ref "AWS::NoValue"]
       SourceType: 'db-instance'
