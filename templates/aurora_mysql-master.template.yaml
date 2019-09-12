@@ -31,12 +31,25 @@ Metadata:
       - DBEngineMode
       - DBMultiAZ
       - DBInstanceClass
+<<<<<<< HEAD
+      - DBMasterUsername
+      - DBMasterUserPassword
+      - DBPort
+      - DBCWLogExports
+=======
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
       - DBAllocatedStorageEncrypted
       - NotificationList
     - Label:
+<<<<<<< HEAD
+        default: Severless
+      Parameters:
+        - ServerlessMinCapacityUnit
+=======
         default: Serverless (Applicable only for Database Engine Mode = Serverless)
-      Parameters:                  
-        - ServerlessMinCapacityUnit                                
+      Parameters:
+        - ServerlessMinCapacityUnit
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
         - ServerlessMaxCapacityUnit
         - ServerlessAutoPause
         - ServerlessSecondsUntilAutoPause
@@ -60,7 +73,7 @@ Metadata:
       DBEngineVersion:
         default: Database Engine Version
       DBEngineMode:
-        default: Database Engine Mode      
+        default: Database Engine Mode
       DBName:
         default: Database name
       DBAllocatedStorageEncrypted:
@@ -77,6 +90,8 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
+      DBCWLogExports:
+        default: Database CloudWatch Log Exports
       DBMultiAZ:
         default: Multi-AZ deployment
       EnableBastion:
@@ -179,8 +194,8 @@ Parameters:
     Default: quickstart-amazon-aurora/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
-  EnableBastion: 
-    AllowedValues: 
+  EnableBastion:
+    AllowedValues:
       - "true"
       - "false"
     Default: "true"
@@ -193,14 +208,14 @@ Parameters:
       - false
     Description: Whether or not to encrypt the database.
     Type: String
-  DBAutoMinorVersionUpgrade: 
-    AllowedValues: 
+  DBAutoMinorVersionUpgrade:
+    AllowedValues:
       - "true"
       - "false"
     Default: "false"
     Description: "Select true to set up auto minor version upgrade."
     Type: String
-  DBBackupRetentionPeriod: 
+  DBBackupRetentionPeriod:
     Default: "35"
     Description: "The number of days for which automatic database snapshots are retained."
     Type: String
@@ -208,21 +223,25 @@ Parameters:
     Description: Select Database Engine Version
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
-    AllowedValues:    
+    AllowedValues:
     - 'Aurora-MySQL5.6.10a'
     - 'Aurora-MySQL5.6-1.19.0'
     - 'Aurora-MySQL5.6-1.19.1'
-    - 'Aurora-MySQL5.6-1.19.2'    
+    - 'Aurora-MySQL5.6-1.19.2'
     - 'Aurora-MySQL5.7.12'
     - 'Aurora-MySQL5.7-2.03.2'
     - 'Aurora-MySQL5.7-2.03.3'
     - 'Aurora-MySQL5.7-2.03.4'
     - 'Aurora-MySQL5.7-2.04.0'
     - 'Aurora-MySQL5.7-2.04.1'
+<<<<<<< HEAD
+    - 'Aurora-MySQL5.7-2.04.1.2'
+=======
     - 'Aurora-MySQL5.7-2.04.2'
     - 'Aurora-MySQL5.7-2.04.3'
     - 'Aurora-MySQL5.7-2.04.4'
     - 'Aurora-MySQL5.7-2.04.5'
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
   DBEngineMode:
     Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
@@ -231,10 +250,15 @@ Parameters:
     - 'provisioned'
     - 'parallelquery'
     - 'serverless'
+<<<<<<< HEAD
+  DBInstanceClass:
+    AllowedValues:
+=======
     - 'global'
     - 'multimaster'
-  DBInstanceClass: 
-    AllowedValues: 
+  DBInstanceClass:
+    AllowedValues:
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
     - db.r5.12xlarge
     - db.r5.4xlarge
     - db.r5.2xlarge
@@ -250,7 +274,7 @@ Parameters:
     Default: db.r4.large
     Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
-  DBMasterUserPassword: 
+  DBMasterUserPassword:
     AllowedPattern: "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*"
     ConstraintDescription: "Min 8 chars."
     Description: "The database admin account password."
@@ -258,7 +282,7 @@ Parameters:
     MinLength: "8"
     NoEcho: "True"
     Type: String
-  DBMasterUsername: 
+  DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
     Default: msadmin
@@ -273,14 +297,18 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  DBMultiAZ: 
-    AllowedValues: 
+  DBCWLogExports:
+    Type: CommaDelimitedList
+    Default: ''
+    Description: "Database log exports to send to CloudWatch Logs"
+  DBMultiAZ:
+    AllowedValues:
       - "true"
       - "false"
     Default: "true"
     Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
-  DBName: 
+  DBName:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     Default: 'AuroraMySQLDB'
     Description: "Name of the Amazon Aurora database."
@@ -363,7 +391,7 @@ Parameters:
     - '32'
     - '64'
     - '128'
-    - '256'    
+    - '256'
   ServerlessAutoPause:
     Description: Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).
     Type: String
@@ -378,7 +406,7 @@ Parameters:
     MaxValue: 86400
     MinValue: 300
 Conditions:
-  GovCloudCondition: !Equals 
+  GovCloudCondition: !Equals
     - !Ref 'AWS::Region'
     - us-gov-west-1
   EnableBastionAccess: !Equals
@@ -396,7 +424,7 @@ Resources:
             - s3-us-gov-west-1
             - s3
       Parameters:
-        AvailabilityZones: !Join 
+        AvailabilityZones: !Join
           - ','
           - !Ref AvailabilityZones
         KeyPairName: !Ref KeyPairName
@@ -409,7 +437,7 @@ Resources:
   AuroraStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/aurora_mysql.template.yaml
         - QSS3Region: !If [GovCloudCondition , s3-us-gov-west-1 , s3]
       Parameters:
@@ -452,18 +480,18 @@ Resources:
     Condition: EnableBastionAccess
     Type: 'AWS::CloudFormation::Stack'
     Properties:
-      TemplateURL: !Sub 
+      TemplateURL: !Sub
         - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
         - QSS3Region: !If [GovCloudCondition , s3-us-gov-west-1 , s3]
       Parameters:
         KeyPairName: !Ref KeyPairName
-        PublicSubnet1ID: !GetAtt 
+        PublicSubnet1ID: !GetAtt
           - VPCStack
           - Outputs.PublicSubnet1ID
-        PublicSubnet2ID: !GetAtt 
+        PublicSubnet2ID: !GetAtt
           - VPCStack
           - Outputs.PublicSubnet2ID
         RemoteAccessCIDR: !Ref RemoteAccessCIDR
-        VPCID: !GetAtt 
+        VPCID: !GetAtt
           - VPCStack
           - Outputs.VPCID

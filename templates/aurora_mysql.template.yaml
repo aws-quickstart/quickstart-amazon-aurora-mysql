@@ -18,6 +18,7 @@ Metadata:
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
+      - DBCWLogExports
       - DBAutoMinorVersionUpgrade
       - DBBackupRetentionPeriod
       - DBEngineVersion
@@ -28,9 +29,9 @@ Metadata:
       - NotificationList
       - DBAccessCIDR
     - Label:
-        default: Serverless (Applicable only for Database Engine Mode = Serverless)
-      Parameters:                  
-        - ServerlessMinCapacityUnit                                
+        default: Severless
+      Parameters:
+        - ServerlessMinCapacityUnit
         - ServerlessMaxCapacityUnit
         - ServerlessAutoPause
         - ServerlessSecondsUntilAutoPause
@@ -49,7 +50,7 @@ Metadata:
       DBEngineVersion:
         default: Database Engine Version
       DBEngineMode:
-        default: Database Engine Mode      
+        default: Database Engine Mode
       DBAllocatedStorageEncrypted:
         default: Database encryption enabled
       DBAutoMinorVersionUpgrade:
@@ -64,6 +65,8 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
+      DBCWLogExports:
+        default: Database CloudWatch Log Exports
       DBAccessCIDR:
         default: Database connection CIDR
       DBMultiAZ:
@@ -98,16 +101,16 @@ Metadata:
         default: Pause compute capacity
       ServerlessSecondsUntilAutoPause:
         default: Pause after time of inactivity
-Mappings: 
-  DBFamilyMap:  
-    "Aurora-MySQL5.6.10a": 
-      "family" : "aurora5.6" 
-    "Aurora-MySQL5.6-1.19.0": 
+Mappings:
+  DBFamilyMap:
+    "Aurora-MySQL5.6.10a":
       "family" : "aurora5.6"
-    "Aurora-MySQL5.6-1.19.1": 
-      "family" : "aurora5.6" 
-    "Aurora-MySQL5.6-1.19.2": 
-      "family" : "aurora5.6" 
+    "Aurora-MySQL5.6-1.19.0":
+      "family" : "aurora5.6"
+    "Aurora-MySQL5.6-1.19.1":
+      "family" : "aurora5.6"
+    "Aurora-MySQL5.6-1.19.2":
+      "family" : "aurora5.6"
     "Aurora-MySQL5.7.12":
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.03.2":
@@ -128,15 +131,15 @@ Mappings:
       "family" : "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.5":
       "family" : "aurora-mysql5.7"
-  
-  DBEngineVersionMap: 
-    "Aurora-MySQL5.6.10a": 
+
+  DBEngineVersionMap:
+    "Aurora-MySQL5.6.10a":
       "engineversion" : "5.6.10a"
-    "Aurora-MySQL5.6-1.19.0": 
+    "Aurora-MySQL5.6-1.19.0":
       "engineversion" : "5.6.mysql_aurora.1.19.0"
-    "Aurora-MySQL5.6-1.19.1": 
+    "Aurora-MySQL5.6-1.19.1":
       "engineversion" : "5.6.mysql_aurora.1.19.1"
-    "Aurora-MySQL5.6-1.19.2": 
+    "Aurora-MySQL5.6-1.19.2":
       "engineversion" : "5.6.mysql_aurora.1.19.2"
     "Aurora-MySQL5.7.12":
       "engineversion" : "5.7.12"
@@ -159,14 +162,14 @@ Mappings:
     "Aurora-MySQL5.7-2.04.5":
       "engineversion" : "5.7.mysql_aurora.2.04.5"
 
-  DBEngineNameMap:    
-    "Aurora-MySQL5.6.10a": 
+  DBEngineNameMap:
+    "Aurora-MySQL5.6.10a":
       "enginename" : "aurora"
-    "Aurora-MySQL5.6-1.19.0": 
+    "Aurora-MySQL5.6-1.19.0":
       "enginename" : "aurora"
-    "Aurora-MySQL5.6-1.19.1": 
+    "Aurora-MySQL5.6-1.19.1":
       "enginename" : "aurora"
-    "Aurora-MySQL5.6-1.19.2": 
+    "Aurora-MySQL5.6-1.19.2":
       "enginename" : "aurora"
     "Aurora-MySQL5.7.12":
       "enginename" : "aurora-mysql"
@@ -192,18 +195,17 @@ Conditions:
   IsServerlessEnabled:
     !Equals
     - !Ref DBEngineMode
-    - 'serverless'       
+    - 'serverless'
   IsServerlessDisabled:
-    !Not
-      - !Equals
-        - !Ref DBEngineMode
-        - 'serverless'
+    !Equals
+    - !Ref DBEngineMode
+    - 'provisioned'
   IsDBMultiAZ:
     !And
       - !Equals
         - !Ref DBMultiAZ
         - 'true'
-      - !Or  
+      - !Or
         - !Equals
           - !Ref DBEngineMode
           - 'provisioned'
@@ -270,25 +272,25 @@ Conditions:
   CreateSecurityGroup:
     !Equals
     - !Ref CustomDBSecurityGroup
-    - ''  
-Outputs: 
-  DBName: 
+    - ''
+Outputs:
+  DBName:
     Description: "Amazon Aurora database name"
     Value: !Ref DBName
-  RDSEndPointAddress: 
+  RDSEndPointAddress:
     Description: "Amazon Aurora endpoint"
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}
-  RDSEndPointPort: 
+  RDSEndPointPort:
     Description: "Amazon Aurora port"
     Value: !Sub ${AuroraDBCluster.Endpoint.Port}
-  RDSEndPoints: 
+  RDSEndPoints:
     Description: "Full Amazon Aurora endpoint"
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/${DBName}
   RDSEncryptionKey:
     Condition: UseDatabaseEncryption
     Description: The alias of the encryption key created for RDS
     Value: !Ref EncryptionKeyAlias
-Parameters: 
+Parameters:
   DBAllocatedStorageEncrypted:
     Default: true
     AllowedValues:
@@ -296,14 +298,14 @@ Parameters:
       - false
     Description: Whether or not to encrypt the database.
     Type: String
-  DBAutoMinorVersionUpgrade: 
-    AllowedValues: 
+  DBAutoMinorVersionUpgrade:
+    AllowedValues:
       - "true"
       - "false"
     Default: "false"
     Description: "Select true to set up auto minor version upgrade."
     Type: String
-  DBBackupRetentionPeriod: 
+  DBBackupRetentionPeriod:
     Default: "35"
     Description: "The number of days for which automatic database snapshots are retained."
     Type: String
@@ -311,11 +313,11 @@ Parameters:
     Description: Select Database Engine Version
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
-    AllowedValues:    
+    AllowedValues:
     - 'Aurora-MySQL5.6.10a'
     - 'Aurora-MySQL5.6-1.19.0'
     - 'Aurora-MySQL5.6-1.19.1'
-    - 'Aurora-MySQL5.6-1.19.2'    
+    - 'Aurora-MySQL5.6-1.19.2'
     - 'Aurora-MySQL5.7.12'
     - 'Aurora-MySQL5.7-2.03.2'
     - 'Aurora-MySQL5.7-2.03.3'
@@ -336,8 +338,8 @@ Parameters:
     - 'serverless'
     - 'global'
     - 'multimaster'
-  DBInstanceClass: 
-    AllowedValues: 
+  DBInstanceClass:
+    AllowedValues:
     - db.r5.12xlarge
     - db.r5.4xlarge
     - db.r5.2xlarge
@@ -349,7 +351,12 @@ Parameters:
     - db.r4.2xlarge
     - db.r4.xlarge
     - db.r4.large
-    ConstraintDescription: "Must select a valid database instance class."
+    - db.r3.8xlarge
+    - db.r3.4xlarge
+    - db.r3.2xlarge
+    - db.r3.xlarge
+    - db.r3.large
+    ConstraintDescription: "Must select a valid database instance type."
     Default: db.r4.large
     Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
@@ -359,7 +366,7 @@ Parameters:
     Description: "Allowed CIDR block for external access (use VPC CIDR)."
     Type: String
     Default: 10.0.0.0/16
-  DBMasterUserPassword: 
+  DBMasterUserPassword:
     AllowedPattern: "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*"
     ConstraintDescription: "Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ \" ') symbol"
     Description: "The database admin account password."
@@ -367,7 +374,7 @@ Parameters:
     MinLength: "8"
     NoEcho: "True"
     Type: String
-  DBMasterUsername: 
+  DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
     Default: msadmin
@@ -382,14 +389,18 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  DBMultiAZ: 
-    AllowedValues: 
+  DBCWLogExports:
+    Type: CommaDelimitedList
+    Default: ''
+    Description: "Database log exports to send to CloudWatch Logs"
+  DBMultiAZ:
+    AllowedValues:
       - "true"
       - "false"
     Default: "true"
     Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
-  DBName: 
+  DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
     Description: "Name of the Amazon Aurora database."
     MaxLength: "64"
@@ -406,7 +417,7 @@ Parameters:
   Subnet2ID:
     Description: The ID of the private subnet in Availability Zone 2.
     Type: 'AWS::EC2::Subnet::Id'
-  VPCID: 
+  VPCID:
     Description: "ID of the VPC you are deploying Aurora into (e.g., vpc-0343606e)."
     Type: 'AWS::EC2::VPC::Id'
     Default: ''
@@ -475,7 +486,7 @@ Parameters:
     - '32'
     - '64'
     - '128'
-    - '256'    
+    - '256'
   ServerlessAutoPause:
     Description: Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).
     Type: String
@@ -566,7 +577,7 @@ Resources:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
       DBInstanceClass: !Ref DBInstanceClass
-      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
+      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
       MonitoringInterval: 1
@@ -596,7 +607,7 @@ Resources:
           Value: !Ref Confidentiality
         -
           Key: Compliance
-          Value: !Ref Compliance    
+          Value: !Ref Compliance
     Type: "AWS::RDS::DBInstance"
   AuroraDB2:
     Condition: IsDBMultiAZ
@@ -604,7 +615,7 @@ Resources:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
       DBInstanceClass: !Ref DBInstanceClass
-      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]       
+      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
       MonitoringInterval: 1
@@ -641,8 +652,8 @@ Resources:
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
-      DBInstanceClass: !Ref DBInstanceClass      
-      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"] 
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]
       DBParameterGroupName: !Ref DBParamGroup
       PubliclyAccessible: false
       MonitoringInterval: 1
@@ -678,7 +689,7 @@ Resources:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: !Join [ "- ", [ "Aurora MySQL DB Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
+      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
       Parameters:
         slow_query_log: 1
         long_query_time: 10
@@ -688,14 +699,14 @@ Resources:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: !Join [ "- ", [ "Aurora MySQL Cluster Parameter Group for Cloudformation Stack ", !Ref DBName ] ]
-      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"] 
-      Parameters:        
+      Family: !FindInMap [DBFamilyMap, !Ref DBEngineVersion, "family"]
+      Parameters:
         time_zone: UTC
         server_audit_logging: 1
         server_audit_events: 'QUERY_DCL,QUERY_DDL,CONNECT'
-  AuroraDBCluster: 
+  AuroraDBCluster:
     Type: "AWS::RDS::DBCluster"
-    Properties: 
+    Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DBClusterParameterGroupName: !Ref RDSDBClusterParameterGroup
       DBSubnetGroupName: !Ref AuroraDBSubnetGroup
@@ -704,8 +715,8 @@ Resources:
         - DoCreateDatabase
         - !Ref DBName
         - !Ref AWS::NoValue
-      Engine:  !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"] 
-      EngineVersion: !FindInMap [DBEngineVersionMap, !Ref DBEngineVersion, "engineversion"] 
+      Engine:  !FindInMap [DBEngineNameMap, !Ref DBEngineVersion, "enginename"]
+      EngineVersion: !FindInMap [DBEngineVersionMap, !Ref DBEngineVersion, "engineversion"]
       EngineMode: !Ref DBEngineMode
       ScalingConfiguration:  !If
         - IsServerlessEnabled
@@ -713,6 +724,12 @@ Resources:
           MaxCapacity: !Ref ServerlessMaxCapacityUnit
           MinCapacity: !Ref ServerlessMinCapacityUnit
           SecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
+        - !Ref AWS::NoValue
+      EnableCloudwatchLogsExports: !If
+        !Not
+          - !Ref DBCWLogExports
+          - ''
+        - !Ref DBCWLogExports
         - !Ref AWS::NoValue
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
       MasterUserPassword: !Ref DBMasterUserPassword
@@ -722,8 +739,8 @@ Resources:
       EnableIAMDatabaseAuthentication: !If [EnableIAMDBAuth, true, !Ref 'AWS::NoValue']
       BacktrackWindow: !If [EnableBackTrack, 259200, !Ref 'AWS::NoValue']
       EnableCloudwatchLogsExports: !If [IsServerlessDisabled, ['error','slowquery', 'audit'], !Ref 'AWS::NoValue']
-      Tags: 
-        - 
+      Tags:
+        -
           Key: Name
           Value: !Sub AuroraDB-${AWS::StackName}
         -
@@ -744,32 +761,32 @@ Resources:
         -
           Key: Compliance
           Value: !Ref Compliance
-      VpcSecurityGroupIds: 
+      VpcSecurityGroupIds:
         !If
           - CreateSecurityGroup
           - [!Ref RDSSecurityGroup]
           - [!Ref CustomDBSecurityGroup]
     UpdateReplacePolicy: Snapshot
-  AuroraDBSubnetGroup: 
-    Properties: 
+  AuroraDBSubnetGroup:
+    Properties:
       DBSubnetGroupDescription: "Subnets available for the Amazon Aurora database instance"
-      SubnetIds: 
+      SubnetIds:
        - !Ref Subnet1ID
        - !Ref Subnet2ID
     Type: "AWS::RDS::DBSubnetGroup"
   RDSSecurityGroup:
     Condition: CreateSecurityGroup
-    Properties: 
-      GroupDescription: "Allow access to database port" 
-      SecurityGroupEgress: 
-        - 
+    Properties:
+      GroupDescription: "Allow access to database port"
+      SecurityGroupEgress:
+        -
           CidrIp: 0.0.0.0/0
           FromPort: -1
           IpProtocol: '-1'
           ToPort: -1
-      SecurityGroupIngress: 
-        - 
-          CidrIp: !Ref DBAccessCIDR 
+      SecurityGroupIngress:
+        -
+          CidrIp: !Ref DBAccessCIDR
           FromPort: !Ref DBPort
           IpProtocol: tcp
           ToPort: !Ref DBPort
@@ -999,8 +1016,8 @@ Resources:
       - notification
       - recovery
       SnsTopicArn: !Ref DBSNSTopic
-      SourceIds:             
-      - !Ref AuroraDB1
+      SourceIds:
+      - !If [IsServerlessDisabled, !Ref AuroraDB1, !Ref "AWS::NoValue"]
       - !If [IsDBMultiAZ, !Ref AuroraDB2, !Ref "AWS::NoValue"]
       - !If [IsDBMultiAZButNotMultiMaster, !Ref AuroraDB3, !Ref "AWS::NoValue"]
       SourceType: 'db-instance'
