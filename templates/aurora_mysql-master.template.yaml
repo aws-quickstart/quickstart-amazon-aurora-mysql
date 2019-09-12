@@ -22,22 +22,34 @@ Metadata:
         default: Database configuration
       Parameters:
       - DBName
+      - DBMasterUsername
+      - DBMasterUserPassword
+      - DBPort
       - DBAutoMinorVersionUpgrade
       - DBBackupRetentionPeriod
       - DBEngineVersion
       - DBEngineMode
+      - DBMultiAZ
       - DBInstanceClass
+<<<<<<< HEAD
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
       - DBCWLogExports
+=======
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
       - DBAllocatedStorageEncrypted
-      - DBMultiAZ
       - NotificationList
     - Label:
+<<<<<<< HEAD
         default: Severless
       Parameters:
         - ServerlessMinCapacityUnit
+=======
+        default: Serverless (Applicable only for Database Engine Mode = Serverless)
+      Parameters:
+        - ServerlessMinCapacityUnit
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
         - ServerlessMaxCapacityUnit
         - ServerlessAutoPause
         - ServerlessSecondsUntilAutoPause
@@ -220,20 +232,33 @@ Parameters:
     - 'Aurora-MySQL5.7-2.03.2'
     - 'Aurora-MySQL5.7-2.03.3'
     - 'Aurora-MySQL5.7-2.03.4'
-    - 'Aurora-MySQL5.7-2.03.4.2'
     - 'Aurora-MySQL5.7-2.04.0'
     - 'Aurora-MySQL5.7-2.04.1'
+<<<<<<< HEAD
     - 'Aurora-MySQL5.7-2.04.1.2'
+=======
+    - 'Aurora-MySQL5.7-2.04.2'
+    - 'Aurora-MySQL5.7-2.04.3'
+    - 'Aurora-MySQL5.7-2.04.4'
+    - 'Aurora-MySQL5.7-2.04.5'
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
   DBEngineMode:
-    Description: The engine mode of the cluster. Serverless available for Aurora-MySQL5.6.10a. Parallel Query available for Aurora MySQL5.6-x.
+    Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
     Default: 'provisioned'
     AllowedValues:
     - 'provisioned'
     - 'parallelquery'
     - 'serverless'
+<<<<<<< HEAD
   DBInstanceClass:
     AllowedValues:
+=======
+    - 'global'
+    - 'multimaster'
+  DBInstanceClass:
+    AllowedValues:
+>>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
     - db.r5.12xlarge
     - db.r5.4xlarge
     - db.r5.2xlarge
@@ -245,14 +270,9 @@ Parameters:
     - db.r4.2xlarge
     - db.r4.xlarge
     - db.r4.large
-    - db.r3.8xlarge
-    - db.r3.4xlarge
-    - db.r3.2xlarge
-    - db.r3.xlarge
-    - db.r3.large
     ConstraintDescription: "Must select a valid database instance type."
     Default: db.r4.large
-    Description: "The name of the compute and memory capacity class of the database instance."
+    Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
   DBMasterUserPassword:
     AllowedPattern: "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*"
@@ -286,7 +306,7 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+    Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
   DBName:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
