@@ -288,6 +288,13 @@ Outputs:
     Description: The alias of the encryption key created for RDS
     Value: !Ref EncryptionKeyAlias
 Parameters:
+  DBMultiAZ: 
+    AllowedValues: 
+      - "true"
+      - "false"
+    Default: "true"
+    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
+    Type: String
   DBAllocatedStorageEncrypted:
     Default: true
     AllowedValues:
