@@ -18,7 +18,6 @@ Metadata:
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
-      - DBCWLogExports
       - DBAutoMinorVersionUpgrade
       - DBBackupRetentionPeriod
       - DBEngineVersion
@@ -65,8 +64,6 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
-      DBCWLogExports:
-        default: Database CloudWatch Log Exports
       DBAccessCIDR:
         default: Database connection CIDR
       DBMultiAZ:
@@ -389,17 +386,6 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  DBCWLogExports:
-    Type: CommaDelimitedList
-    Default: ''
-    Description: "Database log exports to send to CloudWatch Logs"
-  DBMultiAZ:
-    AllowedValues:
-      - "true"
-      - "false"
-    Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
-    Type: String
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
     Description: "Name of the Amazon Aurora database."
@@ -724,12 +710,6 @@ Resources:
           MaxCapacity: !Ref ServerlessMaxCapacityUnit
           MinCapacity: !Ref ServerlessMinCapacityUnit
           SecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
-        - !Ref AWS::NoValue
-      EnableCloudwatchLogsExports: !If
-        !Not
-          - !Ref DBCWLogExports
-          - ''
-        - !Ref DBCWLogExports
         - !Ref AWS::NoValue
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
       MasterUserPassword: !Ref DBMasterUserPassword
