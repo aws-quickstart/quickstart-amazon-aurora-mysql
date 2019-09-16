@@ -21,4 +21,4 @@ global:
 tests:
   aurora-mysql:
     parameter_input: amazon-aurora-mysql.json
-    template_file: aurora_mysql-master.template.ymal
+    template_file: aurora_mysql-master.template.yaml

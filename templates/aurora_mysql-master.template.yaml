@@ -31,25 +31,20 @@ Metadata:
       - DBEngineMode
       - DBMultiAZ
       - DBInstanceClass
-<<<<<<< HEAD
       - DBMasterUsername
       - DBMasterUserPassword
       - DBPort
       - DBCWLogExports
-=======
->>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
       - DBAllocatedStorageEncrypted
       - NotificationList
     - Label:
-<<<<<<< HEAD
         default: Severless
       Parameters:
         - ServerlessMinCapacityUnit
-=======
-        default: Serverless (Applicable only for Database Engine Mode = Serverless)
+    - Label:
+        default: 'Serverless (Applicable only for Database Engine Mode = Serverless)'
       Parameters:
         - ServerlessMinCapacityUnit
->>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
         - ServerlessMaxCapacityUnit
         - ServerlessAutoPause
         - ServerlessSecondsUntilAutoPause
@@ -234,14 +229,11 @@ Parameters:
     - 'Aurora-MySQL5.7-2.03.4'
     - 'Aurora-MySQL5.7-2.04.0'
     - 'Aurora-MySQL5.7-2.04.1'
-<<<<<<< HEAD
     - 'Aurora-MySQL5.7-2.04.1.2'
-=======
     - 'Aurora-MySQL5.7-2.04.2'
     - 'Aurora-MySQL5.7-2.04.3'
     - 'Aurora-MySQL5.7-2.04.4'
     - 'Aurora-MySQL5.7-2.04.5'
->>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
   DBEngineMode:
     Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
@@ -250,15 +242,10 @@ Parameters:
     - 'provisioned'
     - 'parallelquery'
     - 'serverless'
-<<<<<<< HEAD
   DBInstanceClass:
     AllowedValues:
-=======
     - 'global'
     - 'multimaster'
-  DBInstanceClass:
-    AllowedValues:
->>>>>>> 8359f82fbd849818c483ffaae46727e95707f9ba
     - db.r5.12xlarge
     - db.r5.4xlarge
     - db.r5.2xlarge
