@@ -22,3 +22,5 @@ tests:
   aurora-mysql:
     parameter_input: amazon-aurora-mysql.json
     template_file: aurora_mysql-master.template.yaml
+    regions:
+      - us-east-1

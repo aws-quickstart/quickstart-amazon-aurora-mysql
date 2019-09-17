@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "tonynv"
+        "ParameterValue": "override"
     },
     {
         "ParameterKey": "QSS3BucketName",
@@ -25,7 +25,7 @@
     },
     {
         "ParameterKey": "DBEngineVersion",
-        "ParameterValue": "5.7.12"
+        "ParameterValue": "Aurora-MySQL5.7.12"
     },
     {
         "ParameterKey": "DBMasterUserPassword",
