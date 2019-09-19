@@ -44,6 +44,11 @@ Metadata:
           - ProjectCostCenter
           - Confidentiality
           - Compliance
+      - Label:
+          default: Quick Start configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
     ParameterLabels:
       DBName:
         default: Database name
@@ -76,7 +81,7 @@ Metadata:
       VPCID:
         default: VPC ID
       CustomDBSecurityGroup:
-        default: Custom securiy group ID
+        default: Custom security group ID
       NotificationList:
         default: SNS notification email
       EnvironmentStage:
@@ -99,6 +104,10 @@ Metadata:
         default: Pause compute capacity
       ServerlessSecondsUntilAutoPause:
         default: Pause after time of inactivity
+      QSS3BucketName:
+        default: Quick Start S3 bucket name
+      QSS3KeyPrefix:
+        default: Quick Start S3 key prefix
 Mappings:
   DBFamilyMap:
     "Aurora-MySQL5.6.10a":
@@ -190,6 +199,10 @@ Mappings:
     "Aurora-MySQL5.7-2.04.5":
       "enginename": "aurora-mysql"
 Conditions:
+  DBPasswordRotation:
+    !Equals
+    - !Ref RotateDBPassword
+    - 'true'
   IsServerlessEnabled:
     !Equals
     - !Ref DBEngineMode
@@ -289,6 +302,18 @@ Outputs:
     Description: The alias of the encryption key created for RDS
     Value: !Ref EncryptionKeyAlias
 Parameters:
+  QSS3BucketName:
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
+    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Default: aws-quickstart
+    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
+    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Default: quickstart-amazon-aurora-mysql/
+    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Type: String
   DBMultiAZ:
     AllowedValues:
       - "true"
@@ -302,6 +327,13 @@ Parameters:
       - true
       - false
     Description: Whether or not to encrypt the database.
+    Type: String
+  RotateDBPassword:
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Whether or not to rotate the database password on a schedule.
     Type: String
   DBAutoMinorVersionUpgrade:
     AllowedValues:
@@ -379,6 +411,7 @@ Parameters:
     MinLength: "8"
     NoEcho: "True"
     Type: String
+    Default: ''
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
@@ -720,7 +753,11 @@ Resources:
           SecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
         - !Ref AWS::NoValue
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
-      MasterUserPassword: !Ref DBMasterUserPassword
+      MasterUserPassword:
+        !If
+        - DBPasswordRotation
+        - !Join ['', ['{{resolve:secretsmanager:', !Ref RDSInstanceRotationSecret, '::password}}' ]]
+        - !Ref DBMasterUserPassword
       MasterUsername: !Ref DBMasterUsername
       Port: !Ref DBPort
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
@@ -1009,3 +1046,206 @@ Resources:
         - !If [IsDBMultiAZ, !Ref AuroraDB2, !Ref "AWS::NoValue"]
         - !If [IsDBMultiAZButNotMultiMaster, !Ref AuroraDB3, !Ref "AWS::NoValue"]
       SourceType: 'db-instance'
+  RDSInstanceRotationSecret:
+    Condition: DBPasswordRotation
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      GenerateSecretString:
+        SecretStringTemplate: !Sub '{"username": "${DBMasterUsername}"}'
+        GenerateStringKey: "password"
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+  SecretRDSInstanceAttachment:
+    Condition: DBPasswordRotation
+    Type: AWS::SecretsManager::SecretTargetAttachment
+    Properties:
+      SecretId: !Ref RDSInstanceRotationSecret
+      TargetId: !Ref AuroraDBCluster
+      TargetType: AWS::RDS::DBCluster
+  RDSSecretRotationSchedule:
+    Condition: DBPasswordRotation
+    Type: AWS::SecretsManager::RotationSchedule
+    DependsOn: SecretRDSInstanceAttachment
+    Properties:
+      SecretId: !Ref RDSInstanceRotationSecret
+      RotationLambdaARN: !GetAtt RDSRotationLambda.Arn
+      RotationRules:
+        AutomaticallyAfterDays: 89
+  RDSRotationLambda:
+    Condition: DBPasswordRotation
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python2.7
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Handler: lambda_function.lambda_handler
+      Description: 'This is a lambda to rotate MySql user passwd'
+      FunctionName: 'cfn-rotation-lambda'
+      Environment:
+        Variables:
+          SECRETS_MANAGER_ENDPOINT: !Sub 'https://secretsmanager.${AWS::Region}.amazonaws.com'
+      VpcConfig:
+        SecurityGroupIds:
+          !If
+          - CreateSecurityGroup
+          - !Ref RDSSecurityGroup
+          - !Ref CustomDBSecurityGroup
+        SubnetIds:
+          - !Ref Subnet1ID
+          - !Ref Subnet2ID
+      Code:
+        S3Bucket: !Ref 'LambdaZipsBucket'
+        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/SSMRotate/lambda.zip'
+      Timeout: 300
+  LambdaZipsBucket:
+    Condition: DBPasswordRotation
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags: []
+  CopyZips:
+    Condition: DBPasswordRotation
+    Type: Custom::CopyZips
+    Properties:
+      ServiceToken: !GetAtt 'CopyZipsFunction.Arn'
+      DestBucket: !Ref 'LambdaZipsBucket'
+      SourceBucket: !Ref 'QSS3BucketName'
+      Prefix: !Ref 'QSS3KeyPrefix'
+      Objects:
+        - functions/packages/SSMRotateLambda/lambda.zip
+  LambdaExecutionRole:
+    Condition: DBPasswordRotation
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: lambda_policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                Resource: '*'
+  CopyZipsFunction:
+    Condition: DBPasswordRotation
+    Type: AWS::Lambda::Function
+    Properties:
+      Description: Copies objects from a source S3 bucket to a destination
+      Handler: index.handler
+      Runtime: python2.7
+      Role: !GetAtt 'CopyZipsRole.Arn'
+      Timeout: 240
+      Code:
+        ZipFile: |
+          import json
+          import logging
+          import threading
+          import boto3
+          import cfnresponse
+
+
+          def copy_objects(source_bucket, dest_bucket, prefix, objects):
+              s3 = boto3.client('s3')
+              for o in objects:
+                  key = prefix + o
+                  copy_source = {
+                      'Bucket': source_bucket,
+                      'Key': key
+                  }
+                  print('copy_source: %s' % copy_source)
+                  print('dest_bucket = %s'%dest_bucket)
+                  print('key = %s' %key)
+                  s3.copy_object(CopySource=copy_source, Bucket=dest_bucket,
+                        Key=key)
+
+
+          def delete_objects(bucket, prefix, objects):
+              s3 = boto3.client('s3')
+              objects = {'Objects': [{'Key': prefix + o} for o in objects]}
+              s3.delete_objects(Bucket=bucket, Delete=objects)
+
+
+          def timeout(event, context):
+              logging.error('Execution is about to time out, sending failure response to CloudFormation')
+              cfnresponse.send(event, context, cfnresponse.FAILED, {}, None)
+
+
+          def handler(event, context):
+              # make sure we send a failure to CloudFormation if the function
+              # is going to timeout
+              timer = threading.Timer((context.get_remaining_time_in_millis()
+                        / 1000.00) - 0.5, timeout, args=[event, context])
+              timer.start()
+
+              print('Received event: %s' % json.dumps(event))
+              status = cfnresponse.SUCCESS
+              try:
+                  source_bucket = event['ResourceProperties']['SourceBucket']
+                  dest_bucket = event['ResourceProperties']['DestBucket']
+                  prefix = event['ResourceProperties']['Prefix']
+                  objects = event['ResourceProperties']['Objects']
+                  if event['RequestType'] == 'Delete':
+                      delete_objects(dest_bucket, prefix, objects)
+                  else:
+                      copy_objects(source_bucket, dest_bucket, prefix, objects)
+              except Exception as e:
+                  logging.error('Exception: %s' % e, exc_info=True)
+                  status = cfnresponse.FAILED
+              finally:
+                  timer.cancel()
+                  cfnresponse.send(event, context, status, {}, None)
+  CopyZipsRole:
+    Condition: DBPasswordRotation
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: /
+      Policies:
+        - PolicyName: lambda-copier
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - !Sub 'arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*'
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource:
+                  - !Sub 'arn:aws:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
+Rules:
+  GeneratePassword:
+    RuleCondition: !Equals [DBPasswordRotation, true]
+    Assertions:
+      - Assert: !Equals [!Ref DBMasterUserPassword, '']
+        AssertDescription: "Database Passwords are generated when RotateDBPassword is true; Do not provide a password value"
+  ProvidedPassword:
+    RuleCondition: !Equals [DBPasswordRotation, false]
+    Assertions:
+      - Assert: !Not [!Equals [!Ref DBMasterUserPassword, '']]
+        AssertDescription: "Please provide a database password when RotateDBPassword is false."
