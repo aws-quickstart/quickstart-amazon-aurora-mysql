@@ -1,67 +1,69 @@
+---
 Description: "AWS VPC + Aurora MySql, Do Not Remove Apache License Version 2.0 (qs-) Jun,15,2019"
 Metadata:
   LICENSE: Apache License Version 2.0
   AWS::CloudFormation::Interface:
     ParameterGroups:
-    - Label:
-        default: Network configuration
-      Parameters:
-      - AvailabilityZones
-      - VPCCIDR
-      - PrivateSubnet1CIDR
-      - PrivateSubnet2CIDR
-      - PublicSubnet1CIDR
-      - PublicSubnet2CIDR
-    - Label:
-        default: Linux bastion configuration
-      Parameters:
-       - EnableBastion
-       - KeyPairName
-       - RemoteAccessCIDR
-    - Label:
-        default: Database configuration
-      Parameters:
-      - DBName
-      - DBMasterUsername
-      - DBMasterUserPassword
-      - DBPort
-      - DBAutoMinorVersionUpgrade
-      - DBBackupRetentionPeriod
-      - DBEngineVersion
-      - DBEngineMode
-      - DBMultiAZ
-      - DBInstanceClass
-      - DBMasterUsername
-      - DBMasterUserPassword
-      - DBPort
-      - DBCWLogExports
-      - DBAllocatedStorageEncrypted
-      - NotificationList
-    - Label:
-        default: Severless
-      Parameters:
-        - ServerlessMinCapacityUnit
-    - Label:
-        default: 'Serverless (Applicable only for Database Engine Mode = Serverless)'
-      Parameters:
-        - ServerlessMinCapacityUnit
-        - ServerlessMaxCapacityUnit
-        - ServerlessAutoPause
-        - ServerlessSecondsUntilAutoPause
-    - Label:
-        default: Database tags (optional)
-      Parameters:
-      - EnvironmentStage
-      - Application
-      - ApplicationVersion
-      - ProjectCostCenter
-      - Confidentiality
-      - Compliance
-    - Label:
-        default: Quick Start configuration
-      Parameters:
-      - QSS3BucketName
-      - QSS3KeyPrefix
+      - Label:
+          default: Network configuration
+        Parameters:
+          - AvailabilityZones
+          - VPCCIDR
+          - PrivateSubnet1CIDR
+          - PrivateSubnet2CIDR
+          - PublicSubnet1CIDR
+          - PublicSubnet2CIDR
+      - Label:
+          default: Linux bastion configuration
+        Parameters:
+          - EnableBastion
+          - KeyPairName
+          - RemoteAccessCIDR
+      - Label:
+          default: Database configuration
+        Parameters:
+          - DBName
+          - DBMasterUsername
+          - DBMasterUserPassword
+          - DBPort
+          - DBAutoMinorVersionUpgrade
+          - DBBackupRetentionPeriod
+          - DBEngineVersion
+          - DBEngineMode
+          - DBMultiAZ
+          - DBInstanceClass
+          - DBMasterUsername
+          - DBMasterUserPassword
+          - DBPort
+          - DBCWLogExports
+          - DBAllocatedStorageEncrypted
+          - NotificationList
+          - RotateDBPassword
+      - Label:
+          default: Severless
+        Parameters:
+          - ServerlessMinCapacityUnit
+      - Label:
+          default: 'Serverless (Applicable only for Database Engine Mode = Serverless)'
+        Parameters:
+          - ServerlessMinCapacityUnit
+          - ServerlessMaxCapacityUnit
+          - ServerlessAutoPause
+          - ServerlessSecondsUntilAutoPause
+      - Label:
+          default: Database tags (optional)
+        Parameters:
+          - EnvironmentStage
+          - Application
+          - ApplicationVersion
+          - ProjectCostCenter
+          - Confidentiality
+          - Compliance
+      - Label:
+          default: Quick Start configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3KeyPrefix
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -132,12 +134,19 @@ Metadata:
       ServerlessSecondsUntilAutoPause:
         default: Pause after time of inactivity
 Parameters:
+  RotateDBPassword:
+    Default: true
+    AllowedValues:
+      - true
+      - false
+    Description: Whether or not to rotate the database password on a schedule.
+    Type: String
   AvailabilityZones:
-   Description: >-
+    Description: >-
       List of Availability Zones to use for the subnets in the VPC. Only two
       Availability Zones are used for this deployment, and the logical order of
       your selections is preserved.
-   Type: 'List<AWS::EC2::AvailabilityZone::Name>'
+    Type: 'List<AWS::EC2::AvailabilityZone::Name>'
   KeyPairName:
     ConstraintDescription: "Name of an existing EC2 key pair."
     Description: Name of an existing public/private key pair, for connecting to your instance.
@@ -219,44 +228,44 @@ Parameters:
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
     AllowedValues:
-    - 'Aurora-MySQL5.6.10a'
-    - 'Aurora-MySQL5.6-1.19.0'
-    - 'Aurora-MySQL5.6-1.19.1'
-    - 'Aurora-MySQL5.6-1.19.2'
-    - 'Aurora-MySQL5.7.12'
-    - 'Aurora-MySQL5.7-2.03.2'
-    - 'Aurora-MySQL5.7-2.03.3'
-    - 'Aurora-MySQL5.7-2.03.4'
-    - 'Aurora-MySQL5.7-2.04.0'
-    - 'Aurora-MySQL5.7-2.04.1'
-    - 'Aurora-MySQL5.7-2.04.1.2'
-    - 'Aurora-MySQL5.7-2.04.2'
-    - 'Aurora-MySQL5.7-2.04.3'
-    - 'Aurora-MySQL5.7-2.04.4'
-    - 'Aurora-MySQL5.7-2.04.5'
+      - 'Aurora-MySQL5.6.10a'
+      - 'Aurora-MySQL5.6-1.19.0'
+      - 'Aurora-MySQL5.6-1.19.1'
+      - 'Aurora-MySQL5.6-1.19.2'
+      - 'Aurora-MySQL5.7.12'
+      - 'Aurora-MySQL5.7-2.03.2'
+      - 'Aurora-MySQL5.7-2.03.3'
+      - 'Aurora-MySQL5.7-2.03.4'
+      - 'Aurora-MySQL5.7-2.04.0'
+      - 'Aurora-MySQL5.7-2.04.1'
+      - 'Aurora-MySQL5.7-2.04.1.2'
+      - 'Aurora-MySQL5.7-2.04.2'
+      - 'Aurora-MySQL5.7-2.04.3'
+      - 'Aurora-MySQL5.7-2.04.4'
+      - 'Aurora-MySQL5.7-2.04.5'
   DBEngineMode:
     Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
     Type: String
     Default: 'provisioned'
     AllowedValues:
-    - 'provisioned'
-    - 'parallelquery'
-    - 'serverless'
+      - 'provisioned'
+      - 'parallelquery'
+      - 'serverless'
   DBInstanceClass:
     AllowedValues:
-    - 'global'
-    - 'multimaster'
-    - db.r5.12xlarge
-    - db.r5.4xlarge
-    - db.r5.2xlarge
-    - db.r5.xlarge
-    - db.r5.large
-    - db.r4.16xlarge
-    - db.r4.8xlarge
-    - db.r4.4xlarge
-    - db.r4.2xlarge
-    - db.r4.xlarge
-    - db.r4.large
+      - 'global'
+      - 'multimaster'
+      - db.r5.12xlarge
+      - db.r5.4xlarge
+      - db.r5.2xlarge
+      - db.r5.xlarge
+      - db.r5.large
+      - db.r4.16xlarge
+      - db.r4.8xlarge
+      - db.r4.4xlarge
+      - db.r4.2xlarge
+      - db.r4.xlarge
+      - db.r4.large
     ConstraintDescription: "Must select a valid database instance type."
     Default: db.r4.large
     Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
@@ -356,36 +365,36 @@ Parameters:
     Type: String
     Default: '2'
     AllowedValues:
-    - '1'
-    - '2'
-    - '4'
-    - '8'
-    - '16'
-    - '32'
-    - '64'
-    - '128'
-    - '256'
+      - '1'
+      - '2'
+      - '4'
+      - '8'
+      - '16'
+      - '32'
+      - '64'
+      - '128'
+      - '256'
   ServerlessMaxCapacityUnit:
     Description: The maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.
     Type: String
     Default: '64'
     AllowedValues:
-    - '1'
-    - '2'
-    - '4'
-    - '8'
-    - '16'
-    - '32'
-    - '64'
-    - '128'
-    - '256'
+      - '1'
+      - '2'
+      - '4'
+      - '8'
+      - '16'
+      - '32'
+      - '64'
+      - '128'
+      - '256'
   ServerlessAutoPause:
     Description: Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).
     Type: String
     Default: 'false'
     AllowedValues:
-    - 'true'
-    - 'false'
+      - 'true'
+      - 'false'
   ServerlessSecondsUntilAutoPause:
     Description: The time, in seconds, before an Aurora DB cluster in serverless mode is auto paused. Min = 300, Max = 86400 (24hrs)
     Type: Number
@@ -393,6 +402,10 @@ Parameters:
     MaxValue: 86400
     MinValue: 300
 Conditions:
+  DBPasswordRotation:
+    !Equals
+    - !Ref RotateDBPassword
+    - 'true'
   GovCloudCondition: !Equals
     - !Ref 'AWS::Region'
     - us-gov-west-1
@@ -406,7 +419,7 @@ Resources:
       TemplateURL: !Sub
         - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template
         - QSS3Region:
-            Fn::If:
+            !If
             - GovCloudCondition
             - s3-us-gov-west-1
             - s3
@@ -426,18 +439,18 @@ Resources:
     Properties:
       TemplateURL: !Sub
         - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}templates/aurora_mysql.template.yaml
-        - QSS3Region: !If [GovCloudCondition , s3-us-gov-west-1 , s3]
+        - QSS3Region: !If [GovCloudCondition, s3-us-gov-west-1, s3]
       Parameters:
         Subnet1ID:
-          Fn::GetAtt:
+          !GetAtt
           - VPCStack
           - Outputs.PrivateSubnet1AID
         Subnet2ID:
-          Fn::GetAtt:
+          !GetAtt
           - VPCStack
           - Outputs.PrivateSubnet2AID
         VPCID:
-          Fn::GetAtt:
+          !GetAtt
           - VPCStack
           - Outputs.VPCID
         DBName: !Ref DBName
@@ -448,7 +461,11 @@ Resources:
         DBEngineMode: !Ref DBEngineMode
         DBInstanceClass: !Ref DBInstanceClass
         DBMasterUsername: !Ref DBMasterUsername
-        DBMasterUserPassword: !Ref DBMasterUserPassword
+        DBMasterUserPassword:
+          !If
+          - RotateDBPassword
+          - !Ref DBMasterUserPassword
+          - !Ref AWS::NoValue
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ
         DBAccessCIDR: !Ref VPCCIDR
@@ -463,13 +480,16 @@ Resources:
         ServerlessMaxCapacityUnit: !Ref ServerlessMaxCapacityUnit
         ServerlessAutoPause: !Ref ServerlessAutoPause
         ServerlessSecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        RotateDBPassword: !Ref RotateDBPassword
   BastionStack:
     Condition: EnableBastionAccess
     Type: 'AWS::CloudFormation::Stack'
     Properties:
       TemplateURL: !Sub
         - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template
-        - QSS3Region: !If [GovCloudCondition , s3-us-gov-west-1 , s3]
+        - QSS3Region: !If [GovCloudCondition, s3-us-gov-west-1, s3]
       Parameters:
         KeyPairName: !Ref KeyPairName
         PublicSubnet1ID: !GetAtt
@@ -482,3 +502,16 @@ Resources:
         VPCID: !GetAtt
           - VPCStack
           - Outputs.VPCID
+Rules:
+  GeneratePassword:
+    RuleCondition:
+      !Equals [!Ref RotateDBPassword, true]
+    Assertions:
+      - Assert: !Equals [!Ref DBMasterUserPassword, '']
+        AssertDescription: "Database Passwords are generated when RotateDBPassword is true; Do not provide a password value"
+  ProvidedPassword:
+    RuleCondition:
+      !Equals [!Ref RotateDBPassword, false]
+    Assertions:
+      - Assert: !Not [!Equals [!Ref DBMasterUserPassword, '']]
+        AssertDescription: "Please provide a database password when RotateDBPassword is false."
