@@ -411,7 +411,6 @@ Parameters:
     MinLength: "8"
     NoEcho: "True"
     Type: String
-    Default: ''
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
@@ -753,11 +752,11 @@ Resources:
           SecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
         - !Ref AWS::NoValue
       KmsKeyId: !If [UseDatabaseEncryption, !GetAtt EncryptionKey.Arn, !Ref 'AWS::NoValue']
-      MasterUserPassword:
-        !If
-        - DBPasswordRotation
-        - !Join ['', ['{{resolve:secretsmanager:', !Ref RDSInstanceRotationSecret, '::password}}' ]]
-        - !Ref DBMasterUserPassword
+      MasterUserPassword: !Ref DBMasterUserPassword
+        # !If
+        # - DBPasswordRotation
+        # - !Join ['', ['{{resolve:secretsmanager:', !Ref RDSInstanceRotationSecret, '::password}}' ]]
+        # - !Ref DBMasterUserPassword
       MasterUsername: !Ref DBMasterUsername
       Port: !Ref DBPort
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBAllocatedStorageEncrypted, !Ref 'AWS::NoValue']
@@ -1073,13 +1072,14 @@ Resources:
         AutomaticallyAfterDays: 89
   RDSRotationLambda:
     Condition: DBPasswordRotation
+    DependsOn: CopyZips
     Type: AWS::Lambda::Function
     Properties:
+      FunctionName: cfn-rotation-lambda
       Runtime: python2.7
       Role: !GetAtt LambdaExecutionRole.Arn
       Handler: lambda_function.lambda_handler
       Description: 'This is a lambda to rotate MySql user passwd'
-      FunctionName: 'cfn-rotation-lambda'
       Environment:
         Variables:
           SECRETS_MANAGER_ENDPOINT: !Sub 'https://secretsmanager.${AWS::Region}.amazonaws.com'
@@ -1087,14 +1087,14 @@ Resources:
         SecurityGroupIds:
           !If
           - CreateSecurityGroup
-          - !Ref RDSSecurityGroup
-          - !Ref CustomDBSecurityGroup
+          - [!Ref RDSSecurityGroup]
+          - [!Ref CustomDBSecurityGroup]
         SubnetIds:
           - !Ref Subnet1ID
           - !Ref Subnet2ID
       Code:
         S3Bucket: !Ref 'LambdaZipsBucket'
-        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/SSMRotate/lambda.zip'
+        S3Key: !Sub '${QSS3KeyPrefix}functions/packages/SSMRotateLambda/lambda.zip'
       Timeout: 300
   LambdaZipsBucket:
     Condition: DBPasswordRotation
@@ -1122,14 +1122,32 @@ Resources:
             Principal:
               Service:
                 - lambda.amazonaws.com
+                - secretsmanager.amazonaws.com
             Action:
               - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        - arn:aws:iam::aws:policy/SecretsManagerReadWrite
       Path: /
       Policies:
         - PolicyName: lambda_policy
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
+              - Effect: "Allow"
+                Action:
+                  - "secretsmanager:DescribeSecret"
+                  - "secretsmanager:GetSecretValue"
+                  - "secretsmanager:PutSecretValue"
+                  - "secretsmanager:UpdateSecretVersionStage"
+                Resource: !Sub 'arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*'
+                Condition:
+                  StringEquals:
+                    secretsmanager:resource/AllowRotationLambdaArn: !Sub 'arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:cfn-rotation-lambda'
+              - Effect: "Allow"
+                Action:
+                  - "secretsmanager:GetRandomPassword"
+                Resource: "*"
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -1140,6 +1158,13 @@ Resources:
                 Action:
                   - cloudformation:DescribeStacks
                 Resource: '*'
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    DependsOn: RDSRotationLambda
+    Properties:
+      FunctionName: 'cfn-rotation-lambda'
+      Action: 'lambda:InvokeFunction'
+      Principal: secretsmanager.amazonaws.com
   CopyZipsFunction:
     Condition: DBPasswordRotation
     Type: AWS::Lambda::Function
@@ -1238,14 +1263,3 @@ Resources:
                   - s3:DeleteObject
                 Resource:
                   - !Sub 'arn:aws:s3:::${LambdaZipsBucket}/${QSS3KeyPrefix}*'
-Rules:
-  GeneratePassword:
-    RuleCondition: !Equals [DBPasswordRotation, true]
-    Assertions:
-      - Assert: !Equals [!Ref DBMasterUserPassword, '']
-        AssertDescription: "Database Passwords are generated when RotateDBPassword is true; Do not provide a password value"
-  ProvidedPassword:
-    RuleCondition: !Equals [DBPasswordRotation, false]
-    Assertions:
-      - Assert: !Not [!Equals [!Ref DBMasterUserPassword, '']]
-        AssertDescription: "Please provide a database password when RotateDBPassword is false."

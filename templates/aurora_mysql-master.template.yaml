@@ -32,9 +32,6 @@ Metadata:
           - DBEngineMode
           - DBMultiAZ
           - DBInstanceClass
-          - DBMasterUsername
-          - DBMasterUserPassword
-          - DBPort
           - DBCWLogExports
           - DBAllocatedStorageEncrypted
           - NotificationList
@@ -402,10 +399,6 @@ Parameters:
     MaxValue: 86400
     MinValue: 300
 Conditions:
-  DBPasswordRotation:
-    !Equals
-    - !Ref RotateDBPassword
-    - 'true'
   GovCloudCondition: !Equals
     - !Ref 'AWS::Region'
     - us-gov-west-1
@@ -461,11 +454,7 @@ Resources:
         DBEngineMode: !Ref DBEngineMode
         DBInstanceClass: !Ref DBInstanceClass
         DBMasterUsername: !Ref DBMasterUsername
-        DBMasterUserPassword:
-          !If
-          - RotateDBPassword
-          - !Ref DBMasterUserPassword
-          - !Ref AWS::NoValue
+        DBMasterUserPassword: !Ref DBMasterUserPassword
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ
         DBAccessCIDR: !Ref VPCCIDR
@@ -502,16 +491,3 @@ Resources:
         VPCID: !GetAtt
           - VPCStack
           - Outputs.VPCID
-Rules:
-  GeneratePassword:
-    RuleCondition:
-      !Equals [!Ref RotateDBPassword, true]
-    Assertions:
-      - Assert: !Equals [!Ref DBMasterUserPassword, '']
-        AssertDescription: "Database Passwords are generated when RotateDBPassword is true; Do not provide a password value"
-  ProvidedPassword:
-    RuleCondition:
-      !Equals [!Ref RotateDBPassword, false]
-    Assertions:
-      - Assert: !Not [!Equals [!Ref DBMasterUserPassword, '']]
-        AssertDescription: "Please provide a database password when RotateDBPassword is false."
