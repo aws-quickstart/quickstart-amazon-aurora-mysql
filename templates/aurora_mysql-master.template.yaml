@@ -32,7 +32,6 @@ Metadata:
           - DBEngineMode
           - DBMultiAZ
           - DBInstanceClass
-          - DBCWLogExports
           - DBAllocatedStorageEncrypted
           - NotificationList
           - RotateDBPassword
@@ -80,8 +79,6 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
-      DBCWLogExports:
-        default: Database CloudWatch Log Exports
       DBMultiAZ:
         default: Multi-AZ deployment
       EnableBastion:
@@ -286,10 +283,6 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  DBCWLogExports:
-    Type: CommaDelimitedList
-    Default: ''
-    Description: "Database log exports to send to CloudWatch Logs"
   DBMultiAZ:
     AllowedValues:
       - "true"
