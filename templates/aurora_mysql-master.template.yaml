@@ -32,14 +32,9 @@ Metadata:
           - DBEngineMode
           - DBMultiAZ
           - DBInstanceClass
-          - DBCWLogExports
           - DBAllocatedStorageEncrypted
           - NotificationList
           - RotateDBPassword
-      - Label:
-          default: Severless
-        Parameters:
-          - ServerlessMinCapacityUnit
       - Label:
           default: 'Serverless (Applicable only for Database Engine Mode = Serverless)'
         Parameters:
@@ -84,8 +79,6 @@ Metadata:
         default: Database master password
       DBPort:
         default: Database port
-      DBCWLogExports:
-        default: Database CloudWatch Log Exports
       DBMultiAZ:
         default: Multi-AZ deployment
       EnableBastion:
@@ -268,8 +261,8 @@ Parameters:
     Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
     Type: String
   DBMasterUserPassword:
-    AllowedPattern: "(?=^.{6,255}$)((?=.*\\d)(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[^A-Za-z0-9])(?=.*[a-z])|(?=.*[^A-Za-z0-9])(?=.*[A-Z])(?=.*[a-z])|(?=.*\\d)(?=.*[A-Z])(?=.*[^A-Za-z0-9]))^.*"
-    ConstraintDescription: "Min 8 chars."
+    AllowedPattern: ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*[@/"']).*$
+    ConstraintDescription: "Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ \" ') symbol"
     Description: "The database admin account password."
     MaxLength: "64"
     MinLength: "8"
@@ -290,10 +283,6 @@ Parameters:
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
     MaxValue: 65535
-  DBCWLogExports:
-    Type: CommaDelimitedList
-    Default: ''
-    Description: "Database log exports to send to CloudWatch Logs"
   DBMultiAZ:
     AllowedValues:
       - "true"
