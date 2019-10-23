@@ -209,7 +209,7 @@ Parameters:
     Description: Whether or not to encrypt the database.
     Type: String
   DBCWLogExports:
-    Type: CommaDelimitedList
+    Type: String
     Default: ''
     Description: "Specify comma delimited list of Database logs (error, slowquery, audit) to export to CloudWatch Logs."
   DBAutoMinorVersionUpgrade:
