@@ -82,7 +82,7 @@ Metadata:
       Subnet1ID:
         default: Private subnet 1 ID
       Subnet2ID:
-        default: Private subne 2 ID
+        default: Private subnet 2 ID
       VPCID:
         default: VPC ID
       CustomDBSecurityGroup:
