@@ -113,7 +113,7 @@ Metadata:
         default: Quick Start S3 bucket name
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
-        
+
 Parameters:
   QSS3BucketName:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
@@ -243,10 +243,11 @@ Parameters:
     MinValue: 1150
     MaxValue: 65535
   DBName:
-    AllowedPattern: "[a-zA-Z0-9]*"
+    AllowedPattern: "[a-zA-Z]-[a-zA-Z0-9]*"
+    Default: 'AuroraMySQLDB'
     Description: "Name of the Amazon Aurora database."
-    MaxLength: "64"
-    MinLength: "0"
+    MaxLength: "63"
+    MinLength: "5"
     Default: 'AuroraMySQLDB'
     Type: String
   CustomDBSecurityGroup:
@@ -467,7 +468,7 @@ Rules:
     Assertions:
       - Assert: !Not [!Equals [!Ref Subnet1ID, !Ref Subnet2ID]]
         AssertDescription: "Please provide 2 distinct private subnets"
-        
+
 Conditions:
   DBPasswordRotation:
     !Equals
@@ -541,7 +542,7 @@ Conditions:
     !Equals
     - !Ref CustomDBSecurityGroup
     - ''
-    
+
 Resources:
   MonitoringIAMRole:
     Type: AWS::IAM::Role
@@ -970,7 +971,7 @@ Resources:
   RDSSecretRotationSchedule:
     Condition: DBPasswordRotation
     Type: AWS::SecretsManager::RotationSchedule
-    DependsOn: 
+    DependsOn:
       - SecretRDSInstanceAttachment
     Properties:
       SecretId: !Ref RDSInstanceRotationSecret
@@ -1181,7 +1182,7 @@ Outputs:
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}
   AuroraReaderEndpoint:
     Description: "Amzon Aurora Reader Endpoint"
-    Value:  !Sub ${AuroraDBCluster.ReadEndpoint.Address} 
+    Value:  !Sub ${AuroraDBCluster.ReadEndpoint.Address}
   AuroraClusterPort:
     Description: "Amazon Aurora Endpoint port"
     Value: !Sub ${AuroraDBCluster.Endpoint.Port}
@@ -1190,7 +1191,7 @@ Outputs:
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/${DBName}
   AuroraMasterUsername:
     Description: "Amazon Aurora Master username"
-    Value: !Ref DBMasterUsername  
+    Value: !Ref DBMasterUsername
   AuroraMasterUserSecret:
     Condition: DBPasswordRotation
     Description: "Aurora Master User Secret ARN stored in AWS Secrets Manager"

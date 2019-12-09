@@ -128,7 +128,7 @@ Metadata:
         default: Pause compute capacity
       ServerlessSecondsUntilAutoPause:
         default: Pause after time of inactivity
-        
+
 Parameters:
   RotateDBPassword:
     Default: false
@@ -304,10 +304,10 @@ Parameters:
     Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
     Type: String
   DBName:
-    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+    AllowedPattern: "[a-zA-Z]-[a-zA-Z0-9]*"
     Default: 'AuroraMySQLDB'
     Description: "Name of the Amazon Aurora database."
-    MaxLength: "64"
+    MaxLength: "63"
     MinLength: "5"
     Type: String
   NotificationList:
@@ -400,7 +400,7 @@ Parameters:
     Default: 300
     MaxValue: 86400
     MinValue: 300
-    
+
 Conditions:
   GovCloudCondition: !Equals
     - !Ref 'AWS::Region'
@@ -408,7 +408,7 @@ Conditions:
   EnableBastionAccess: !Equals
     - !Ref EnableBastion
     - "true"
-    
+
 Resources:
   VPCStack:
     Type: 'AWS::CloudFormation::Stack'
