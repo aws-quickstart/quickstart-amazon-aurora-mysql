@@ -952,7 +952,7 @@ Resources:
     Condition: DBPasswordRotation
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Join ['/', ['aurora-mysql', !Ref 'AWS::StackName']]
+      Name: !Sub 'aurora-mysql-secret-${AWS::AccountId}-${AWS::Region}'
       Description: !Join ['', ['Aurora MySQL Master User Secret ', 'for CloudFormation Stack ', !Ref 'AWS::StackName']]
       GenerateSecretString:
         SecretStringTemplate: !Sub '{"username": "${DBMasterUsername}"}'
