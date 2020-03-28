@@ -134,10 +134,10 @@ Metadata:
 
 Parameters:
   RotateDBPassword:
-    Default: false
+    Default: "false"
     AllowedValues:
-      - true
-      - false
+      - "true"
+      - "false"
     Description: Whether or not to rotate the database password on a schedule(every 89 days).
     Type: String
   AvailabilityZones:
@@ -209,10 +209,10 @@ Parameters:
     Description: "If true, a bastion stack will be created."
     Type: String
   DBAllocatedStorageEncrypted:
-    Default: true
+    Default: "true"
     AllowedValues:
-      - true
-      - false
+      - "true"
+      - "false"
     Description: Whether or not to encrypt the database.
     Type: String
   DBCWLogExports:

@@ -142,10 +142,10 @@ Parameters:
     Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not applicable for Aurora Serverless."
     Type: String
   DBAllocatedStorageEncrypted:
-    Default: true
+    Default: "true"
     AllowedValues:
-      - true
-      - false
+      - "true"
+      - "false"
     Description: Whether or not to encrypt the database.
     Type: String
   DBCWLogExports:
@@ -153,10 +153,10 @@ Parameters:
     Default: ''
     Description: "Specify comma delimited list of Database logs ( error, slowquery, audit ) to export to CloudWatch Logs."
   RotateDBPassword:
-    Default: false
+    Default: "false"
     AllowedValues:
-      - true
-      - false
+      - "true"
+      - "false"
     Description: Whether or not to rotate the database password on a schedule (every 89 days).
     Type: String
   DBAutoMinorVersionUpgrade:
