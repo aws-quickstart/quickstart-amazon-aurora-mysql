@@ -1186,6 +1186,7 @@ Outputs:
     Description: "Amazon Aurora Cluster/Writer endpoint"
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}
   AuroraReaderEndpoint:
+    Condition: IsServerlessDisabled
     Description: "Amzon Aurora Reader Endpoint"
     Value:  !Sub ${AuroraDBCluster.ReadEndpoint.Address}
   AuroraClusterPort:
