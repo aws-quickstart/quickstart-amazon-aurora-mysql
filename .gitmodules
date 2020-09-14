@@ -4,3 +4,4 @@
 [submodule "submodules/quickstart-linux-bastion"]
 	path = submodules/quickstart-linux-bastion
 	url = https://github.com/aws-quickstart/quickstart-linux-bastion
+	branch = main
