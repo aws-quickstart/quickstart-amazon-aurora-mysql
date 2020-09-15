@@ -1,9 +1,19 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: "AWS Aurora MySql, Do Not Remove Apache License Version 2.0 (qs-) Jun,15,2019"
+Description: "AWS Aurora MySql, Do Not Remove Apache License Version 2.0 (qs-1r51947et) Jun,15,2019"
 
 Metadata:
   LICENSE: Apache License Version 2.0
+  QuickStartDocumentation:
+    EntrypointName: "Launch into an existing VPC"
+    Order: "2"
+    OptionalParameters:
+      - EnvironmentStage
+      - Application
+      - ApplicationVersion
+      - ProjectCostCenter
+      - Confidentiality
+      - Compliance
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:

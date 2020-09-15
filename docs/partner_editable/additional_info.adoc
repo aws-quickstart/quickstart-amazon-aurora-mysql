@@ -2,7 +2,8 @@
 //Should any sections not be applicable, remove them
 
 == Test the deployment
-// If steps are required to test the deployment, add them here. If not, remove the heading
+* Use the URL provided on the Outputs tab for the Aurora stack to test the deployment.
+* Use the IP address for the bastion host provided by the Outputs tab for the main stack, and use your private key if you want to connect to that host through SSH.
 
 == Post deployment steps
 // If Post-deployment steps are required, add them here. If not, remove the heading

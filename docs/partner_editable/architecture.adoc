@@ -10,20 +10,22 @@ image::../images/architecture_diagram.png[Architecture,width=648,height=439]
 
 As shown in Figure 1, the Quick Start sets up the following:
 
+The Quick Start sets up the following:
 * A highly available architecture that spans two Availability Zones.*
-* A VPC configured with public and private subnets, according to AWS
-best practices, to provide you with your own virtual network on AWS.*
-
-In the public subnets:
-
-* Managed network address translation (NAT) gateways to allow outbound
-internet access for resources in the private subnets.*
-* A Linux bastion host in an Auto Scaling group to allow inbound Secure
-Shell (SSH) access to EC2 instances in public and private subnets.*
-
-In the private subnets:
-// Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram.
-* <describe any additional components>.
+* A VPC configured with public and private subnets according to AWS best practices, to
+provide you with your own virtual network on AWS.*
+* In the public subnets, managed network address translation (NAT) gateways to allow
+outbound internet access for resources in the private subnets.*
+* In the public subnets, an optional Linux bastion host in an Auto Scaling group to allow
+inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2)
+instances in the private subnets.*
+* In the private subnets, an Aurora DB cluster that includes one DB reader and one DB
+writer.
+* An encryption key using AWS Key Management Service (AWS KMS). The Quick Start
+uses the key to enable encryption at rest for the Aurora DB cluster.
+* An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send an
+Amazon Simple Notification Service (Amazon SNS) notification when the alarm is
+triggered.
 
 *The template that deploys the Quick Start into an existing VPC skips
 the components marked by asterisks and prompts you for your existing VPC
