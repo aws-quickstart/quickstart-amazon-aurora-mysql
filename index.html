@@ -806,13 +806,11 @@ a img {
 <li><a href="#_launch_into_an_existing_vpc">Launch into an existing VPC</a></li>
 </ul>
 </li>
-<li><a href="#_test_the_deployment">Test the deployment</a></li>
-<li><a href="#_post_deployment_steps">Post deployment steps</a></li>
-<li><a href="#_best_practices_for_using_aurora_mysql_on_aws">Best practices for using Aurora MySQL on AWS</a></li>
-<li><a href="#_security">Security</a></li>
-<li><a href="#_other_useful_information">Other useful information</a></li>
+<li><a href="#_test_the_deployment">Test the deployment</a>
+<ul class="sectlevel2">
 <li><a href="#_faq">FAQ</a></li>
-<li><a href="#_troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
 <li><a href="#_quick_start_reference_deployments">Quick Start reference deployments</a></li>
 <li><a href="#_github_repository">GitHub repository</a></li>
@@ -977,22 +975,40 @@ AWS Cloud.</p>
 <p>As shown in Figure 1, the Quick Start sets up the following:</p>
 </div>
 <div class="paragraph">
-<p>The Quick Start sets up the following:
-* A highly available architecture that spans two Availability Zones.*
-* A VPC configured with public and private subnets according to AWS best practices, to
-provide you with your own virtual network on AWS.*
-* In the public subnets, managed network address translation (NAT) gateways to allow
-outbound internet access for resources in the private subnets.*
-* In the public subnets, an optional Linux bastion host in an Auto Scaling group to allow
+<p>The Quick Start sets up the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A highly available architecture that spans two Availability Zones.*</p>
+</li>
+<li>
+<p>A VPC configured with public and private subnets according to AWS best practices, to
+provide you with your own virtual network on AWS.*</p>
+</li>
+<li>
+<p>In the public subnets, managed network address translation (NAT) gateways to allow
+outbound internet access for resources in the private subnets.*</p>
+</li>
+<li>
+<p>In the public subnets, an optional Linux bastion host in an Auto Scaling group to allow
 inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2)
-instances in the private subnets.*
-* In the private subnets, an Aurora DB cluster that includes one DB reader and one DB
-writer.
-* An encryption key using AWS Key Management Service (AWS KMS). The Quick Start
-uses the key to enable encryption at rest for the Aurora DB cluster.
-* An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send an
+instances in the private subnets.*</p>
+</li>
+<li>
+<p>In the private subnets, an Aurora DB cluster that includes one DB reader and one DB
+writer.</p>
+</li>
+<li>
+<p>An encryption key using AWS Key Management Service (AWS KMS). The Quick Start
+uses the key to enable encryption at rest for the Aurora DB cluster.</p>
+</li>
+<li>
+<p>An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send an
 Amazon Simple Notification Service (Amazon SNS) notification when the alarm is
 triggered.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>*The template that deploys the Quick Start into an existing VPC skips
@@ -1918,41 +1934,8 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </li>
 </ul>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_post_deployment_steps">Post deployment steps</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_best_practices_for_using_aurora_mysql_on_aws">Best practices for using Aurora MySQL on AWS</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><em>Add any best practices for using the software.</em></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_security">Security</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><em>Add any security-related information.</em></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_other_useful_information">Other useful information</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p><em>Add any other details that will help the customer use the software on AWS.</em></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_faq">FAQ</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_faq">FAQ</h3>
 <div class="paragraph">
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
@@ -1980,13 +1963,6 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <div class="paragraph">
 <p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information about AWS CloudFormation quotas, see the <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_troubleshooting">Troubleshooting</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>&lt;Steps for troubleshooting the deployment go here.&gt;</p>
 </div>
 </div>
 </div>
@@ -2034,7 +2010,7 @@ and to share your customizations with others.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 00:37:47 UTC
+Last updated 2020-09-16 02:13:25 UTC
 </div>
 </div>
 </body>

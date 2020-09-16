@@ -4,21 +4,3 @@
 == Test the deployment
 * Use the URL provided on the Outputs tab for the Aurora stack to test the deployment.
 * Use the IP address for the bastion host provided by the Outputs tab for the main stack, and use your private key if you want to connect to that host through SSH.
-
-== Post deployment steps
-// If Post-deployment steps are required, add them here. If not, remove the heading
-
-== Best practices for using {partner-product-short-name} on AWS
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
-
-_Add any best practices for using the software._
-
-== Security
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
-
-_Add any security-related information._
-
-== Other useful information
-//Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
-
-_Add any other details that will help the customer use the software on AWS._

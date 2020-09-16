@@ -11,6 +11,7 @@ image::../images/architecture_diagram.png[Architecture,width=648,height=439]
 As shown in Figure 1, the Quick Start sets up the following:
 
 The Quick Start sets up the following:
+
 * A highly available architecture that spans two Availability Zones.*
 * A VPC configured with public and private subnets according to AWS best practices, to
 provide you with your own virtual network on AWS.*
