@@ -1,1 +1,6 @@
-// placeholder
+
+=== Launch into a new VPC
+include::aurora_mysql-master.template.adoc[]
+
+=== Launch into an existing VPC
+include::aurora_mysql.template.adoc[]

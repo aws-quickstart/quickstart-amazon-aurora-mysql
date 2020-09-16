@@ -1,1 +1,0 @@
-# quickstart-amazon-aurora-mysql

@@ -1,0 +1,67 @@
+
+.Network configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Availability Zones
+(`AvailabilityZones`)|`**__Requires input__**`|List of Availability Zones to use for the subnets in the VPC. Only two Availability Zones are used for this deployment, and the logical order of your selections is preserved.|VPC CIDR
+(`VPCCIDR`)|`10.0.0.0/16`|CIDR block for the VPC.|Private subnet 1 CIDR
+(`PrivateSubnet1CIDR`)|`10.0.0.0/19`|CIDR block for private subnet 1 located in Availability Zone 1.|Private subnet 2 CIDR
+(`PrivateSubnet2CIDR`)|`10.0.32.0/19`|CIDR block for private subnet 2 located in Availability Zone 2.|Public subnet 1 CIDR
+(`PublicSubnet1CIDR`)|`10.0.128.0/20`|CIDR block for the public subnet 1 located in Availability Zone 1.|Public subnet 2 CIDR
+(`PublicSubnet2CIDR`)|`10.0.144.0/20`|CIDR block for the public subnet 2 located in Availability Zone 2.
+|===
+.Linux bastion configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Create bastion stack
+(`EnableBastion`)|`true`|If true, a bastion stack will be created.|Key Name
+(`KeyPairName`)|`**__Requires input__**`|Name of an existing public/private key pair, for connecting to your instance.|Permitted IP range
+(`RemoteAccessCIDR`)|`**__Requires input__**`|Allowed CIDR block for external SSH access.
+|===
+.Database configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Database name
+(`DBName`)|`AuroraMySQLDB`|Name of the Amazon Aurora database.|Database master username
+(`DBMasterUsername`)|`msadmin`|The database admin account username.|**NO_LABEL**
+(`RotateDBPassword`)|`false`|Whether or not to rotate the database password on a schedule(every 89 days).|Database master password
+(`DBMasterUserPassword`)|`**__Requires input__**`|The database admin account password. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol.|Database port
+(`DBPort`)|`3306`|The port on which the DB instance will listen for connections. Aurora Serverless currently supports port 3306 only.|Database auto minor version upgrade
+(`DBAutoMinorVersionUpgrade`)|`false`|Select true to enable auto minor version upgrade.|Database backup retention period
+(`DBBackupRetentionPeriod`)|`35`|The number of days for which automatic database snapshots are retained from 1 to 35 days.|Database Engine Version
+(`DBEngineVersion`)|`Aurora-MySQL5.6.10a`|Select Database Engine Version|Database Engine Mode
+(`DBEngineMode`)|`provisioned`|The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.|Multi-AZ deployment
+(`DBMultiAZ`)|`true`|Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless.|Database instance class
+(`DBInstanceClass`)|`db.r4.large`|The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently.|Database encryption enabled
+(`DBAllocatedStorageEncrypted`)|`true`|Whether or not to encrypt the database.|Database CloudWatch Log Exports
+(`DBCWLogExports`)|`**__Blank string__**`|Specify comma delimited list of Database logs (error, slowquery, audit) to export to CloudWatch Logs.|SNS notification email
+(`NotificationList`)|`db-ops@domain.com`|The Email notification is used to configure a SNS topic for sending cloudwatch alarm and RDS Event notifications
+|===
+.Serverless (Applicable only for Database Engine Mode = Serverless)
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Minimum Aurora capacity unit
+(`ServerlessMinCapacityUnit`)|`2`|The minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.|Maximum Aurora capacity unit
+(`ServerlessMaxCapacityUnit`)|`64`|The maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.|Pause compute capacity
+(`ServerlessAutoPause`)|`false`|Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).|Pause after time of inactivity
+(`ServerlessSecondsUntilAutoPause`)|`300`|The time, in seconds, before an Aurora DB cluster in serverless mode is auto paused. Min = 300, Max = 86400 (24hrs)
+|===
+.Database tags (optional)
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Environment stage
+(`EnvironmentStage`)|`none`|Designates the environment stage of the associated AWS resource. (Optional)|Application name
+(`Application`)|`**__Blank string__**`|Designates the application of the associated AWS resource. (Optional)|Application version
+(`ApplicationVersion`)|`**__Blank string__**`|Designates the specific version of the application. (Optional)|Project cost center
+(`ProjectCostCenter`)|`**__Blank string__**`|Designates the cost center associated with the project of the given AWS resource. (Optional)|Confidentiality classifier
+(`Confidentiality`)|`**__Blank string__**`|Designates the confidentiality classification of the data that is associated with the resource. (Optional)|Compliance classifier
+(`Compliance`)|`**__Blank string__**`|Designates the compliance level for the AWS resource. (Optional)
+|===
+.Quick Start configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Quick Start S3 bucket name
+(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 bucket region
+(`QSS3BucketRegion`)|`us-east-1`|The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.|Quick Start S3 key prefix
+(`QSS3KeyPrefix`)|`quickstart-amazon-aurora-mysql/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
+|===
