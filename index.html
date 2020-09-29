@@ -778,6 +778,9 @@ a img {
 .preview_mode .tableblock {
   background:#ffffb3;
 }
+
+.footer-text{color:rgba(255,255,255,.8);line-height:1.44;background:#1c222a;padding:1.25em;max-width:100%;margin-bottom:unset}
+p.footer-text a{color:#d7d8d8}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -1991,9 +1994,6 @@ the templates and scripts for this Quick Start, to post your comments,
 and to share your customizations with others.</p>
 </div>
 <hr>
-<div class="paragraph">
-<p>© 2020, Amazon Web Services Inc., or its affiliates, and {partner-company-name}. All rights reserved.</p>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -2008,10 +2008,10 @@ and to share your customizations with others.</p>
 </div>
 </div>
 </div>
-<div id="footer">
-<div id="footer-text">
-Last updated 2020-09-22 10:30:52 UTC
-</div>
-</div>
+<p class="footer-text">
+<!-- We can use document attributes: -->
+<!-- Generated with Asciidoctor v2.0.10. -->
+<a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2020, Amazon Web Services, Inc. or its affiliates and {partner-company-name}. All rights reserved.
+</p>
 </body>
 </html>
