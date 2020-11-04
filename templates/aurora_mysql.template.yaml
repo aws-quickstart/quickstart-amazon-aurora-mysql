@@ -415,6 +415,30 @@ Mappings:
       "family": "aurora-mysql5.7"
     "Aurora-MySQL5.7-2.04.6":
       "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.7":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.8":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.04.9":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.05.0":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.06.0":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.07.0":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.07.1":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.07.2":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.08.0":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.08.1":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.08.2":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.09.0":
+      "family": "aurora-mysql5.7"
 
   DBEngineVersionMap:
     "Aurora-MySQL5.6.10a":
@@ -449,6 +473,30 @@ Mappings:
       "engineversion": "5.7.mysql_aurora.2.04.5"
     "Aurora-MySQL5.7-2.04.6":
       "engineversion": "5.7.mysql_aurora.2.04.6"
+    "Aurora-MySQL5.7-2.04.7":
+      "engineversion": "5.7.mysql_aurora.2.04.7"
+    "Aurora-MySQL5.7-2.04.8":
+      "engineversion": "5.7.mysql_aurora.2.04.8"
+    "Aurora-MySQL5.7-2.04.9":
+      "engineversion": "5.7.mysql_aurora.2.04.9"
+    "Aurora-MySQL5.7-2.05.0":
+      "engineversion": "5.7.mysql_aurora.2.05.0"
+    "Aurora-MySQL5.7-2.06.0":
+      "engineversion": "5.7.mysql_aurora.2.06.0"
+    "Aurora-MySQL5.7-2.07.0":
+      "engineversion": "5.7.mysql_aurora.2.07.0"
+    "Aurora-MySQL5.7-2.07.1":
+      "engineversion": "5.7.mysql_aurora.2.07.1"
+    "Aurora-MySQL5.7-2.07.2":
+      "engineversion": "5.7.mysql_aurora.2.07.2"
+    "Aurora-MySQL5.7-2.08.0":
+      "engineversion": "5.7.mysql_aurora.2.08.0"
+    "Aurora-MySQL5.7-2.08.1":
+      "engineversion": "5.7.mysql_aurora.2.08.1"
+    "Aurora-MySQL5.7-2.08.2":
+      "engineversion": "5.7.mysql_aurora.2.08.2"
+    "Aurora-MySQL5.7-2.09.0":
+      "engineversion": "5.7.mysql_aurora.2.09.0"
 
   DBEngineNameMap:
     "Aurora-MySQL5.6.10a":
@@ -482,6 +530,30 @@ Mappings:
     "Aurora-MySQL5.7-2.04.5":
       "enginename": "aurora-mysql"
     "Aurora-MySQL5.7-2.04.6":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.7":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.8":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.04.9":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.05.0":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.06.0":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.07.0":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.07.1":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.07.2":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.08.0":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.08.1":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.08.2":
+      "enginename": "aurora-mysql"
+    "Aurora-MySQL5.7-2.09.0":
       "enginename": "aurora-mysql"
 
 Rules:
