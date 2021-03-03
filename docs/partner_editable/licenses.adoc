@@ -1,3 +1,5 @@
 // Include details about the license and how they can sign up. If no license is required, clarify that. 
 
-There are no additional licensing requirements to use this Quick Start.
+There are no 
+//TODO Explain what "additional" means, and clarify why no other license are required.
+additional licensing requirements to use this Quick Start.
