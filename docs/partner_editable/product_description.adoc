@@ -2,24 +2,27 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-Amazon Aurora is a fully managed relational database engine that’s compatible with MySQL and
+Amazon Aurora 
+//TODO This is plagiarized from https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html
+//TODO Summarize Amazon Aurora in one paragraph, and point readers to the page above.
+is a fully managed relational database engine that’s compatible with MySQL and
 PostgreSQL. MySQL and PostgreSQL combine the speed and reliability of high-end
 commercial databases with the simplicity and cost-effectiveness of open-source databases.
-The code, tools, and applications you use today with your existing MySQL and PostgreSQL
+The code, tools, and applications you use with your existing MySQL and PostgreSQL
 databases can be used with Aurora. With some workloads, Aurora can deliver up to five 
 times the throughput of MySQL and up to three times the throughput of PostgreSQL
 without requiring changes to most of your existing applications.
 
 Aurora includes a high-performance storage subsystem. Its database engines are
-customized to take advantage of that fast distributed storage. The underlying storage grows
-automatically as needed, up to 64 terabytes. Aurora also automates and standardizes
+customized to take advantage of distributed storage. The underlying storage grows
+automatically as needed up to 64 terabytes. Aurora also automates and standardizes
 database clustering and replication, which are typically among the most challenging aspects
 of database configuration and administration.
 
 Aurora is part of the managed database service Amazon Relational Database Service
 (Amazon RDS). Amazon RDS is a web service that makes it easier to set up, operate, and
 scale a relational database in the cloud. If you are not already familiar with Amazon RDS,
-see the https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html/[Amazon Relational Database Service User Guide].
+see the https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html/[Amazon Relational Database Service User Guide^].
 
 You can choose Aurora as a DB engine option when setting up new database servers
 through Amazon RDS. Aurora provides the following features:
