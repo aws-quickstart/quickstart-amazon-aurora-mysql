@@ -40,6 +40,7 @@ Each deployment takes about {deployment_time} to complete.
 |===
 
 //TODO Marcia to create the permalinks as soon as Dave confirms whether the file named "aurora_mysql-MASTER.template.yaml" is being renamed. 
+//Marcia, I will rename the file
 
 [start=2]
 . Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for {partner-product-short-name} is built. The template launches in the {default_deployment_region} Region by default.

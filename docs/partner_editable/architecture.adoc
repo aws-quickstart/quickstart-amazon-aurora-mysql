@@ -14,7 +14,7 @@ As shown in Figure 1, the Quick Start sets up the following:
 provide you with your own virtual network on AWS.*
 * In the public subnets:
 ** Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.*
-** (Optional) A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2) instances in the private subnets.*
+** (Optional) A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to resources in the private subnets.*
 * In the private subnets:
 ** An Aurora database cluster in a security group, including one database reader and one database writer.
 * An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send alarm notifications using Amazon Simple Notification Service (Amazon SNS).
@@ -26,4 +26,4 @@ configuration.#
 
 //TODO Dave, What more might we say about the database reader and writer? (Also I wonder why they're in separate AZs in the diagram ... seems like if one AZ went down, that would present a problem, no?)
 
-//TODO Dave, We mention "EC2 instances in the private subnets," but we don't show any in the diagram. Should we? We normally wouldn't mention things in the bulleted list that don't appear in the diagram ... unless we say "(not shown)."
+//Marcia, the data itself is replicated across three AZs and the reader/writer endpoints fail over automatically. See the "High availability and durability" section of https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&aurora-whats-new.sort-order=desc
