@@ -2,5 +2,6 @@
 //Should any sections not be applicable, remove them
 
 == Test the deployment
-* To test the deployment, use the URL provided on the *Outputs* tab for the Aurora stack.
-* For the main stack, use the IP address for the bastion host from the *Outputs* tab, and use your private key if you want to connect using SSH.
+To test the deployment, use the URL provided on the *Outputs* tab for the Aurora stack.
+
+For the main stack, use the IP address for the bastion host from the *Outputs* tab. if you want to connect using SSH, use your private key.

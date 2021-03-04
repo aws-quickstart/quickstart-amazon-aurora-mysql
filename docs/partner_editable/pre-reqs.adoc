@@ -6,10 +6,10 @@ If you plan to deploy Aurora into an existing VPC, check the following:
 
 * Your VPC must have two private subnets in different Availability Zones for the database
 instances. This Quick Start does not support https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html[shared subnets^].
-* To download packages and software without exposing instances to the internet, the private subnets require https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html[NAT gateways] in their route tables.
-* The domain name must be configured in the Dynamic Host Configuration Protocol (DHCP) options. For more information, see https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html[DHCP options sets^]
+* To download packages and software without exposing instances to the internet, the private subnets require https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html[NAT gateways^] in their route tables.
+* The domain name must be configured in the Dynamic Host Configuration Protocol (DHCP) options. For more information, see https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html[DHCP options sets^].
 * You must have a Linux bastion host to run the tests discussed in step 3. To install the bastion host, launch the https://github.com/aws-quickstart/quickstart-linux-bastion/blob/master/templates/linux-bastion.template[AWS CloudFormation template^] that we provide for an existing subnet. When you launch the Quick Start, you are prompted for your VPC settings.
 
-If you don’t have an existing VPC that satisfies these requirements, we recommend that you
-use the new-VPC deployment option so that the Quick Start builds a VPC for you in
-addition to deploying {partner-product-short-name}.
+//TODO Dave, Instead of "discussed in step 3" above, what can we point to (and ideally link to) specifically?
+
+If you don’t have an existing VPC that satisfies these requirements, use the new-VPC deployment option so that the Quick Start builds a VPC for you in addition to deploying {partner-product-short-name}.
