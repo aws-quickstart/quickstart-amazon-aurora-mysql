@@ -4,8 +4,11 @@
 
 *Q.* I encountered a *CREATE_FAILED* error when I launched the Quick Start.
 
-*A.* If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with *Rollback on failure* set to *Disabled*. (This setting is under *Advanced* in the AWS CloudFormation console, *Options* page.) With this setting, the stack’s state is retained, and the instance remains running so you can troubleshoot the issue. (For Windows, look at the log files in `%ProgramFiles%\Amazon\EC2ConfigService` and `C:\cfn\log`.)
+*A.* If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with *Rollback on failure* set to *Disabled*. (This setting is under *Advanced* in the AWS CloudFormation console, *Options* page.) With this setting, the stack’s state is retained so you can troubleshoot the issue.
 // If you’re deploying on Linux instances, provide the location for log files on Linux, or omit this sentence.
+
+//TODO Dave, Since this architecture has an optional Linux bastion host, should we change this location or omit the sentence?
+//Marcia, I omitted the reference to the EC2 instance
 
 WARNING: When you set *Rollback on failure* to *Disabled*, you continue to incur AWS charges for the stack. Ensure that you delete the stack when you finish troubleshooting.
 
