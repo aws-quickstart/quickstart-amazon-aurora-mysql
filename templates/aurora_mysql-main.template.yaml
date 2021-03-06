@@ -31,6 +31,7 @@ Metadata:
           - EnableBastion
           - KeyPairName
           - RemoteAccessCIDR
+          - EnableTCPForwarding
       - Label:
           default: Database configuration
         Parameters:
@@ -47,6 +48,7 @@ Metadata:
           - DBInstanceClass
           - DBAllocatedStorageEncrypted
           - DBCWLogExports
+          - DBBackTrack
           - NotificationList
       - Label:
           default: 'Serverless—applicable only when database engine mode (DBEngineMode) is serverless'
@@ -99,8 +101,12 @@ Metadata:
         default: Database port
       DBMultiAZ:
         default: Multi-AZ deployment
+      DBBackTrack:
+        default: Aurora Backtrack
       EnableBastion:
         default: Enable bastion stack
+      EnableTCPForwarding:
+        default: Enable TCP Forwarding
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -232,6 +238,13 @@ Parameters:
     Default: "true"
     Description: If you do not want to create a bastion stack, choose "false."
     Type: String
+  EnableTCPForwarding:
+    Type: String
+    Description: Enable/Disable TCP Forwarding
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
   DBAllocatedStorageEncrypted:
     Default: "true"
     AllowedValues:
@@ -257,7 +270,7 @@ Parameters:
     MinValue: 1
     MaxValue: 35
   DBEngineVersion:
-    Description: Version of the database engine.
+    Description: "Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported aurora features by regions and engine versions refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html."
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
     AllowedValues:
@@ -266,6 +279,17 @@ Parameters:
       - 'Aurora-MySQL5.6-1.19.1'
       - 'Aurora-MySQL5.6-1.19.2'
       - 'Aurora-MySQL5.6-1.19.5'
+      - 'Aurora-MySQL5.6-1.19.6'
+      - 'Aurora-MySQL5.6-1.20.0'
+      - 'Aurora-MySQL5.6-1.20.1'
+      - 'Aurora-MySQL5.6-1.21.0'
+      - 'Aurora-MySQL5.6-1.22.0'
+      - 'Aurora-MySQL5.6-1.22.1'
+      - 'Aurora-MySQL5.6-1.22.2'
+      - 'Aurora-MySQL5.6-1.22.3'
+      - 'Aurora-MySQL5.6-1.22.4'
+      - 'Aurora-MySQL5.6-1.23.0'
+      - 'Aurora-MySQL5.6-1.23.1'
       - 'Aurora-MySQL5.7.12'
       - 'Aurora-MySQL5.7-2.03.2'
       - 'Aurora-MySQL5.7-2.03.3'
@@ -285,12 +309,17 @@ Parameters:
       - 'Aurora-MySQL5.7-2.07.0'
       - 'Aurora-MySQL5.7-2.07.1'
       - 'Aurora-MySQL5.7-2.07.2'
+      - 'Aurora-MySQL5.7-2.07.3'
+      - 'Aurora-MySQL5.7-2.07.4'
       - 'Aurora-MySQL5.7-2.08.0'
       - 'Aurora-MySQL5.7-2.08.1'
       - 'Aurora-MySQL5.7-2.08.2'
+      - 'Aurora-MySQL5.7-2.08.3'
       - 'Aurora-MySQL5.7-2.09.0'
+      - 'Aurora-MySQL5.7-2.09.1'
+      - 'Aurora-MySQL5.7-2.09.2'
   DBEngineMode:
-    Description: Engine mode of the cluster. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
+    Description: "Engine mode of the cluster."
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -301,7 +330,10 @@ Parameters:
       - 'multimaster'
   DBInstanceClass:
     AllowedValues:
+      - db.r5.24xlarge
+      - db.r5.16xlarge
       - db.r5.12xlarge
+      - db.r5.8xlarge
       - db.r5.4xlarge
       - db.r5.2xlarge
       - db.r5.xlarge
@@ -310,11 +342,11 @@ Parameters:
       - db.r4.8xlarge
       - db.r4.4xlarge
       - db.r4.2xlarge
-      - db.r4.xlarge
-      - db.r4.large
+      - db.t3.medium
+      - db.t3.small                
     ConstraintDescription: "Must select a valid database instance type."
-    Default: db.r4.large
-    Description: "Name of the compute and memory-capacity class of the database instance. Not applicable for Aurora Serverless. Supported instance type for Aurora Multi-Master is db.r4.[2/4/8]xlarge only."
+    Default: db.r5.large
+    Description: "Name of the compute and memory-capacity class of the database instance. Not applicable for Aurora Serverless. Supported instance type for Aurora Multi-Master is db.r4.[2/4/8/16]xlarge only. db.t3 instance class doesn't support RDS Performance Insights"
     Type: String
   DBMasterUserPassword:
     AllowedPattern: ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*[@/"']).*$
@@ -345,6 +377,13 @@ Parameters:
       - "false"
     Default: "true"
     Description: If the database instance is not in a multiple Availability Zone deployment, choose "false." Not applicable for Aurora Serverless.
+    Type: String
+  DBBackTrack:
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+    Description: To enable Aurora Backtrack, choose "true". Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master.
     Type: String
   DBName:
     Default: 'AuroraMySQLDB'
@@ -458,7 +497,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -505,6 +544,7 @@ Resources:
         DBMasterUserPassword: !Ref DBMasterUserPassword
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ
+        DBBackTrack: !Ref DBBackTrack
         DBAccessCIDR: !Ref VPCCIDR
         NotificationList: !Ref NotificationList
         EnvironmentStage: !Ref EnvironmentStage
@@ -538,6 +578,7 @@ Resources:
         PublicSubnet2ID: !GetAtt
           - VPCStack
           - Outputs.PublicSubnet2ID
+        EnableTCPForwarding: !Ref EnableTCPForwarding
         RemoteAccessCIDR: !Ref RemoteAccessCIDR
         VPCID: !GetAtt
           - VPCStack
