@@ -2,8 +2,6 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-Amazon Aurora is a fully managed relational database engine. It eliminates the need to maintain database infrastructure (servers, replication, backups, and so on). Aurora is compatible with both MySQL and PostgreSQL. For more information, see https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html[What is Amazon Aurora?^] This Quick Start deploys Amazon Aurora with MySQL compatibility.
+Aurora is a fully managed relational database engine that's compatible with MySQL and PostgreSQL. With Aurora, you can use the same code, tools, and applications you use today with your existing MySQL databases. For some workloads, Aurora can deliver up to five times the throughput of MySQL without requiring changes to most of your existing applications.
 
-//TODO Dave, What more could we say specifically about Aurora MySQL Database? For example, what might devs want to know about serverless and other database engine modes? What else might help people get their heads around the use cases for this particular Quick Start?
-
-//Marcia, the deployment guide for Aurora PostgreSQL (https://aws-quickstart.s3.amazonaws.com/quickstart-amazon-aurora-postgresql/doc/modular-architecture-for-aurora-postgresql-on-the-aws-cloud.pdf) basically quotes from Aurora marketing language. We could do the same if you think it would be helpful.
+As part of Amazon Relational Database Service (Amazon RDS), Aurora takes advantage of Amazon RDS features for database management and administration. It eliminates the need to maintain database infrastructure: servers, replication, backups, and so on.  

@@ -10,20 +10,14 @@ image::../images/aurora-mysql-architecture_diagram.png[Architecture]
 As shown in Figure 1, the Quick Start sets up the following:
 
 * A highly available architecture that spans two Availability Zones.*
-* A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to
-provide you with your own virtual network on AWS.*
+* A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*
 * In the public subnets:
 ** Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.*
 ** (Optional) A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to resources in the private subnets.*
-* In the private subnets:
-** An Aurora database cluster in a security group, including one database reader and one database writer.
+* In the private subnets, an Aurora database (DB) cluster in a security group, including one DB reader and one DB writer.
 * An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send alarm notifications using Amazon Simple Notification Service (Amazon SNS).
-* An encryption key using AWS Key Management Service (AWS KMS). The key enables encryption at rest for the Aurora database cluster.
+* An encryption key using AWS Key Management Service (AWS KMS). The key enables encryption at rest for the Aurora DB cluster.
 
 [.small]#*The template that deploys the Quick Start into an existing VPC skips
 the components marked by asterisks and prompts you for your existing VPC
 configuration.#
-
-//TODO Dave, What more might we say about the database reader and writer? (Also I wonder why they're in separate AZs in the diagram ... seems like if one AZ went down, that would present a problem, no?)
-
-//Marcia, the data itself is replicated across three AZs and the reader/writer endpoints fail over automatically. See the "High availability and durability" section of https://aws.amazon.com/rds/aurora/?aurora-whats-new.sort-by=item.additionalFields.postDateTime&aurora-whats-new.sort-order=desc
