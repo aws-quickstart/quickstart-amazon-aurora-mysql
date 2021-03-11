@@ -3,64 +3,75 @@
 
 == Test the deployment
 
-1. Download the latest version of MySQL Workbench (https://www.mysql.com/products/workbench/) and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster. 
-2. From the AWS CloudFormation console, on the *Outputs* tab for BastionStack, note the value for EIP1, as shown.
+To test the deployment, confirm that the MySQL database is accepting connections by following these steps.
+
+. Download the latest version of https://www.mysql.com/products/workbench/[MySQL Workbench^], and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster. 
+. From the AWS CloudFormation console, on the BastionStack *Outputs* tab, note the value for `EIP1`, as shown in <<additional1>>.
 
 [#additional1]
-.EIP1 in CloudFormation outputs
+.BastionStack outputs
+[link=images/image1.png]
 image::../images/image1.png[additional1]
 
 [start=3]
-3. From the AWS CloudFormation console, on the *Outputs* tab for AuroraStack, note the values of DBName, DBMasterUsername, AuroraClusterEndpoint, and AuroraClusterPort, as shown.
+. From the AWS CloudFormation console, on the AuroraStack *Outputs* tab, note the values of `DBName`, `DBMasterUsername`, `AuroraClusterEndpoint`, and `AuroraClusterPort`, as shown in <<additional2>>.
 
 [#additional2]
-.DBName, DBMasterUsername, AuroraClusterEndpoint, and AuroraClusterPort in CloudFormation outputs
+.AuroraStack outputs
+[link=images/image2.png]
 image::../images/image2.png[additional2]
 
 [start=4]
-4. Create an SSH tunnel to the bastion host using the following command. Note that you will need to enter the path for the EC2 key pair that you specified for Key name (KeyPairName) parameter while creating the CloudFormation stack. When you’re finished testing, terminate the SSH tunnel by pressing Ctrl+C.
+. Create an SSH tunnel to the bastion host using the following command, filling in the values for the bracketed terms. For <KeyPairName>, enter the path for the EC2 key pair that you specified for the `KeyPairName` parameter while creating the AWS CloudFormation stack.
 
 ----
 ssh -N -L <AuroraClusterPort>:<AuroraClusterEndpoint>:<AuroraClusterPort> ec2-user@EIP1 -i <KeyPairName>
 ----
 
 [start=5]
-5. Launch MySQL Workbench on your workstation and create a new Database connection by choosing *Database* and choosing *Connect to Database.*
+. When you’re finished testing, terminate the SSH tunnel by pressing Ctrl+C.
+. Launch MySQL Workbench on your workstation.
+. On the *Database* menu, choose *Connect to Database*, as shown in <<additional3>>.
 
 [#additional3]
-.Connecting to database using MySQL Workbench
+.Connecting to the database using MySQL Workbench
+[link=images/image3.png]
 image::../images/image3.png[additional3]
 
-[start=6]
-6. Enter the following in the Connect to Database dialogue box.
-a. In the Hostname field, enter 127.0.0.1
-b. In Port field, enter  the <AuroraClusterPort>
-c. In Username, enter the <DBMasterUsername>
+[start=8]
+. Enter the following in the *Connect to Database* dialog box, shown in <<additional4>>.
+.. In the *Hostname* field, enter *127.0.0.1*
+.. In *Port* field, enter the value for the `AuroraClusterPort` parameter.
+.. In *Username*, enter the value for the `DBMasterUsername` parameter.
+.. Choose *OK*.
 
 [#additional4]
 .Database connection options
+[link=images/image4.png]
 image::../images/image4.png[additional4]
 
-[start=7]
-6. Choose *OK and* enter the <DBMasterUserPassword> password you entered during stack creation. If you choose the value of <RotateDBPassword> parameter as *true* during stack creation, the master password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:
-a. From the AWS CloudFormation console, on the *Outputs* tab for AuroraStack, note the values for <AuroraMasterUserSecret>.
-b. On the AWS Secrets Manager console, choose the secret you noted above.
-c. Choose *Retrieve Secret Value* and copy the password.
+[start=9]
+. In the *Connect to MySQL Server* dialog box, shown in <<additional5>>, enter the `DBMasterUserPassword` password you entered during stack creation. If the `RotateDBPassword` parameter was set to *true* during stack creation, the master password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:
+.. From the AWS CloudFormation console, on the AuroraStack *Outputs* tab, note the values for `AuroraMasterUserSecret`.
+.. On the AWS Secrets Manager console, choose the secret you noted above.
+.. Choose *Retrieve Secret Value*, and copy the password.
 
 [#additional5]
-.Entering database password
+.Entering the database password
+[link=images/image5.png]
 image::../images/image5.png[additional5]
 
-[start=8]
-8. Upon successful connection, you will see a MySQL workbench dashboard, as shown.
+A MySQL Workbench dashboard appears, as shown in <<additional6>>.
 
 [#additional6]
-.Successful database connection
+.MySQL Workbench dashboard after successful connection to the database
+[link=images/image6.png]
 image::../images/image6.png[additional6]
 
-[start=9]
-9. Choose *Dashboard* under *PERFORMANCE* to see various performance related metrics, as shown.
+[start=10]
+. In the *Navigator* pane, under *PERFORMANCE*, choose *Dashboard*. Database-performance metrics appear, as shown in <<additional7>>.
 
 [#additional7]
-.Database performance metrics
+.Database-performance metrics
+[link=images/image7.png]
 image::../images/image7.png[additional7]

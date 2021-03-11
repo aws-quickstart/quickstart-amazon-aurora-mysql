@@ -1,1 +1,1 @@
-Refer to the list of https://docs.aws.amazon.com/general/latest/gr/aurora.html[Aurora-compatible Regions] to see in which Regions this Quick Start is supported.
+For a list of Regions supported by this Quick Start, see https://docs.aws.amazon.com/general/latest/gr/aurora.html[Amazon Aurora endpoints and quotas^].

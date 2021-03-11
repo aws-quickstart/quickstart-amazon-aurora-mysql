@@ -102,11 +102,11 @@ Metadata:
       DBMultiAZ:
         default: Multi-AZ deployment
       DBBackTrack:
-        default: Aurora Backtrack
+        default: Aurora database backtracking
       EnableBastion:
         default: Enable bastion stack
       EnableTCPForwarding:
-        default: Enable TCP Forwarding
+        default: Enable TCP forwarding
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -240,7 +240,7 @@ Parameters:
     Type: String
   EnableTCPForwarding:
     Type: String
-    Description: Enable/Disable TCP Forwarding
+    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn't set up any traffic forwarding. 
     Default: 'false'
     AllowedValues:
       - 'true'
@@ -270,7 +270,7 @@ Parameters:
     MinValue: 1
     MaxValue: 35
   DBEngineVersion:
-    Description: "Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported aurora features by regions and engine versions refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html."
+    Description: "Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported Aurora features by Regions and engine versions, see https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html."
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
     AllowedValues:
@@ -323,7 +323,7 @@ Parameters:
       - 'Aurora-MySQL5.7-2.08.2'
       - 'Aurora-MySQL5.7-2.09.0'
   DBEngineMode:
-    Description: "Engine mode of the cluster. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions."
+    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -388,7 +388,7 @@ Parameters:
       - "true"
       - "false"
     Default: "false"
-    Description: To enable Aurora Backtrack, choose "true". Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master.
+    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
     Type: String
   DBName:
     Default: 'AuroraMySQLDB'
