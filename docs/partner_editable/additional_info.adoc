@@ -2,5 +2,80 @@
 //Should any sections not be applicable, remove them
 
 == Test the deployment
-* Use the URL provided on the Outputs tab for the Aurora stack to test the deployment.
-* Use the IP address for the bastion host provided by the Outputs tab for the main stack, and use your private key if you want to connect to that host through SSH.
+
+To test the deployment, confirm that the MySQL database is accepting connections by following these steps. This optional test requires that you have bastion-host access with TCP forwarding capabilities (the parameters `EnableBastion` and `EnableTCPForwarding` are both set to "true").
+
+. Download the latest version of https://www.mysql.com/products/workbench/[MySQL Workbench^], and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster. 
+. From the AWS CloudFormation console, on the BastionStack *Outputs* tab, note the value for `EIP1`, as shown in <<additional1>>.
++
+[#additional1]
+.BastionStack outputs
+[link=images/image1.png]
+image::../images/image1.png[additional1]
+
+[start=3]
+. From the AWS CloudFormation console, on the AuroraStack *Outputs* tab, note the values of `DBName`, `DBMasterUsername`, `AuroraClusterEndpoint`, and `AuroraClusterPort`, as shown in <<additional2>>.
++
+[#additional2]
+.AuroraStack outputs
+[link=images/image2.png]
+image::../images/image2.png[additional2]
+
+[start=4]
+. Create an SSH tunnel to the bastion host using the following command, filling in the values for the bracketed terms. For <KeyPairName>, enter the path for the EC2 key pair that you specified for the `KeyPairName` parameter while creating the AWS CloudFormation stack.
++
+----
+ssh -N -L <AuroraClusterPort>:<AuroraClusterEndpoint>:<AuroraClusterPort> ec2-user@EIP1 -i <KeyPairName>
+----
++
+A message appears indicating that you've connected to the bastion host.
++
+[start=5]
+. Launch MySQL Workbench on your workstation.
+. On the *Database* menu, choose *Connect to Database*, as shown in <<additional3>>.
++
+[#additional3]
+.Connecting to the database using MySQL Workbench
+[link=images/image3.png]
+image::../images/image3.png[additional3]
+
+[start=7]
+. Enter the following in the *Connect to Database* dialog box, shown in <<additional4>>.
+.. In the *Hostname* field, enter *127.0.0.1*
+.. In *Port* field, enter the value for the `AuroraClusterPort` parameter.
+.. In *Username*, enter the value for the `DBMasterUsername` parameter.
+.. Choose *OK*.
++
+[#additional4]
+.Database connection options
+[link=images/image4.png]
+image::../images/image4.png[additional4]
+
+[start=8]
+. In the *Connect to MySQL Server* dialog box, shown in <<additional5>>, enter the administrator password (`DBMasterUserPassword`) that you entered during stack creation. If the `RotateDBPassword` parameter was set to *true* during stack creation, the administrator password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:
+.. From the AWS CloudFormation console, on the AuroraStack *Outputs* tab, note the values for `AuroraMasterUserSecret`.
+.. On the AWS Secrets Manager console, choose the secret you noted above.
+.. Choose *Retrieve Secret Value*, and copy the password.
++
+[#additional5]
+.Entering the database password
+[link=images/image5.png]
+image::../images/image5.png[additional5]
++
+A MySQL Workbench dashboard appears, as shown in <<additional6>>.
++
+[#additional6]
+.MySQL Workbench dashboard after successful connection to the database
+[link=images/image6.png]
+image::../images/image6.png[additional6]
+
+[start=9]
+. In the *Navigator* pane, under *PERFORMANCE*, choose *Dashboard*. Database-performance metrics appear, as shown in <<additional7>>.
++
+[#additional7]
+.Database-performance metrics
+[link=images/image7.png]
+image::../images/image7.png[additional7]
+
+[start=10]
+. Terminate the SSH tunnel by pressing Ctrl+C. You've completed the testing. 

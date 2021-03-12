@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.12">
-<title>Amazon Aurora MySQL database on the AWS Cloud</title>
+<title>Amazon Aurora MySQL Database on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -790,7 +790,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_amazon_aurora_mysql_database_on_aws">Amazon Aurora MySQL database on AWS</a></li>
+<li><a href="#_amazon_aurora_mysql_database_on_aws">Amazon Aurora MySQL Database on AWS</a></li>
 <li><a href="#_aws_costs">AWS costs</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
@@ -805,13 +805,14 @@ p.footer-text a{color:#d7d8d8}
 <ul class="sectlevel2">
 <li><a href="#_sign_in_to_your_aws_account">Sign in to your AWS account</a></li>
 <li><a href="#_launch_the_quick_start">Launch the Quick Start</a></li>
-<li><a href="#_launch_into_a_new_vpc">Launch into a new VPC</a></li>
-<li><a href="#_launch_into_an_existing_vpc">Launch into an existing VPC</a></li>
 </ul>
 </li>
-<li><a href="#_test_the_deployment">Test the deployment</a>
-<ul class="sectlevel2">
+<li><a href="#_test_the_deployment">Test the deployment</a></li>
 <li><a href="#_faq">FAQ</a></li>
+<li><a href="#_parameter_reference">Parameter reference</a>
+<ul class="sectlevel2">
+<li><a href="#_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</a></li>
+<li><a href="#_parameters_for_deploying_into_an_existing_vpc">Parameters for deploying into an existing VPC</a></li>
 </ul>
 </li>
 <li><a href="#_send_us_feedback">Send us feedback</a></li>
@@ -824,7 +825,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<h2 id="_amazon_aurora_mysql_database_on_the_aws_cloud" class="discrete text-center">Amazon Aurora MySQL database on the AWS Cloud</h2>
+<h2 id="_amazon_aurora_mysql_database_on_the_aws_cloud" class="discrete text-center">Amazon Aurora MySQL Database on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
@@ -832,7 +833,7 @@ p.footer-text a{color:#d7d8d8}
 </div>
 </div>
 <div class="paragraph text-center">
-<p><strong>September 2020</strong><br>
+<p><strong>March 2021</strong><br>
 <em>AWS Quick Start team</em></p>
 </div>
 <div class="admonitionblock tip text-left">
@@ -857,70 +858,21 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start reference deployment guide provides step-by-step instructions for
-deploying an Amazon Aurora MySQL database on the AWS Cloud with high availability
-and failover support.</p>
+<p>This guide provides instructions for deploying the Amazon Aurora MySQL Database Quick Start reference architecture on the AWS Cloud with high availability and failover support. This Quick Start is for users who are looking for a repeatable, customizable reference architecture for Aurora MySQL using AWS CloudFormation.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for users who are looking for a repeatable, customizable reference
-deployment for Aurora MySQL using AWS CloudFormation. You can also use the Quick
-Start as a building block in your own automated deployments by using the existing-VPC
-template that we’ve provided. This template will build only the Aurora database
-components and is designed to plug into your existing AWS CloudFormation templates as a
-drop-in MySQL database replacement.</p>
+<p>You can also use this Quick Start as a building block for other automated deployments. To do this, use the existing-VPC deployment option, which creates only the Aurora database components. The template for this option plugs in to your existing AWS CloudFormation templates and replaces your MySQL database.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_amazon_aurora_mysql_database_on_aws">Amazon Aurora MySQL database on AWS</h2>
+<h2 id="_amazon_aurora_mysql_database_on_aws">Amazon Aurora MySQL Database on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Amazon Aurora is a fully managed relational database engine that’s compatible with MySQL and
-PostgreSQL. MySQL and PostgreSQL combine the speed and reliability of high-end
-commercial databases with the simplicity and cost-effectiveness of open-source databases.
-The code, tools, and applications you use today with your existing MySQL and PostgreSQL
-databases can be used with Aurora. With some workloads, Aurora can deliver up to five
-times the throughput of MySQL and up to three times the throughput of PostgreSQL
-without requiring changes to most of your existing applications.</p>
+<p><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html" target="_blank" rel="noopener">Amazon Aurora</a> is a fully managed relational database engine that&#8217;s compatible with MySQL and PostgreSQL. With Aurora, you can use the code, tools, and applications you use today with your existing MySQL and PostgreSQL databases. For some workloads, Aurora can deliver up to five times the throughput of MySQL without requiring changes to most of your existing applications.</p>
 </div>
 <div class="paragraph">
-<p>Aurora includes a high-performance storage subsystem. Its database engines are
-customized to take advantage of that fast distributed storage. The underlying storage grows
-automatically as needed, up to 64 terabytes. Aurora also automates and standardizes
-database clustering and replication, which are typically among the most challenging aspects
-of database configuration and administration.</p>
-</div>
-<div class="paragraph">
-<p>Aurora is part of the managed database service Amazon Relational Database Service
-(Amazon RDS). Amazon RDS is a web service that makes it easier to set up, operate, and
-scale a relational database in the cloud. If you are not already familiar with Amazon RDS,
-see the <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html/">Amazon Relational Database Service User Guide</a>.</p>
-</div>
-<div class="paragraph">
-<p>You can choose Aurora as a DB engine option when setting up new database servers
-through Amazon RDS. Aurora provides the following features:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Aurora takes advantage of the Amazon RDS features for management and
-administration. It uses the Amazon RDS AWS Management Console interface, AWS
-Command Line Interface (AWS CLI) commands, and API operations to handle routine
-database tasks such as provisioning, patching, backup, recovery, failure detection, and
-repair.</p>
-</li>
-<li>
-<p>Aurora management operations typically involve entire clusters of database servers that
-are synchronized through replication, instead of individual database instances. The
-automatic clustering, replication, and storage allocation make it simple and costeffective to set up, operate, and scale your largest PostgreSQL deployments.</p>
-</li>
-<li>
-<p>You can bring data from Amazon RDS for MySQL into Aurora by creating and
-restoring snapshots, or by setting up one-way replication. You can use push-button
-migration tools to convert your existing Amazon RDS for MySQL applications to
-Aurora.</p>
-</li>
-</ul>
+<p>As part of Amazon Relational Database Service (<a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html" target="_blank" rel="noopener">Amazon RDS</a>), Aurora takes advantage of Amazon RDS features for database management and administration. It eliminates the need to maintain database infrastructure: servers, replication, backups, and so on.</p>
 </div>
 </div>
 </div>
@@ -955,7 +907,7 @@ After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccoun
 <h2 id="_software_licenses">Software licenses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are no additional licensing requirements to use this Quick Start.</p>
+<p>MySQL is free and open-source, so no license is required to use this Quick Start.</p>
 </div>
 </div>
 </div>
@@ -964,20 +916,17 @@ After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccoun
 <div class="sectionbody">
 <div class="paragraph">
 <p>Deploying this Quick Start for a new virtual private cloud (VPC) with
-default parameters builds the following <em>Aurora MySQL</em> environment in the
+default parameters builds the following Aurora MySQL environment in the
 AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
-<a class="image" href="images/architecture_diagram.png"><img src="images/architecture_diagram.png" alt="Architecture" width="648" height="439"></a>
+<img src="images/aurora-mysql-architecture_diagram.png" alt="Architecture">
 </div>
 <div class="title">Figure 1. Quick Start architecture for <em>Aurora MySQL</em> on AWS</div>
 </div>
 <div class="paragraph">
 <p>As shown in Figure 1, the Quick Start sets up the following:</p>
-</div>
-<div class="paragraph">
-<p>The Quick Start sets up the following:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -985,37 +934,36 @@ AWS Cloud.</p>
 <p>A highly available architecture that spans two Availability Zones.*</p>
 </li>
 <li>
-<p>A VPC configured with public and private subnets according to AWS best practices, to
-provide you with your own virtual network on AWS.*</p>
+<p>A virtual private cloud (VPC) configured with public and private subnets, according to AWS best practices, to provide you with your own virtual network on AWS.*</p>
 </li>
 <li>
-<p>In the public subnets, managed network address translation (NAT) gateways to allow
-outbound internet access for resources in the private subnets.*</p>
+<p>In the public subnets:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.*</p>
 </li>
 <li>
-<p>In the public subnets, an optional Linux bastion host in an Auto Scaling group to allow
-inbound Secure Shell (SSH) access to Amazon Elastic Compute Cloud (Amazon EC2)
-instances in the private subnets.*</p>
+<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to resources in the private subnets.*</p>
+</li>
+</ul>
+</div>
 </li>
 <li>
-<p>In the private subnets, an Aurora DB cluster that includes one DB reader and one DB
-writer.</p>
+<p>In the private subnets, an Aurora database (DB) cluster in a security group, including one DB reader and one DB writer.</p>
 </li>
 <li>
-<p>An encryption key using AWS Key Management Service (AWS KMS). The Quick Start
-uses the key to enable encryption at rest for the Aurora DB cluster.</p>
+<p>An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send alarm notifications using Amazon Simple Notification Service (Amazon SNS).</p>
 </li>
 <li>
-<p>An Amazon CloudWatch alarm to monitor the CPU on the bastion host and send an
-Amazon Simple Notification Service (Amazon SNS) notification when the alarm is
-triggered.</p>
+<p>An encryption key using AWS Key Management Service (AWS KMS). The key enables encryption at rest for the Aurora DB cluster.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>*The template that deploys the Quick Start into an existing VPC skips
+<p><span class="small">*The template that deploys the Quick Start into an existing VPC skips
 the components marked by asterisks and prompts you for your existing VPC
-configuration.</p>
+configuration.</span></p>
 </div>
 </div>
 </div>
@@ -1031,13 +979,20 @@ and <a href="https://aws.amazon.com/training/" target="_blank" rel="noopener">AW
 deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start assumes familiarity with database concepts and usage.
-This deployment guide also requires a moderate level of familiarity with AWS services. If
-you’re new to AWS, visit the <a href="https://aws.amazon.com/getting-started/">Getting Started Resource Center</a>
-and the <a href="https://aws.amazon.com/training/">AWS Training and Certification website</a> for materials and programs that can help you develop the skills to
-design, deploy, and operate your infrastructure and applications on the AWS Cloud. For
-more information about AWS services used in this Quick Start, see the Additional resources
-section.</p>
+<p>This Quick Start assumes familiarity with database concepts and usage as described in the following documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html" target="_blank" rel="noopener">What is Amazon Relational Database Service (Amazon RDS)?</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html" target="_blank" rel="noopener">What is Amazon Aurora?</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/rds/aurora/mysql-features/" target="_blank" rel="noopener">Amazon Aurora Features: MySQL-Compatible Edition</a></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -1101,8 +1056,7 @@ section.</p>
 <div class="sect3">
 <h4 id="_supported_regions">Supported Regions</h4>
 <div class="paragraph">
-<p>Aurora MySQL compatibility isn’t currently supported in all AWS
-Regions. For a current list of supported regions, see the <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#aurora">AWS Regions and Endpoints webpage</a>.</p>
+<p>For a list of Regions supported by this Quick Start, see <a href="https://docs.aws.amazon.com/general/latest/gr/aurora.html" target="_blank" rel="noopener">Amazon Aurora endpoints and quotas</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1126,34 +1080,27 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="sect3">
 <h4 id="_requirements_for_deploying_aurora_into_an_existing_vpc">Requirements for deploying Aurora into an existing VPC</h4>
 <div class="paragraph">
-<p>If you’re planning to deploy Aurora into an existing VPC, check the following:</p>
+<p>If you plan to deploy Aurora into an existing VPC, check the following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>Your VPC must have two private subnets in different Availability Zones for the database
-instances. This Quick Start doesn’t support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html">shared subnets</a>.</p>
+instances. This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>.</p>
 </li>
 <li>
-<p>The private subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html">NAT gateways</a> in their route tables, to allow the instances to
-download packages and software without exposing them to the internet.</p>
+<p>To download packages and software without exposing instances to the internet, the private subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables.</p>
 </li>
 <li>
-<p>The domain name option must be configured in the DHCP options as explained in the
-<a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html">Amazon VPC documentation</a>.</p>
+<p>The domain name must be configured in the Dynamic Host Configuration Protocol (DHCP) options. For more information, see <a href="https://docs.aws.amazon.com/vpc/latest/userguide/VPC_DHCP_Options.html" target="_blank" rel="noopener">DHCP options sets</a>.</p>
 </li>
 <li>
-<p>You’ll need a Linux bastion host that can be used to run the test procedure discussed in
-step 3. To install the bastion host, you can launch the <a href="https://github.com/aws-quickstart/quickstart-linux-bastion/blob/master/templates/linux-bastion.template">AWS CloudFormation template</a>
-we’ve provided into your existing subnet.
-You’ll be prompted for your VPC settings when you launch the Quick Start.</p>
+<p>You must have a Linux bastion host to run the tests discussed in the <a href="#_test_the_deployment">Test the deployment</a> section. To install the bastion host, launch the <a href="https://github.com/aws-quickstart/quickstart-linux-bastion/blob/main/templates/linux-bastion.template" target="_blank" rel="noopener">AWS CloudFormation template</a> that we provide for an existing subnet. When you launch the Quick Start, you are prompted for your VPC settings.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>If you don’t have an existing VPC that satisfies these requirements, we recommend that you
-use the new VPC deployment option, so the Quick Start will build this VPC for you in
-addition to deploying Aurora into the VPC.</p>
+<p>If you don’t have an existing VPC that satisfies these requirements, use the new-VPC deployment option so that the Quick Start builds a VPC for you in addition to deploying Aurora MySQL.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1164,7 +1111,7 @@ addition to deploying Aurora into the VPC.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Deploy Aurora MySQL into a new VPC (end-to-end deployment)</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys Aurora MySQL into this new VPC.</p>
+<p><strong>Deploy Aurora MySQL into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, a security group, bastion hosts, and other infrastructure components. It then deploys Aurora MySQL into this new VPC.</p>
 </li>
 <li>
 <p><strong>Deploy Aurora MySQL into an existing VPC</strong>. This option provisions Aurora MySQL in your existing AWS infrastructure.</p>
@@ -1172,7 +1119,7 @@ addition to deploying Aurora into the VPC.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>The Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Aurora MySQL settings, as discussed later in this guide.</p>
+<p>This Quick Start provides separate templates for these options. It also lets you configure Classless Inter-Domain Routing (CIDR) blocks, instance types, and Aurora MySQL settings, as discussed later in this guide.</p>
 </div>
 </div>
 </div>
@@ -1186,51 +1133,16 @@ addition to deploying Aurora into the VPC.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Sign in to your AWS account at <a href="https://aws.amazon.com" class="bare">https://aws.amazon.com</a> with an IAM user role that has the necessary permissions. For details, see <a href="#_planning_the_deployment">Planning the deployment</a> earlier in this guide.</p>
+<p>Sign in to your AWS account at <a href="https://aws.amazon.com" class="bare">https://aws.amazon.com</a> with an IAM user role that has the necessary permissions. For details, see <a href="#_planning_the_deployment">Planning the deployment</a>, earlier in this guide.</p>
 </li>
 <li>
-<p>Make sure that your AWS account is configured correctly, as discussed in the <a href="#_technical_requirements">Technical requirements</a> section.</p>
+<p>Ensure that your AWS account is configured correctly, as discussed in the <a href="#_technical_requirements">Technical requirements</a> section.</p>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_launch_the_quick_start">Launch the Quick Start</h3>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-You are responsible for the cost of the AWS services used while running this Quick Start reference deployment. There is no additional cost for using this Quick Start. For full details, see the pricing pages for each AWS service used by this Quick Start. Prices are subject to change.
-</td>
-</tr>
-</table>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Sign in to your AWS account, and choose one of the following options to launch the AWS CloudFormation template. For help with choosing an option, see <a href="#_deployment_options">deployment options</a> earlier in this guide.</p>
-</li>
-</ol>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy Aurora MySQL into a new VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_link" target="_blank" rel="noopener">View template</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy Aurora MySQL into an existing VPC on AWS</a></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_template_link" target="_blank" rel="noopener">View template</a></p></td>
-</tr>
-</tbody>
-</table>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -1238,7 +1150,7 @@ You are responsible for the cost of the AWS services used while running this Qui
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-If you’re deploying Aurora MySQL into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the workload instances, and that the subnets aren’t shared. This Quick Start doesn’t support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>. These subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables, to allow the instances to download packages and software without exposing them to the internet.
+This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html" target="_blank" rel="noopener">shared subnets</a>. If you’re deploying Aurora MySQL into an existing VPC, ensure that your VPC has two private subnets in different Availability Zones for the workload instances. And ensure that the subnets aren’t shared. These subnets require <a href="https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html" target="_blank" rel="noopener">NAT gateways</a> in their route tables to allow the instances to download packages and software without exposing them to the internet.
 </td>
 </tr>
 </table>
@@ -1247,9 +1159,32 @@ If you’re deploying Aurora MySQL into an existing VPC, make sure that your VPC
 <p>Each deployment takes about 30 minutes to complete.</p>
 </div>
 <div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Sign in to your AWS account, and choose one of the following options to launch the AWS CloudFormation template. For help with choosing an option, see <a href="#_deployment_options">Deployment options</a>, earlier in this guide.</p>
+</li>
+</ol>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 75%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/gYqDp" target="_blank" rel="noopener">Deploy Aurora MySQL into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/bXw6E" target="_blank" rel="noopener">View template</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/JkrdW" target="_blank" rel="noopener">Deploy Aurora MySQL into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/RzWjB" target="_blank" rel="noopener">View template</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="olist arabic">
 <ol class="arabic" start="2">
 <li>
-<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for Aurora MySQL will be built. The template is launched in the us-east-1 Region by default.</p>
+<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for Aurora MySQL is built. The template launches in the us-east-1 Region by default. For other choices, see <a href="https://docs.aws.amazon.com/general/latest/gr/aurora.html" target="_blank" rel="noopener">Amazon Aurora endpoints and quotas</a>.</p>
 </li>
 </ol>
 </div>
@@ -1263,9 +1198,217 @@ If you’re deploying Aurora MySQL into an existing VPC, make sure that your VPC
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>In the following tables, parameters are listed by category and described separately for the deployment options. When you finish reviewing and customizing the parameters, choose <strong>Next</strong>.</p>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.</p>
+</li>
+<li>
+<p>On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.</p>
+</li>
+<li>
+<p>Choose <strong>Create stack</strong> to deploy the stack.</p>
+</li>
+<li>
+<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Aurora MySQL deployment is ready.</p>
+</li>
+<li>
+<p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in <a href="#cfn_outputs">Figure 2</a>, to view the created resources.</p>
+</li>
+</ol>
 </div>
+<div id="cfn_outputs" class="imageblock">
+<div class="content">
+<a class="image" href="images/cfn_outputs.png"><img src="images/cfn_outputs.png" alt="cfn_outputs" width="100%" height="100%"></a>
+</div>
+<div class="title">Figure 2. Aurora MySQL outputs after successful deployment</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_test_the_deployment">Test the deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To test the deployment, confirm that the MySQL database is accepting connections by following these steps. This optional test requires that you have bastion-host access with TCP forwarding capabilities (the parameters <code>EnableBastion</code> and <code>EnableTCPForwarding</code> are both set to "true").</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the latest version of <a href="https://www.mysql.com/products/workbench/" target="_blank" rel="noopener">MySQL Workbench</a>, and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster.</p>
+</li>
+<li>
+<p>From the AWS CloudFormation console, on the BastionStack <strong>Outputs</strong> tab, note the value for <code>EIP1</code>, as shown in <a href="#additional1">Figure 3</a>.</p>
+<div id="additional1" class="imageblock">
+<div class="content">
+<a class="image" href="images/image1.png"><img src="images/image1.png" alt="additional1"></a>
+</div>
+<div class="title">Figure 3. BastionStack outputs</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>From the AWS CloudFormation console, on the AuroraStack <strong>Outputs</strong> tab, note the values of <code>DBName</code>, <code>DBMasterUsername</code>, <code>AuroraClusterEndpoint</code>, and <code>AuroraClusterPort</code>, as shown in <a href="#additional2">Figure 4</a>.</p>
+<div id="additional2" class="imageblock">
+<div class="content">
+<a class="image" href="images/image2.png"><img src="images/image2.png" alt="additional2"></a>
+</div>
+<div class="title">Figure 4. AuroraStack outputs</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Create an SSH tunnel to the bastion host using the following command, filling in the values for the bracketed terms. For &lt;KeyPairName&gt;, enter the path for the EC2 key pair that you specified for the <code>KeyPairName</code> parameter while creating the AWS CloudFormation stack.</p>
+<div class="listingblock">
+<div class="content">
+<pre>ssh -N -L &lt;AuroraClusterPort&gt;:&lt;AuroraClusterEndpoint&gt;:&lt;AuroraClusterPort&gt; ec2-user@EIP1 -i &lt;KeyPairName&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A message appears indicating that you&#8217;ve connected to the bastion host.</p>
+</div>
+</li>
+<li>
+<p>Launch MySQL Workbench on your workstation.</p>
+</li>
+<li>
+<p>On the <strong>Database</strong> menu, choose <strong>Connect to Database</strong>, as shown in <a href="#additional3">Figure 5</a>.</p>
+<div id="additional3" class="imageblock">
+<div class="content">
+<a class="image" href="images/image3.png"><img src="images/image3.png" alt="additional3"></a>
+</div>
+<div class="title">Figure 5. Connecting to the database using MySQL Workbench</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Enter the following in the <strong>Connect to Database</strong> dialog box, shown in <a href="#additional4">Figure 6</a>.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>In the <strong>Hostname</strong> field, enter <strong>127.0.0.1</strong></p>
+</li>
+<li>
+<p>In <strong>Port</strong> field, enter the value for the <code>AuroraClusterPort</code> parameter.</p>
+</li>
+<li>
+<p>In <strong>Username</strong>, enter the value for the <code>DBMasterUsername</code> parameter.</p>
+</li>
+<li>
+<p>Choose <strong>OK</strong>.</p>
+<div id="additional4" class="imageblock">
+<div class="content">
+<a class="image" href="images/image4.png"><img src="images/image4.png" alt="additional4"></a>
+</div>
+<div class="title">Figure 6. Database connection options</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>In the <strong>Connect to MySQL Server</strong> dialog box, shown in <a href="#additional5">Figure 7</a>, enter the administrator password (<code>DBMasterUserPassword</code>) that you entered during stack creation. If the <code>RotateDBPassword</code> parameter was set to <strong>true</strong> during stack creation, the administrator password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>From the AWS CloudFormation console, on the AuroraStack <strong>Outputs</strong> tab, note the values for <code>AuroraMasterUserSecret</code>.</p>
+</li>
+<li>
+<p>On the AWS Secrets Manager console, choose the secret you noted above.</p>
+</li>
+<li>
+<p>Choose <strong>Retrieve Secret Value</strong>, and copy the password.</p>
+<div id="additional5" class="imageblock">
+<div class="content">
+<a class="image" href="images/image5.png"><img src="images/image5.png" alt="additional5"></a>
+</div>
+<div class="title">Figure 7. Entering the database password</div>
+</div>
+<div class="paragraph">
+<p>A MySQL Workbench dashboard appears, as shown in <a href="#additional6">Figure 8</a>.</p>
+</div>
+<div id="additional6" class="imageblock">
+<div class="content">
+<a class="image" href="images/image6.png"><img src="images/image6.png" alt="additional6"></a>
+</div>
+<div class="title">Figure 8. MySQL Workbench dashboard after successful connection to the database</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>In the <strong>Navigator</strong> pane, under <strong>PERFORMANCE</strong>, choose <strong>Dashboard</strong>. Database-performance metrics appear, as shown in <a href="#additional7">Figure 9</a>.</p>
+<div id="additional7" class="imageblock">
+<div class="content">
+<a class="image" href="images/image7.png"><img src="images/image7.png" alt="additional7"></a>
+</div>
+<div class="title">Figure 9. Database-performance metrics</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>Terminate the SSH tunnel by pressing Ctrl+C. You&#8217;ve completed the testing.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_faq">FAQ</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
+</div>
+<div class="paragraph">
+<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console, <strong>Options</strong> page.) With this setting, the stack’s state is retained so you can troubleshoot the issue.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, you continue to incur AWS charges for the stack. Delete the stack when you finish troubleshooting.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For more information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html" target="_blank" rel="noopener">Troubleshooting AWS CloudFormation</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Q.</strong> I encountered a size limitation error when I deployed the AWS CloudFormation templates.</p>
+</div>
+<div class="paragraph">
+<p><strong>A.</strong> Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer, or from a location other than an S3 bucket, you might encounter template size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS CloudFormation quotas</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parameter_reference">Parameter reference</h2>
+<div class="sectionbody">
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1273,14 +1416,14 @@ If you’re deploying Aurora MySQL into an existing VPC, make sure that your VPC
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the parameters <strong>Quick Start S3 bucket name</strong>, <strong>Quick Start S3 bucket Region</strong>, and <strong>Quick Start S3 key prefix</strong>. Changing these settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
+Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
+Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
 </td>
 </tr>
 </table>
 </div>
-</div>
 <div class="sect2">
-<h3 id="_launch_into_a_new_vpc">Launch into a new VPC</h3>
+<h3 id="_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Network configuration</caption>
 <colgroup>
@@ -1300,7 +1443,7 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Availability Zones
 (<code>AvailabilityZones</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of Availability Zones to use for the subnets in the VPC. Only two Availability Zones are used for this deployment, and the logical order of your selections is preserved.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Availability Zones to use for the subnets in the VPC. This deployment uses two Availability Zones. The logical order of your selections is preserved.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR
@@ -1350,22 +1493,28 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Create bastion stack
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable bastion stack
 (<code>EnableBastion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If true, a bastion stack will be created.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If you do not want to create a Linux bastion stack, choose "false." You must have a bastion host to test the deployment as described in the deployment guide.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Key Name
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key-pair name
 (<code>KeyPairName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of an existing public/private key pair, for connecting to your instance.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the existing key pair for connecting to your EC2 instance. A key pair consists of a private key and a public key.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Permitted IP range
 (<code>RemoteAccessCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Allowed CIDR block for external SSH access.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable TCP forwarding
+(<code>EnableTCPForwarding</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn&#8217;t set up any traffic forwarding. You must enable TCP forwarding to test the deployment as described in the deployment guide.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1391,87 +1540,93 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Amazon Aurora database.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database master username
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database administrator user name
 (<code>DBMasterUsername</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>msadmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account username.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user name for the database account.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>NO_LABEL</strong>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rotate database password
 (<code>RotateDBPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to rotate the database password on a schedule(every 89 days).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To rotate the password on a schedule (every 89 days), choose "true."</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database master password
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database administrator password
 (<code>DBMasterUserPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account password. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator password for the database account. Must include 1 uppercase, 1 lowercase, 1 number, 1 symbol (not / @ " ').</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database port
 (<code>DBPort</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>3306</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The port on which the DB instance will listen for connections. Aurora Serverless currently supports port 3306 only.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port on which the DB instance listens for connections. Aurora Serverless supports port 3306 only.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database auto minor version upgrade
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database automatic minor version upgrades
 (<code>DBAutoMinorVersionUpgrade</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Select true to enable auto minor version upgrade.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To enable automatic minor version upgrades, choose "true."</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database backup retention period
 (<code>DBBackupRetentionPeriod</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>35</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of days for which automatic database snapshots are retained from 1 to 35 days.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of days (1 to 35) that automatic database snapshots are retained.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database Engine Version
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database engine version
 (<code>DBEngineVersion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Aurora-MySQL5.6.10a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Select Database Engine Version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported Aurora features by Regions and engine versions, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database Engine Mode
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database engine mode
 (<code>DBEngineMode</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>provisioned</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see <a href="https://aws.amazon.com/rds/aurora/mysql-features/" class="bare">https://aws.amazon.com/rds/aurora/mysql-features/</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multi-AZ deployment
 (<code>DBMultiAZ</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the database instance is not in a multiple Availability Zone deployment, choose "false." Not applicable for Aurora Serverless.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database instance class
 (<code>DBInstanceClass</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>db.r4.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>db.r5.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the compute and memory-capacity class of the database instance. Not applicable for Aurora Serverless. Supported instance type for Aurora Multi-Master is db.r4.[2/4/8/16]xlarge only. db.t3 instance class doesn&#8217;t support RDS Performance Insights</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database encryption enabled
 (<code>DBAllocatedStorageEncrypted</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to encrypt the database.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To disable database encryption, choose "false."</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database CloudWatch Log Exports
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database CloudWatch log exports
 (<code>DBCWLogExports</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify comma delimited list of Database logs (error, slowquery, audit) to export to CloudWatch Logs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the comma-delimited list of database logs (error, slowquery, audit) to export to CloudWatch Logs.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SNS notification email
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aurora database backtracking
+(<code>DBBackTrack</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SNS notification-list email address
 (<code>NotificationList</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>db-ops@domain.com</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Email notification is used to configure a SNS topic for sending cloudwatch alarm and RDS Event notifications</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email-list address used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Serverless (Applicable only for Database Engine Mode = Serverless)</caption>
+<caption class="title">Table 4. Serverless—applicable only when database engine mode (DBEngineMode) is serverless</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1489,30 +1644,30 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Minimum Aurora capacity unit
 (<code>ServerlessMinCapacityUnit</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum Aurora capacity unit
 (<code>ServerlessMaxCapacityUnit</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pause compute capacity
 (<code>ServerlessAutoPause</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To enable automatic pause for an Aurora DB cluster in serverless DB engine mode, choose "true." A DB cluster can be paused only when it&#8217;s idle (when it has no connections).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pause after time of inactivity
 (<code>ServerlessSecondsUntilAutoPause</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>300</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time, in seconds, before an Aurora DB cluster in serverless mode is auto paused. Min = 300, Max = 86400 (24hrs)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time, in seconds, before an Aurora DB cluster in serverless mode is automatically paused. Minimum = 300. Maximum = 86400 (24 hours).</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Database tags (optional)</caption>
+<caption class="title">Table 5. (Optional) Database tags</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1530,37 +1685,37 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Environment stage
 (<code>EnvironmentStage</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>none</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the environment stage of the associated AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Environment stage of the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application name
 (<code>Application</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the application of the associated AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Name of the application for the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application version
 (<code>ApplicationVersion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the specific version of the application. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Version of the application.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project cost center
 (<code>ProjectCostCenter</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the cost center associated with the project of the given AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Cost center associated with the project of the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Confidentiality classifier
 (<code>Confidentiality</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the confidentiality classification of the data that is associated with the resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Confidentiality classification of the data that is associated with the AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Compliance classifier
 (<code>Compliance</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the compliance level for the AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Compliance level for the AWS resource.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1583,25 +1738,25 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
 (<code>QSS3BucketName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket region
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
 (<code>QSS3BucketRegion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
 (<code>QSS3KeyPrefix</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-amazon-aurora-mysql/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect2">
-<h3 id="_launch_into_an_existing_vpc">Launch into an existing VPC</h3>
+<h3 id="_parameters_for_deploying_into_an_existing_vpc">Parameters for deploying into an existing VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 7. Network configuration</caption>
 <colgroup>
@@ -1627,13 +1782,13 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 1 ID
 (<code>Subnet1ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the private subnet in Availability Zone 1.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the private subnet in Availability Zone 1.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 2 ID
 (<code>Subnet2ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of the private subnet in Availability Zone 2.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of the private subnet in Availability Zone 2.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Custom security group ID
@@ -1671,87 +1826,93 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the Amazon Aurora database.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database master username
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database administrator user name
 (<code>DBMasterUsername</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>msadmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account username.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator user name for the database account.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>NO_LABEL</strong>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rotate database password
 (<code>RotateDBPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to rotate the database password on a schedule (every 89 days).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To rotate the password on a schedule (every 89 days), choose "true."</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database master password
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database administrator password
 (<code>DBMasterUserPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account password.Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator password for the database account. Minimum 8 characters. Must include 1 uppercase, 1 lowercase, 1 number, 1 symbol (not / @ " ').</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database port
 (<code>DBPort</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>3306</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The port on which the DB instance will listen for connections. Aurora Serverless currently supports port 3306 only.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port on which the DB instance listens for connections. Aurora Serverless supports port 3306 only.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database auto minor version upgrade
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database automatic minor version upgrades
 (<code>DBAutoMinorVersionUpgrade</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Select true to enable auto minor version upgrade.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To enable automatic minor version upgrades, choose "true."</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database backup retention period
 (<code>DBBackupRetentionPeriod</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>35</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of days for which automatic database snapshots are retained from 1 to 35 days.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number of days (from 1 to 35) that automatic database snapshots are retained.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database Engine Mode
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database engine mode
 (<code>DBEngineMode</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>provisioned</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see <a href="https://aws.amazon.com/rds/aurora/mysql-features/" class="bare">https://aws.amazon.com/rds/aurora/mysql-features/</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database Engine Version
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database engine version
 (<code>DBEngineVersion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Aurora-MySQL5.6.10a</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Select Database Engine Version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported Aurora features by Regions and engine versions, see <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multi-AZ deployment
 (<code>DBMultiAZ</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if the database instance is a multiple Availability Zone deployment. Not applicable for Aurora Serverless.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the database instance is not in a multiple Availability Zone deployment, choose "false." Not applicable for Aurora Serverless.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database instance class
 (<code>DBInstanceClass</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>db.r4.large</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>db.r5.large</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the compute and memory-capacity class of the database instance. Not applicable for Aurora Serverless. Supported instance type for Aurora Multi-Master is db.r4.[2/4/8/16]xlarge only. db.t3 instance class doesn&#8217;t support RDS Performance Insights.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Database encryption enabled
 (<code>DBAllocatedStorageEncrypted</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether or not to encrypt the database.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To disable database encryption, choose "false."</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database CloudWatch Log Exports
+<td class="tableblock halign-left valign-top"><p class="tableblock">Database CloudWatch log exports
 (<code>DBCWLogExports</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specify comma delimited list of Database logs ( error, slowquery, audit ) to export to CloudWatch Logs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify the comma-delimited list of database logs (error, slowquery, audit) to export to CloudWatch Logs. Not applicable for Aurora Serverless.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SNS notification email
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aurora database backtracking
+(<code>DBBackTrack</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See <a href="https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SNS notification-list email address
 (<code>NotificationList</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>db-ops@domain.com</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The email notification used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Email-list address used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Serverless (Applicable only for Database Engine Mode = Serverless)</caption>
+<caption class="title">Table 9. Serverless—applicable only when database engine mode (DBEngineMode) is serverless</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1769,30 +1930,30 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Minimum Aurora capacity unit
 (<code>ServerlessMinCapacityUnit</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximum Aurora capacity unit
 (<code>ServerlessMaxCapacityUnit</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>64</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pause compute capacity
 (<code>ServerlessAutoPause</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To enable automatic pause for an Aurora DB cluster in serverless DB engine mode, choose "true." A DB cluster can be paused only when it&#8217;s idle (when it has no connections).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Pause after time of inactivity
 (<code>ServerlessSecondsUntilAutoPause</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>300</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time, in seconds, before an Aurora DB cluster in serverless mode is auto paused. Min = 300, Max = 86400 (24hrs)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time, in seconds, before an Aurora DB cluster in serverless mode is automatically paused. Minimum = 300. Maximum = 86400 (24 hours).</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Database tags (optional)</caption>
+<caption class="title">Table 10. (Optional) Database tags</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1810,37 +1971,37 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Environment stage
 (<code>EnvironmentStage</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>none</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the environment stage of the associated AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Environment stage of the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application name
 (<code>Application</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the application of the associated AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Name of the application for the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application version
 (<code>ApplicationVersion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Dsignates the specific version of the application. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Version of the application.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Project cost center
 (<code>ProjectCostCenter</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the cost center associated with the project of the given AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Cost center associated with the project of the associated AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Confidentiality classifier
 (<code>Confidentiality</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the confidentiality classification of the data that is associated with the resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Confidentiality classification of the data that is associated with the AWS resource.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Compliance classifier
 (<code>Compliance</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Designates the compliance level for the AWS resource. (Optional)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Compliance level for the AWS resource.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1863,92 +2024,22 @@ Unless you are customizing the Quick Start templates for your own deployment pro
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
 (<code>QSS3BucketName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the S3 bucket for your copy of the Quick Start assets. Keep the default name unless you are customizing the template. Changing the name updates code references to point to a new Quick Start location. This name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket region
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
 (<code>QSS3BucketRegion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. Keep the default Region unless you are customizing the template. Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
 (<code>QSS3KeyPrefix</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-amazon-aurora-mysql/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing the template. Changing this prefix updates code references to point to a new Quick Start location. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a> and <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
-<p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.</p>
-</li>
-<li>
-<p>On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.</p>
-</li>
-<li>
-<p>Choose <strong>Create stack</strong> to deploy the stack.</p>
-</li>
-<li>
-<p>Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Aurora MySQL deployment is ready.</p>
-</li>
-<li>
-<p>Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in <a href="#cfn_outputs">Aurora MySQL outputs after successful deployment</a>, to view the created resources.</p>
-</li>
-</ol>
-</div>
-<div id="cfn_outputs" class="imageblock">
-<div class="content">
-<a class="image" href="images/cfn_outputs.png"><img src="images/cfn_outputs.png" alt="cfn_outputs" width="100%" height="100%"></a>
-</div>
-<div class="title">Figure 2. Aurora MySQL outputs after successful deployment</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_test_the_deployment">Test the deployment</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Use the URL provided on the Outputs tab for the Aurora stack to test the deployment.</p>
-</li>
-<li>
-<p>Use the IP address for the bastion host provided by the Outputs tab for the main stack, and use your private key if you want to connect to that host through SSH.</p>
-</li>
-</ul>
-</div>
-<div class="sect2">
-<h3 id="_faq">FAQ</h3>
-<div class="paragraph">
-<p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
-</div>
-<div class="paragraph">
-<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console, <strong>Options</strong> page.) With this setting, the stack’s state is retained and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, you continue to incur AWS charges for this stack. Please make sure to delete the stack when you finish troubleshooting.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>For additional information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html" target="_blank" rel="noopener">Troubleshooting AWS CloudFormation</a> on the AWS website.</p>
-</div>
-<div class="paragraph">
-<p><strong>Q.</strong> I encountered a size limitation error when I deployed the AWS CloudFormation templates.</p>
-</div>
-<div class="paragraph">
-<p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information about AWS CloudFormation quotas, see the <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
-</div>
 </div>
 </div>
 </div>

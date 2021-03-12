@@ -1,6 +1,6 @@
 
-=== Launch into a new VPC
+=== Parameters for deploying into a new VPC
 include::aurora_mysql-main.template.adoc[]
 
-=== Launch into an existing VPC
+=== Parameters for deploying into an existing VPC
 include::aurora_mysql.template.adoc[]
