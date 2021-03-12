@@ -236,11 +236,11 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: If you do not want to create a bastion stack, choose "false."
+    Description: If you do not want to create a Linux bastion stack, choose "false." You must have a bastion host to test the deployment as described in the deployment guide.
     Type: String
   EnableTCPForwarding:
     Type: String
-    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn't set up any traffic forwarding. 
+    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn't set up any traffic forwarding. You must enable TCP forwarding to test the deployment as described in the deployment guide.
     Default: 'false'
     AllowedValues:
       - 'true'

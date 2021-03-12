@@ -3,7 +3,7 @@
 
 == Test the deployment
 
-To test the deployment, confirm that the MySQL database is accepting connections by following these steps.
+To test the deployment, confirm that the MySQL database is accepting connections by following these steps. This optional test requires that you have bastion-host access with TCP forwarding capabilities (the parameters `EnableBastion` and `EnableTCPForwarding` are both set to "true").
 
 . Download the latest version of https://www.mysql.com/products/workbench/[MySQL Workbench^], and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster. 
 . From the AWS CloudFormation console, on the BastionStack *Outputs* tab, note the value for `EIP1`, as shown in <<additional1>>.
