@@ -750,26 +750,26 @@ Conditions:
         - !Not [!Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.19.6']]
         - !Not [!Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.20.1']]
         - !Not [!Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.22.2']]  
-  EnablePI:
-    !And 
-      - !And 
-        - !Not [!Equals [!Ref DBInstanceClass,'db.t3.medium']]
-        - !Not [!Equals [!Ref DBInstanceClass,'db.t3.small']]
-      - !Or 
-        - !Equals
-          - !Ref DBEngineMode
-          - 'provisioned'
-        - !Equals
-          - !Ref DBEngineMode
-          - 'global'
-        - !And 
-          - !Equals [!Ref DBEngineMode, 'parallelquery']
-          - !Or 
-            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.23.0']
-            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.23.1']
-            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.0']
-            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.1']
-            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.2']
+#  EnablePI:
+#    !And 
+#      - !And 
+#        - !Not [!Equals [!Ref DBInstanceClass,'db.t3.medium']]
+#        - !Not [!Equals [!Ref DBInstanceClass,'db.t3.small']]
+#      - !Or 
+#        - !Equals
+#          - !Ref DBEngineMode
+#          - 'provisioned'
+#        - !Equals
+#          - !Ref DBEngineMode
+#          - 'global'
+#        - !And 
+#          - !Equals [!Ref DBEngineMode, 'parallelquery']
+#          - !Or 
+#            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.23.0']
+#            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.6-1.23.1']
+#            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.0']
+#            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.1']
+#            - !Equals [!Ref DBEngineVersion,'Aurora-MySQL5.7-2.09.2']
   EnableBackTrack:
     !And
     - !Equals [!Ref DBBackTrack, 'true']
@@ -870,9 +870,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
-      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
-      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
+#      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+#      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+#      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
@@ -908,9 +908,9 @@ Resources:
       PubliclyAccessible: false
       MonitoringInterval: 1
       MonitoringRoleArn: !GetAtt MonitoringIAMRole.Arn
-      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
-      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
-      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
+#      EnablePerformanceInsights: !If [EnablePI, true, !Ref 'AWS::NoValue']
+#      PerformanceInsightsKMSKeyId: !If [EnablePI, !Ref EncryptionKey, !Ref 'AWS::NoValue']
+#      PerformanceInsightsRetentionPeriod: !If [EnablePI, 7, !Ref 'AWS::NoValue']
       CopyTagsToSnapshot: true
       Tags:
         -
