@@ -1435,7 +1435,7 @@ Outputs:
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}
   AuroraReaderEndpoint:
     Condition: IsReaderEndpointAvailable
-    Description: "Amzon Aurora Reader Endpoint"
+    Description: "Amazon Aurora Reader Endpoint"
     Value:  !Sub ${AuroraDBCluster.ReadEndpoint.Address}
   AuroraClusterPort:
     Description: "Amazon Aurora Endpoint port"
@@ -1454,3 +1454,6 @@ Outputs:
     Condition: UseDatabaseEncryption
     Description: "Alias of the KMS encryption key used for storage and Performance Insights data encryption"
     Value: !Ref EncryptionKeyAlias
+  Postdeployment:
+    Value: https://fwd.aws/8xwxP
+    Description: To test your deployment, see the procedure in the deployment guide.
