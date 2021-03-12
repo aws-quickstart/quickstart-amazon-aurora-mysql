@@ -4,4 +4,4 @@
 
 This guide provides instructions for deploying the {partner-product-name} Quick Start reference architecture on the AWS Cloud with high availability and failover support. This Quick Start is for users who are looking for a repeatable, customizable reference architecture for {partner-product-short-name} using AWS CloudFormation. 
 
-You can also use this Quick Start as a building block for other automated deployments by using the existing-VPC template. The existing-VPC template, which builds only the Aurora database components, is designed to plug in to your existing AWS CloudFormation templates and replace your MySQL database.
+You can also use this Quick Start as a building block for other automated deployments. To do this, use the existing-VPC deployment option, which creates only the Aurora database components. The template for this option plugs in to your existing AWS CloudFormation templates and replaces your MySQL database.
