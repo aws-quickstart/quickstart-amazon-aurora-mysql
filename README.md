@@ -1,6 +1,6 @@
 ## Amazon Aurora MySQL Database on the AWS Cloud—Quick Start
 
-For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-amazon-aurora-mysql/).
+For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://fwd.aws/8xwxP).
 
 To post feedback, submit feature ideas, or report bugs, use the **Issues** section of this GitHub repo. 
 
