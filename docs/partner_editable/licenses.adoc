@@ -1,3 +1,3 @@
 // Include details about the license and how they can sign up. If no license is required, clarify that. 
 
-There are no additional licensing requirements to use this Quick Start.
+MySQL is free and open-source, so no license is required to use this Quick Start.

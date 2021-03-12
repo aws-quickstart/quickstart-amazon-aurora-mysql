@@ -2,13 +2,6 @@
 // Identify your target audience and explain how/why they would use this Quick Start.
 //Avoid borrowing text from third-party websites (copying text from AWS service documentation is fine). Also, avoid marketing-speak, focusing instead on the technical aspect.
 
-This Quick Start reference deployment guide provides step-by-step instructions for
-deploying an Amazon Aurora MySQL database on the AWS Cloud with high availability
-and failover support. 
+This guide provides instructions for deploying the {partner-product-name} Quick Start reference architecture on the AWS Cloud with high availability and failover support. This Quick Start is for users who are looking for a repeatable, customizable reference architecture for {partner-product-short-name} using AWS CloudFormation. 
 
-This Quick Start is for users who are looking for a repeatable, customizable reference
-deployment for Aurora MySQL using AWS CloudFormation. You can also use the Quick
-Start as a building block in your own automated deployments by using the existing-VPC
-template that we’ve provided. This template will build only the Aurora database
-components and is designed to plug into your existing AWS CloudFormation templates as a
-drop-in MySQL database replacement.
+You can also use this Quick Start as a building block for other automated deployments. To do this, use the existing-VPC deployment option, which creates only the Aurora database components. The template for this option plugs in to your existing AWS CloudFormation templates and replaces your MySQL database.

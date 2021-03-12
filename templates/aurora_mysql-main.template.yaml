@@ -5,7 +5,7 @@ Description: "AWS VPC + Aurora MySql, Do Not Remove Apache License Version 2.0 (
 Metadata:
   LICENSE: Apache License Version 2.0
   QuickStartDocumentation:
-    EntrypointName: "Launch into a new VPC"
+    EntrypointName: "Parameters for deploying into a new VPC"
     Order: "1"
     OptionalParameters:
       - EnvironmentStage
@@ -31,6 +31,7 @@ Metadata:
           - EnableBastion
           - KeyPairName
           - RemoteAccessCIDR
+          - EnableTCPForwarding
       - Label:
           default: Database configuration
         Parameters:
@@ -47,16 +48,17 @@ Metadata:
           - DBInstanceClass
           - DBAllocatedStorageEncrypted
           - DBCWLogExports
+          - DBBackTrack
           - NotificationList
       - Label:
-          default: 'Serverless (Applicable only for Database Engine Mode = Serverless)'
+          default: 'Serverless—applicable only when database engine mode (DBEngineMode) is serverless'
         Parameters:
           - ServerlessMinCapacityUnit
           - ServerlessMaxCapacityUnit
           - ServerlessAutoPause
           - ServerlessSecondsUntilAutoPause
       - Label:
-          default: Database tags (optional)
+          default: (Optional) Database tags
         Parameters:
           - EnvironmentStage
           - Application
@@ -74,31 +76,37 @@ Metadata:
       AvailabilityZones:
         default: Availability Zones
       DBEngineVersion:
-        default: Database Engine Version
+        default: Database engine version
       DBEngineMode:
-        default: Database Engine Mode
+        default: Database engine mode
       DBName:
         default: Database name
+      RotateDBPassword:
+        default: Rotate database password
       DBAllocatedStorageEncrypted:
         default: Database encryption enabled
       DBCWLogExports:
-        default: Database CloudWatch Log Exports
+        default: Database CloudWatch log exports
       DBAutoMinorVersionUpgrade:
-        default: Database auto minor version upgrade
+        default: Database automatic minor version upgrades
       DBBackupRetentionPeriod:
         default: Database backup retention period
       DBInstanceClass:
         default: Database instance class
       DBMasterUsername:
-        default: Database master username
+        default: Database administrator user name
       DBMasterUserPassword:
-        default: Database master password
+        default: Database administrator password
       DBPort:
         default: Database port
       DBMultiAZ:
         default: Multi-AZ deployment
+      DBBackTrack:
+        default: Aurora database backtracking
       EnableBastion:
-        default: Create bastion stack
+        default: Enable bastion stack
+      EnableTCPForwarding:
+        default: Enable TCP forwarding
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -110,13 +118,13 @@ Metadata:
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3BucketRegion:
-        default: Quick Start S3 bucket region
+        default: Quick Start S3 bucket Region
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
       VPCCIDR:
         default: VPC CIDR
       NotificationList:
-        default: SNS notification email
+        default: SNS notification-list email address
       EnvironmentStage:
         default: Environment stage
       Application:
@@ -130,7 +138,7 @@ Metadata:
       ProjectCostCenter:
         default: Project cost center
       KeyPairName:
-        default: Key Name
+        default: Key-pair name
       RemoteAccessCIDR:
         default: Permitted IP range
       ServerlessMinCapacityUnit:
@@ -148,17 +156,16 @@ Parameters:
     AllowedValues:
       - "true"
       - "false"
-    Description: Whether or not to rotate the database password on a schedule(every 89 days).
+    Description: To rotate the password on a schedule (every 89 days), choose "true."
     Type: String
   AvailabilityZones:
     Description: >-
-      List of Availability Zones to use for the subnets in the VPC. Only two
-      Availability Zones are used for this deployment, and the logical order of
-      your selections is preserved.
+      Availability Zones to use for the subnets in the VPC. This deployment uses two
+      Availability Zones. The logical order of your selections is preserved.
     Type: 'List<AWS::EC2::AvailabilityZone::Name>'
   KeyPairName:
     ConstraintDescription: "Name of an existing EC2 key pair."
-    Description: Name of an existing public/private key pair, for connecting to your instance.
+    Description: Name of the existing key pair for connecting to your EC2 instance. A key pair consists of a private key and a public key.
     Type: "AWS::EC2::KeyPair::KeyName"
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
@@ -199,51 +206,71 @@ Parameters:
     AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
     ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
     Default: aws-quickstart
-    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
+    Description: "Name of the S3 bucket for your copy of the Quick Start assets. 
+      Keep the default name unless you are customizing the template. 
+      Changing the name updates code references to point to a new Quick 
+      Start location. This name can include numbers, lowercase letters, 
+      uppercase letters, and hyphens, but do not start or end with a hyphen (-). 
+      See https://aws-quickstart.github.io/option1.html."
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is 
+    hosted. Keep the default Region unless you are customizing the template. 
+    Changing this Region updates code references to point to a new Quick Start location. When using your own bucket, specify the Region. 
+    See https://aws-quickstart.github.io/option1.html.'
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: "^[0-9a-zA-Z-/]*$"
     ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Default: quickstart-amazon-aurora-mysql/
-    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
+    Description: "S3 key prefix that is used to simulate a directory for your copy of the Quick Start assets. Keep the default prefix unless you are customizing 
+      the template. Changing this prefix updates code references to point to 
+      a new Quick Start location. This prefix can include numbers, lowercase 
+      letters, uppercase letters, hyphens (-), and forward slashes (/). End with a forward slash. 
+      See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html 
+      and https://aws-quickstart.github.io/option1.html."
     Type: String
   EnableBastion:
     AllowedValues:
       - "true"
       - "false"
     Default: "true"
-    Description: "If true, a bastion stack will be created."
+    Description: If you do not want to create a Linux bastion stack, choose "false." You must have a bastion host to test the deployment as described in the deployment guide.
     Type: String
+  EnableTCPForwarding:
+    Type: String
+    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn't set up any traffic forwarding. You must enable TCP forwarding to test the deployment as described in the deployment guide.
+    Default: 'false'
+    AllowedValues:
+      - 'true'
+      - 'false'
   DBAllocatedStorageEncrypted:
     Default: "true"
     AllowedValues:
       - "true"
       - "false"
-    Description: Whether or not to encrypt the database.
+    Description: To disable database encryption, choose "false."
     Type: String
   DBCWLogExports:
     Type: String
     Default: ''
-    Description: "Specify comma delimited list of Database logs (error, slowquery, audit) to export to CloudWatch Logs."
+    Description: "Specify the comma-delimited list of database logs (error, slowquery, audit) to export to CloudWatch Logs."
   DBAutoMinorVersionUpgrade:
     AllowedValues:
       - "true"
       - "false"
     Default: "false"
-    Description: "Select true to enable auto minor version upgrade."
+    Description: To enable automatic minor version upgrades, choose "true."
     Type: String
   DBBackupRetentionPeriod:
     Default: 35
-    Description: "The number of days for which automatic database snapshots are retained from 1 to 35 days."
+    Description: "Number of days (1 to 35) that automatic database snapshots are retained."
     Type: Number
     MinValue: 1
     MaxValue: 35
   DBEngineVersion:
-    Description: Select Database Engine Version
+    Description: "Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported Aurora features by Regions and engine versions, see https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html."
     Type: String
     Default: 'Aurora-MySQL5.6.10a'
     AllowedValues:
@@ -252,6 +279,17 @@ Parameters:
       - 'Aurora-MySQL5.6-1.19.1'
       - 'Aurora-MySQL5.6-1.19.2'
       - 'Aurora-MySQL5.6-1.19.5'
+      - 'Aurora-MySQL5.6-1.19.6'
+      - 'Aurora-MySQL5.6-1.20.0'
+      - 'Aurora-MySQL5.6-1.20.1'
+      - 'Aurora-MySQL5.6-1.21.0'
+      - 'Aurora-MySQL5.6-1.22.0'
+      - 'Aurora-MySQL5.6-1.22.1'
+      - 'Aurora-MySQL5.6-1.22.2'
+      - 'Aurora-MySQL5.6-1.22.3'
+      - 'Aurora-MySQL5.6-1.22.4'
+      - 'Aurora-MySQL5.6-1.23.0'
+      - 'Aurora-MySQL5.6-1.23.1'
       - 'Aurora-MySQL5.7.12'
       - 'Aurora-MySQL5.7-2.03.2'
       - 'Aurora-MySQL5.7-2.03.3'
@@ -271,12 +309,21 @@ Parameters:
       - 'Aurora-MySQL5.7-2.07.0'
       - 'Aurora-MySQL5.7-2.07.1'
       - 'Aurora-MySQL5.7-2.07.2'
+      - 'Aurora-MySQL5.7-2.07.3'
+      - 'Aurora-MySQL5.7-2.07.4'
+      - 'Aurora-MySQL5.7-2.08.0'
+      - 'Aurora-MySQL5.7-2.08.1'
+      - 'Aurora-MySQL5.7-2.08.2'
+      - 'Aurora-MySQL5.7-2.08.3'
+      - 'Aurora-MySQL5.7-2.09.0'
+      - 'Aurora-MySQL5.7-2.09.1'
+      - 'Aurora-MySQL5.7-2.09.2'
       - 'Aurora-MySQL5.7-2.08.0'
       - 'Aurora-MySQL5.7-2.08.1'
       - 'Aurora-MySQL5.7-2.08.2'
       - 'Aurora-MySQL5.7-2.09.0'
   DBEngineMode:
-    Description: The engine mode of the cluster. Currently Aurora Serverless, Global Database and Multi-Master is available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions.
+    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -287,6 +334,10 @@ Parameters:
       - 'multimaster'
   DBInstanceClass:
     AllowedValues:
+      - db.r5.24xlarge
+      - db.r5.16xlarge
+      - db.r5.12xlarge
+      - db.r5.8xlarge
       - db.r5.12xlarge
       - db.r5.4xlarge
       - db.r5.2xlarge
@@ -296,16 +347,16 @@ Parameters:
       - db.r4.8xlarge
       - db.r4.4xlarge
       - db.r4.2xlarge
-      - db.r4.xlarge
-      - db.r4.large
+      - db.t3.medium
+      - db.t3.small
+    Description: "Name of the compute and memory-capacity class of the database instance. Not applicable for Aurora Serverless. Supported instance type for Aurora Multi-Master is db.r4.[2/4/8/16]xlarge only. db.t3 instance class doesn't support RDS Performance Insights"
     ConstraintDescription: "Must select a valid database instance type."
-    Default: db.r4.large
-    Description: "The name of the compute and memory capacity class of the database instance. Not Applicable for Aurora Serverless. Supported instance types for Aurora Multi-Master is db.r4.[2/4/8]xlarge only currently."
+    Default: db.r5.large
     Type: String
   DBMasterUserPassword:
     AllowedPattern: ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])(?!.*[@/"']).*$
     ConstraintDescription: "Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ \" ') symbol"
-    Description: "The database admin account password. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ \" ') symbol."
+    Description: "Administrator password for the database account. Must include 1 uppercase, 1 lowercase, 1 number, 1 symbol (not / @ \" ')."
     MaxLength: "64"
     MinLength: "8"
     NoEcho: "True"
@@ -314,13 +365,13 @@ Parameters:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
     Default: msadmin
-    Description: "The database admin account username."
+    Description: "Administrator user name for the database account."
     MaxLength: "16"
     MinLength: "1"
     Type: String
   DBPort:
     Default: 3306
-    Description: "The port on which the DB instance will listen for connections. Aurora Serverless currently supports port 3306 only."
+    Description: "Port on which the DB instance listens for connections. Aurora Serverless supports port 3306 only."
     Type: Number
     ConstraintDescription: 'Must be in the range [1150-65535].'
     MinValue: 1150
@@ -330,7 +381,14 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Specifies if the database instance is a multiple Availability Zone deployment. Not Applicable for Aurora Serverless."
+    Description: If the database instance is not in a multiple Availability Zone deployment, choose "false." Not applicable for Aurora Serverless.
+    Type: String
+  DBBackTrack:
+    AllowedValues:
+      - "true"
+      - "false"
+    Default: "false"
+    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
     Type: String
   DBName:
     Default: 'AuroraMySQLDB'
@@ -341,12 +399,12 @@ Parameters:
   NotificationList:
     Type: String
     Default: 'db-ops@domain.com'
-    Description: The Email notification is used to configure a SNS topic for sending cloudwatch alarm and RDS Event notifications
+    Description: Email-list address used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.
     AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
     ConstraintDescription: provide a valid email address.
   EnvironmentStage:
     Type: String
-    Description: Designates the environment stage of the associated AWS resource. (Optional)
+    Description: (Optional) Environment stage of the associated AWS resource.
     AllowedValues:
       - dev
       - test
@@ -357,19 +415,19 @@ Parameters:
   Application:
     Type: String
     Default: ''
-    Description: Designates the application of the associated AWS resource. (Optional)
+    Description: (Optional) Name of the application for the associated AWS resource.
   ApplicationVersion:
     Type: String
-    Description: Designates the specific version of the application. (Optional)
+    Description: (Optional) Version of the application.
     Default: ''
   ProjectCostCenter:
     Type: String
     Default: ''
-    Description: Designates the cost center associated with the project of the given AWS resource. (Optional)
+    Description: (Optional) Cost center associated with the project of the associated AWS resource.
   Confidentiality:
     Type: String
     Default: ''
-    Description: Designates the confidentiality classification of the data that is associated with the resource. (Optional)
+    Description: (Optional) Confidentiality classification of the data that is associated with the AWS resource.
     AllowedValues:
       - public
       - private
@@ -380,7 +438,7 @@ Parameters:
   Compliance:
     Type: String
     Default: ''
-    Description: Designates the compliance level for the AWS resource. (Optional)
+    Description: (Optional) Compliance level for the AWS resource.
     AllowedValues:
       - hipaa
       - sox
@@ -388,7 +446,7 @@ Parameters:
       - other
       - ''
   ServerlessMinCapacityUnit:
-    Description: The minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.
+    Description: Minimum capacity for an Aurora DB cluster in serverless DB engine mode. The minimum capacity must be less than or equal to the maximum capacity.
     Type: String
     Default: '2'
     AllowedValues:
@@ -402,7 +460,7 @@ Parameters:
       - '128'
       - '256'
   ServerlessMaxCapacityUnit:
-    Description: The maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.
+    Description: Maximum capacity for an Aurora DB cluster in serverless DB engine mode. The maximum capacity must be greater than or equal to the minimum capacity.
     Type: String
     Default: '64'
     AllowedValues:
@@ -416,14 +474,14 @@ Parameters:
       - '128'
       - '256'
   ServerlessAutoPause:
-    Description: Specifies whether to allow or disallow automatic pause for an Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only when its idle (it has no connections).
+    Description: To enable automatic pause for an Aurora DB cluster in serverless DB engine mode, choose "true." A DB cluster can be paused only when it's idle (when it has no connections).
     Type: String
     Default: 'false'
     AllowedValues:
       - 'true'
       - 'false'
   ServerlessSecondsUntilAutoPause:
-    Description: The time, in seconds, before an Aurora DB cluster in serverless mode is auto paused. Min = 300, Max = 86400 (24hrs)
+    Description: Time, in seconds, before an Aurora DB cluster in serverless mode is automatically paused. Minimum = 300. Maximum = 86400 (24 hours).
     Type: Number
     Default: 300
     MaxValue: 86400
@@ -444,7 +502,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
           - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
             S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -491,6 +549,7 @@ Resources:
         DBMasterUserPassword: !Ref DBMasterUserPassword
         DBPort: !Ref DBPort
         DBMultiAZ: !Ref DBMultiAZ
+        DBBackTrack: !Ref DBBackTrack
         DBAccessCIDR: !Ref VPCCIDR
         NotificationList: !Ref NotificationList
         EnvironmentStage: !Ref EnvironmentStage
@@ -524,6 +583,7 @@ Resources:
         PublicSubnet2ID: !GetAtt
           - VPCStack
           - Outputs.PublicSubnet2ID
+        EnableTCPForwarding: !Ref EnableTCPForwarding
         RemoteAccessCIDR: !Ref RemoteAccessCIDR
         VPCID: !GetAtt
           - VPCStack
