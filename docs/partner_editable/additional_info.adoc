@@ -52,7 +52,7 @@ image::../images/image3.png[additional3]
 image::../images/image4.png[additional4]
 
 [start=8]
-. In the *Connect to MySQL Server* dialog box, shown in <<additional5>>, enter the `DBMasterUserPassword` password you entered during stack creation. If the `RotateDBPassword` parameter was set to *true* during stack creation, the master password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:
+. In the *Connect to MySQL Server* dialog box, shown in <<additional5>>, enter the administrator password (`DBMasterUserPassword`) that you entered during stack creation. If the `RotateDBPassword` parameter was set to *true* during stack creation, the administrator password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:
 .. From the AWS CloudFormation console, on the AuroraStack *Outputs* tab, note the values for `AuroraMasterUserSecret`.
 .. On the AWS Secrets Manager console, choose the secret you noted above.
 .. Choose *Retrieve Secret Value*, and copy the password.
