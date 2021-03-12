@@ -240,7 +240,7 @@ Parameters:
     Type: String
   EnableTCPForwarding:
     Type: String
-    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true." This setting enables only the capability; it doesn't set up any traffic forwarding. 
+    Description: With TCP forwarding on the bastion host, you can set up traffic forwarding to resources in private subnets. To enable TCP forwarding, choose "true". This setting enables only the capability; it doesn't set up any traffic forwarding. 
     Default: 'false'
     AllowedValues:
       - 'true'
@@ -318,12 +318,8 @@ Parameters:
       - 'Aurora-MySQL5.7-2.09.0'
       - 'Aurora-MySQL5.7-2.09.1'
       - 'Aurora-MySQL5.7-2.09.2'
-      - 'Aurora-MySQL5.7-2.08.0'
-      - 'Aurora-MySQL5.7-2.08.1'
-      - 'Aurora-MySQL5.7-2.08.2'
-      - 'Aurora-MySQL5.7-2.09.0'
   DBEngineMode:
-    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
+    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -338,7 +334,6 @@ Parameters:
       - db.r5.16xlarge
       - db.r5.12xlarge
       - db.r5.8xlarge
-      - db.r5.12xlarge
       - db.r5.4xlarge
       - db.r5.2xlarge
       - db.r5.xlarge
@@ -388,7 +383,7 @@ Parameters:
       - "true"
       - "false"
     Default: "false"
-    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
+    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true". Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
     Type: String
   DBName:
     Default: 'AuroraMySQLDB'

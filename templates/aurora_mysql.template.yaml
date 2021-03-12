@@ -161,7 +161,7 @@ Parameters:
       - "true"
       - "false"
     Default: "false"
-    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
+    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true". Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
     Type: String
   DBAllocatedStorageEncrypted:
     Default: "true"
@@ -244,7 +244,7 @@ Parameters:
       - 'Aurora-MySQL5.7-2.09.1'
       - 'Aurora-MySQL5.7-2.09.2'
   DBEngineMode:
-    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
+    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
     Type: String
     Default: 'provisioned'
     AllowedValues:
@@ -1435,7 +1435,7 @@ Outputs:
     Value: !Sub ${AuroraDBCluster.Endpoint.Address}
   AuroraReaderEndpoint:
     Condition: IsReaderEndpointAvailable
-    Description: "Amzon Aurora Reader Endpoint"
+    Description: "Amazon Aurora Reader Endpoint"
     Value:  !Sub ${AuroraDBCluster.ReadEndpoint.Address}
   AuroraClusterPort:
     Description: "Amazon Aurora Endpoint port"
