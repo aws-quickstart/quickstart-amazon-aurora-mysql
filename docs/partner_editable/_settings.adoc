@@ -4,7 +4,7 @@
 //:partner-company-name: Example Company Name, Ltd.
 :doc-month: March
 :doc-year: 2021
-:partner-contributors: Arabinda Pani, AWS Partner Databases and Analytics team
+:partner-contributors: Arabinda Pani, AWS PSA Database Specialist team
 :quickstart-contributors: Dave May, AWS Quick Start team
 :deployment_time: 30 minutes
 :default_deployment_region: us-east-1
