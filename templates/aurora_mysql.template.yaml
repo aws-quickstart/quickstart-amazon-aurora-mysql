@@ -1454,3 +1454,6 @@ Outputs:
     Condition: UseDatabaseEncryption
     Description: "Alias of the KMS encryption key used for storage and Performance Insights data encryption"
     Value: !Ref EncryptionKeyAlias
+  Postdeployment:
+    Value: https://fwd.aws/8xwxP
+    Description: To test your deployment, see the procedure in the deployment guide.
