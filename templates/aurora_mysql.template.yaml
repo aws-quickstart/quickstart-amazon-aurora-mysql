@@ -161,7 +161,7 @@ Parameters:
       - "true"
       - "false"
     Default: "false"
-    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true". Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
+    Description: Aurora database backtracking "rewinds" the DB cluster to a time you specify without needing to restore data from a backup. To enable database backtracking, choose "true." Not applicable for Aurora Serverless, Aurora Global Database and Aurora Multi-master. See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Managing.Backtrack.html.
     Type: String
   DBAllocatedStorageEncrypted:
     Default: "true"
