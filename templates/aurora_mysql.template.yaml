@@ -244,7 +244,7 @@ Parameters:
       - 'Aurora-MySQL5.7-2.09.1'
       - 'Aurora-MySQL5.7-2.09.2'
   DBEngineMode:
-    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. Aurora Serverless, Global Database, and Multi-Master are available for Aurora-MySQL5.6.10a. Aurora Parallel Query is available for Aurora MySQL5.6-x versions. For descriptions, see https://aws.amazon.com/rds/aurora/mysql-features/."
+    Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. For descriptions of the other options, see https://aws.amazon.com/rds/aurora/faqs/."
     Type: String
     Default: 'provisioned'
     AllowedValues:
