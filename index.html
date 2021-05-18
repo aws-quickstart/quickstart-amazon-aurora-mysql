@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.12">
+<meta name="generator" content="Asciidoctor 2.0.15">
 <title>Amazon Aurora MySQL Database on the AWS Cloud</title>
 <style>
 
@@ -182,7 +182,7 @@ p a>code:hover{color:rgba(0,0,0,.9)}
   padding-top:0;
   overflow:hidden;
   background:#283e5b;
-  border-bottom: 4px solid #435c7c;
+  /* border-bottom: 4px solid #435c7c; */
   width:320px;
   height:154px;
   top:0;
@@ -411,7 +411,7 @@ span.icon>.fa{cursor:default}
 a span.icon>.fa{cursor:inherit}
 .admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
 .admonitionblock td.icon .icon-note::before{content:"\f05a";color:#19407c}
-.admonitionblock td.icon .icon-tip::before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-tip::before{content:"\f0eb";color: rgb(3, 87, 21);}
 .admonitionblock td.icon .icon-warning::before{content:"\f071";color:#bf6900}
 .admonitionblock td.icon .icon-caution::before{content:"\f06d";color:#bf3400}
 .admonitionblock td.icon .icon-important::before{content:"\f06a";color:#bf0000}
@@ -747,8 +747,43 @@ p {
   font-weight  : 300 !important;
 }
 
-#toc.toc2 #toctitle{
-  background-image: url('images/AWS-Logo.svg');
+/* image layout */
+#toc.toc2 #toctitle {
+  background-image: url("images/AWS-Logo.svg");
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: center;
+  width: auto;
+  height: 15%;
+}
+
+/* Left Navbar size */
+#toc.toc2 {
+  width: 17%;
+  min-width: 15em;
+}
+
+/* auto width for main page */
+body.toc2 {
+  padding-left: 22%;
+  padding-right: 2%;
+}
+
+/* hide left nav bar if page size is smaller than 767px */
+@media screen and (max-width: 767px) {
+  #toc {
+      display: none !important;
+  }
+  body.toc2 {
+    padding-left: 1%;
+    padding-right: 1%;
+    position: relative;
+  }
+
+  #content {
+    padding-left: 2%;
+    padding-right: 2%;
+  }
 }
 
 /* QS Tables */
@@ -897,7 +932,7 @@ see the pricing pages for each AWS service you use. Prices are subject to change
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">create AWS Cost and Usage Reports</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. These reports provide cost estimates based on usage throughout each month and aggregate the data at the end of the month. For more information, see <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html" target="_blank" rel="noopener">What are AWS Cost and Usage Reports?</a>
+After you deploy the Quick Start, create <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html" target="_blank" rel="noopener">AWS Cost and Usage Reports</a> to deliver billing metrics to an Amazon Simple Storage Service (Amazon S3) bucket in your account. These reports provide cost estimates based on usage throughout each month and aggregate the data at the end of the month. For more information, see <a href="https://docs.aws.amazon.com/cur/latest/userguide/what-is-cur.html" target="_blank" rel="noopener">What are AWS Cost and Usage Reports?</a>
 </td>
 </tr>
 </table>
@@ -1013,7 +1048,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <div class="sect3">
 <h4 id="_resource_quotas">Resource quotas</h4>
 <div class="paragraph">
-<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might request quota increases to avoid exceeding the default limits for any resources that are shared across multiple deployments. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">What is Service Quotas?</a> and <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html" target="_blank" rel="noopener">AWS service quotas</a>.</p>
+<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might need to request increases if your existing deployment currently uses these resources and if this Quick Start deployment could result in exceeding the default quotas. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">What is Service Quotas?</a> and <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html" target="_blank" rel="noopener">AWS service quotas</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1208,13 +1243,7 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 . On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.
 . Choose <strong>Create stack</strong> to deploy the stack.
 . Monitor the status of the stack. When the status is <strong>CREATE_COMPLETE</strong>, the Aurora MySQL deployment is ready.
-. Use the values displayed in the <strong>Outputs</strong> tab for the stack, as shown in <a href="#cfn_outputs">Figure 2</a>, to view the created resources.</p>
-</div>
-<div id="cfn_outputs" class="imageblock">
-<div class="content">
-<a class="image" href="images/cfn_outputs.png"><img src="images/cfn_outputs.png" alt="cfn_outputs" width="100%" height="100%"></a>
-</div>
-<div class="title">Figure 2. Aurora MySQL outputs after successful deployment</div>
+. To view the created resources, see the values displayed in the <strong>Outputs</strong> tab for the stack.</p>
 </div>
 </div>
 </div>
@@ -1231,12 +1260,12 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <p>Download the latest version of <a href="https://www.mysql.com/products/workbench/" target="_blank" rel="noopener">MySQL Workbench</a>, and install it on the workstation from which you will be connecting to the Aurora MySQL DB cluster.</p>
 </li>
 <li>
-<p>From the AWS CloudFormation console, on the BastionStack <strong>Outputs</strong> tab, note the value for <code>EIP1</code>, as shown in <a href="#additional1">Figure 3</a>.</p>
+<p>From the AWS CloudFormation console, on the BastionStack <strong>Outputs</strong> tab, note the value for <code>EIP1</code>, as shown in <a href="#additional1">Figure 2</a>.</p>
 <div id="additional1" class="imageblock">
 <div class="content">
 <a class="image" href="images/image1.png"><img src="images/image1.png" alt="additional1"></a>
 </div>
-<div class="title">Figure 3. BastionStack outputs</div>
+<div class="title">Figure 2. BastionStack outputs</div>
 </div>
 </li>
 </ol>
@@ -1244,12 +1273,12 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="olist arabic">
 <ol class="arabic" start="3">
 <li>
-<p>From the AWS CloudFormation console, on the AuroraStack <strong>Outputs</strong> tab, note the values of <code>DBName</code>, <code>DBMasterUsername</code>, <code>AuroraClusterEndpoint</code>, and <code>AuroraClusterPort</code>, as shown in <a href="#additional2">Figure 4</a>.</p>
+<p>From the AWS CloudFormation console, on the AuroraStack <strong>Outputs</strong> tab, note the values of <code>DBName</code>, <code>DBMasterUsername</code>, <code>AuroraClusterEndpoint</code>, and <code>AuroraClusterPort</code>, as shown in <a href="#additional2">Figure 3</a>.</p>
 <div id="additional2" class="imageblock">
 <div class="content">
 <a class="image" href="images/image2.png"><img src="images/image2.png" alt="additional2"></a>
 </div>
-<div class="title">Figure 4. AuroraStack outputs</div>
+<div class="title">Figure 3. AuroraStack outputs</div>
 </div>
 </li>
 </ol>
@@ -1271,12 +1300,12 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <p>Launch MySQL Workbench on your workstation.</p>
 </li>
 <li>
-<p>On the <strong>Database</strong> menu, choose <strong>Connect to Database</strong>, as shown in <a href="#additional3">Figure 5</a>.</p>
+<p>On the <strong>Database</strong> menu, choose <strong>Connect to Database</strong>, as shown in <a href="#additional3">Figure 4</a>.</p>
 <div id="additional3" class="imageblock">
 <div class="content">
 <a class="image" href="images/image3.png"><img src="images/image3.png" alt="additional3"></a>
 </div>
-<div class="title">Figure 5. Connecting to the database using MySQL Workbench</div>
+<div class="title">Figure 4. Connecting to the database using MySQL Workbench</div>
 </div>
 </li>
 </ol>
@@ -1284,7 +1313,7 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="olist arabic">
 <ol class="arabic" start="7">
 <li>
-<p>Enter the following in the <strong>Connect to Database</strong> dialog box, shown in <a href="#additional4">Figure 6</a>.</p>
+<p>Enter the following in the <strong>Connect to Database</strong> dialog box, shown in <a href="#additional4">Figure 5</a>.</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -1302,7 +1331,7 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="content">
 <a class="image" href="images/image4.png"><img src="images/image4.png" alt="additional4"></a>
 </div>
-<div class="title">Figure 6. Database connection options</div>
+<div class="title">Figure 5. Database connection options</div>
 </div>
 </li>
 </ol>
@@ -1313,7 +1342,7 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="olist arabic">
 <ol class="arabic" start="8">
 <li>
-<p>In the <strong>Connect to MySQL Server</strong> dialog box, shown in <a href="#additional5">Figure 7</a>, enter the administrator password (<code>DBMasterUserPassword</code>) that you entered during stack creation. If the <code>RotateDBPassword</code> parameter was set to <strong>true</strong> during stack creation, the administrator password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:</p>
+<p>In the <strong>Connect to MySQL Server</strong> dialog box, shown in <a href="#additional5">Figure 6</a>, enter the administrator password (<code>DBMasterUserPassword</code>) that you entered during stack creation. If the <code>RotateDBPassword</code> parameter was set to <strong>true</strong> during stack creation, the administrator password for Aurora MySQL was rotated after creation. In this case, retrieve the new password as follows:</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
@@ -1328,16 +1357,16 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="content">
 <a class="image" href="images/image5.png"><img src="images/image5.png" alt="additional5"></a>
 </div>
-<div class="title">Figure 7. Entering the database password</div>
+<div class="title">Figure 6. Entering the database password</div>
 </div>
 <div class="paragraph">
-<p>A MySQL Workbench dashboard appears, as shown in <a href="#additional6">Figure 8</a>.</p>
+<p>A MySQL Workbench dashboard appears, as shown in <a href="#additional6">Figure 7</a>.</p>
 </div>
 <div id="additional6" class="imageblock">
 <div class="content">
 <a class="image" href="images/image6.png"><img src="images/image6.png" alt="additional6"></a>
 </div>
-<div class="title">Figure 8. MySQL Workbench dashboard after successful connection to the database</div>
+<div class="title">Figure 7. MySQL Workbench dashboard after successful connection to the database</div>
 </div>
 </li>
 </ol>
@@ -1348,12 +1377,12 @@ This Quick Start does not support <a href="https://docs.aws.amazon.com/vpc/lates
 <div class="olist arabic">
 <ol class="arabic" start="9">
 <li>
-<p>In the <strong>Navigator</strong> pane, under <strong>PERFORMANCE</strong>, choose <strong>Dashboard</strong>. Database-performance metrics appear, as shown in <a href="#additional7">Figure 9</a>.</p>
+<p>In the <strong>Navigator</strong> pane, under <strong>PERFORMANCE</strong>, choose <strong>Dashboard</strong>. Database-performance metrics appear, as shown in <a href="#additional7">Figure 8</a>.</p>
 <div id="additional7" class="imageblock">
 <div class="content">
 <a class="image" href="images/image7.png"><img src="images/image7.png" alt="additional7"></a>
 </div>
-<div class="title">Figure 9. Database-performance metrics</div>
+<div class="title">Figure 8. Database-performance metrics</div>
 </div>
 </li>
 </ol>
@@ -1409,8 +1438,7 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
-Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
+Unless you are customizing the Quick Start templates for your own deployment projects, keep the default settings for the parameters labeled <strong>Quick Start S3 bucket name</strong>, <strong>Quick Start S3 bucket Region</strong>, and <strong>Quick Start S3 key prefix</strong>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
 </td>
 </tr>
 </table>
@@ -2077,17 +2105,17 @@ and to share your customizations with others.</p>
 </div>
 <p class="footer-text">
 <!-- We can use document attributes: -->
-<!-- Generated with Asciidoctor v2.0.12. -->
+<!-- Generated with Asciidoctor v2.0.15. -->
 <a href="https://aws.amazon.com/privacy/">Privacy</a> | <a href="https://aws.amazon.com/terms/">Site terms</a> | &copy; 2021, Amazon Web Services, Inc. or its affiliates. All rights reserved.
 </p>
 </body>
 </html>
 <!--
 repo commit:
-d8377cdf9ad8db526766217e02a02146a26a2508
+cdf3f8bd2a661655e51fdcd1964753f7725db202
 
 submodule config:
-+59b9927c61cd1831141cf0350520c89abb2246da docs/boilerplate (heads/main)
+ 4b31f09b105a1aa1ea6e421e0e33b647196f4c69 docs/boilerplate (heads/main)
  1f9a7bebc434f9a38b0ed4d4dd80d438d4d26204 submodules/quickstart-aws-vpc (v1.0-57-g1f9a7be)
- bb45452fbbd46adb9918c6bcc3cdd70e87491349 submodules/quickstart-linux-bastion (heads/main)
+ fed4295c37ee27ab95ecbae13364bdb61d4f3791 submodules/quickstart-linux-bastion (heads/main)
 -->
