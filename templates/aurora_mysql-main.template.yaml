@@ -483,9 +483,6 @@ Parameters:
     MinValue: 300
 
 Conditions:
-  GovCloudCondition: !Equals
-    - !Ref 'AWS::Region'
-    - us-gov-west-1
   EnableBastionAccess: !Equals
     - !Ref EnableBastion
     - "true"
@@ -557,7 +554,6 @@ Resources:
         ServerlessAutoPause: !Ref ServerlessAutoPause
         ServerlessSecondsUntilAutoPause: !Ref ServerlessSecondsUntilAutoPause
         QSS3BucketName: !Ref QSS3BucketName
-        QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         RotateDBPassword: !Ref RotateDBPassword
   BastionStack:
