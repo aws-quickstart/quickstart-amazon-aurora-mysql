@@ -823,7 +823,12 @@ Resources:
           ignore_checks:
             - EIAMPolicyWildcardResource
             - EIAMPolicyActionWildcard
-# Conditions are included in the policy to limit its scope
+      cfn_nag:
+        rules_to_suppress:
+          - id: F19
+            reason: "Key rotation would cause the database to become inaccessible"
+          - id: F76
+            reason: "Conditions are included in the policy to limit its scope"
     Properties:
       KeyPolicy:
         Version: 2012-10-17
@@ -861,6 +866,12 @@ Resources:
       TargetKeyId: !Ref EncryptionKey
   AuroraDB1:
     Condition: IsServerlessDisabled
+    Type: "AWS::RDS::DBInstance"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F80
+            reason: "Quick Start assets must be able to be deleted"
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -896,9 +907,14 @@ Resources:
         -
           Key: Compliance
           Value: !Ref Compliance
-    Type: "AWS::RDS::DBInstance"
   AuroraDB2:
     Condition: IsDBMultiAZ
+    Type: "AWS::RDS::DBInstance"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F80
+            reason: "Quick Start assets must be able to be deleted"
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -934,7 +950,6 @@ Resources:
         -
           Key: Compliance
           Value: !Ref Compliance
-    Type: "AWS::RDS::DBInstance"
   DBParamGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
@@ -1030,6 +1045,16 @@ Resources:
     Type: "AWS::RDS::DBSubnetGroup"
   RDSSecurityGroup:
     Condition: CreateSecurityGroup
+    Type: "AWS::EC2::SecurityGroup"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W40
+            reason: "Standard Amazon practice"
+          - id: W5
+            reason: "Standard Amazon practice"
+          - id: W36
+            reason: "Group description is sufficient"
     Properties:
       GroupDescription: "Allow access to database port"
       SecurityGroupEgress:
@@ -1048,15 +1073,14 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub RDSSecurityGroup-${AWS::StackName}
-    Type: "AWS::EC2::SecurityGroup"
   RDSSecurityGroupIngress:
     Condition: CreateSecurityGroup
+    Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
       GroupId: !GetAtt 'RDSSecurityGroup.GroupId'
       IpProtocol: '-1'
       SourceSecurityGroupId: !Ref RDSSecurityGroup
       Description: 'Self Reference'
-    Type: 'AWS::EC2::SecurityGroupIngress'
   CPUUtilizationAlarm1:
     Type: "AWS::CloudWatch::Alarm"
     Condition: IsServerlessDisabled
@@ -1266,6 +1290,13 @@ Resources:
   LambdaZipsBucket:
     Condition: DBPasswordRotation
     Type: AWS::S3::Bucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W51
+            reason: "Bucket is temporary and is only used during deployment"
+          - id: W41
+            reason: "Bucket is temporary and is only used during deployment"
     Properties:
       Tags: []
   CopyZips:
@@ -1281,6 +1312,11 @@ Resources:
   LambdaExecutionRole:
     Condition: DBPasswordRotation
     Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "Wildcard required to avoid circular dependency"
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -1335,6 +1371,11 @@ Resources:
   CopyZipsFunction:
     Condition: DBPasswordRotation
     Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: "Function role has required permissions"
     Properties:
       Description: Copies objects from a source S3 bucket to a destination
       Handler: index.handler
