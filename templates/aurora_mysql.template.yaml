@@ -3,6 +3,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: "AWS Aurora MySql, Do Not Remove Apache License Version 2.0 (qs-1r51947et) Jun,15,2019"
 
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+        - W9006
+        - E9101
   LICENSE: Apache License Version 2.0
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying into an existing VPC"
@@ -823,6 +828,7 @@ Resources:
           ignore_checks:
             - EIAMPolicyWildcardResource
             - EIAMPolicyActionWildcard
+            - W3011 # Quick Starts need to be able to delete all assets upon stack deletion
       cfn_nag:
         rules_to_suppress:
           - id: F19
@@ -975,8 +981,8 @@ Resources:
       cfn-lint:
         config:
           ignore_checks:
-            - ERDSStorageEncryptionEnabled
-# Storage encryption is optional based on a parameter
+            - ERDSStorageEncryptionEnabled # Storage encryption is optional based on a parameter
+            - W3011 # Quick Starts need to be able to delete all assets upon stack deletion
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DBClusterParameterGroupName: !Ref RDSDBClusterParameterGroup
