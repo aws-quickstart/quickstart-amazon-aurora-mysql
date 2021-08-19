@@ -277,7 +277,7 @@ Parameters:
   DBEngineVersion:
     Description: "Version of the database engine. Currently Multi-Master is available only for Aurora-MySQL5.6.10a, Serverless is available only for Aurora-MySQL5.6.10a and Aurora-MySQL5.7-2.07.1. To see supported Aurora features by Regions and engine versions, see https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraFeaturesRegionsDBEngines.grids.html."
     Type: String
-    Default: 'Aurora-MySQL5.6.10a'
+    Default: 'Aurora-MySQL5.7.12'
     AllowedValues:
       - 'Aurora-MySQL5.6.10a'
       - 'Aurora-MySQL5.6-1.19.0'
@@ -323,6 +323,7 @@ Parameters:
       - 'Aurora-MySQL5.7-2.09.0'
       - 'Aurora-MySQL5.7-2.09.1'
       - 'Aurora-MySQL5.7-2.09.2'
+      - 'Aurora-MySQL5.7-2.10.0'
   DBEngineMode:
     Description: "Engine mode of the cluster. With provisioned databases (the default), you provision and manage the server instance sizes. For descriptions of the other options, see https://aws.amazon.com/rds/aurora/faqs/."
     Type: String
