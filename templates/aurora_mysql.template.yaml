@@ -115,7 +115,7 @@ Metadata:
       NotificationList:
         default: SNS notification email
       PerformanceInsightsRetentionPeriod:
-        default:  Number of days to retain Performance Insights data      
+        default: Number of days to retain Performance Insights data      
       ProjectCostCenter:
        default: Project cost center
       PubliclyAccessible:
@@ -811,6 +811,7 @@ Resources:
     UpdateReplacePolicy: Snapshot
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
+      BacktrackWindow: !Ref DBBacktrack
       DBClusterIdentifier: !Sub ams-${AWS::StackName}
       DBClusterParameterGroupName: !Ref RDSDBCPG
       DBSubnetGroupName: !Ref RDSDBSubnetGroup

@@ -21,10 +21,8 @@ Metadata:
           - VPCCIDR
           - PrivateSubnet1CIDR
           - PrivateSubnet2CIDR
-          - PrivateSubnet3CIDR
           - PublicSubnet1CIDR
           - PublicSubnet2CIDR
-          - PublicSubnet3CIDR
       - Label:
           default: "Linux bastion configuration"
         Parameters:
@@ -716,6 +714,7 @@ Resources:
             - Outputs.PrivateSubnet2AID
         DBAccessCIDR: !Ref VPCCIDR
         #Database General configuration
+        DBBackTrack: !Ref DBBackTrack
         DBEngineVersion: !Ref DBEngineVersion
         DBInstanceClass: !Ref DBInstanceClass
         DBPort: !Ref DBPort
@@ -726,6 +725,7 @@ Resources:
         DBMultiAZ: !Ref DBMultiAZ
         DBAutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
         DBBackupRetentionPeriod: !Ref DBBackupRetentionPeriod
+        DBStorageEncrypted: !Ref DBStorageEncrypted
         EnableIAMDBAuth: !Ref EnableIAMDBAuth
         ServerlessMinCapacity: !Ref ServerlessMinCapacity
         ServerlessMaxCapacity: !Ref ServerlessMaxCapacity
