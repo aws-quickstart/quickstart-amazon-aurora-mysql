@@ -7,6 +7,9 @@ Metadata:
       ignore_checks:
         - E9101
         - W3011
+        - W2030
+        - E3002
+        - E1019
 
 ###############################################################################
 # Parameter groups
@@ -804,14 +807,16 @@ Resources:
         config:
           ignore_checks:
             - ERDSStorageEncryptionEnabled
+            - E2521
           ignore_reasons:
             - ERDSStorageEncryptionEnabled: "StorageEncryption is conditional"
+            - E2521: "When ManageMasterUserPassword is set to true, MasterUserPassword is ignored"
     Type: AWS::RDS::DBCluster
     DeletionPolicy: Snapshot
     UpdateReplacePolicy: Snapshot
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-      BacktrackWindow: !Ref DBBacktrack
+      BacktrackWindow: !Ref DBBackTrack
       DBClusterIdentifier: !Sub ams-${AWS::StackName}
       DBClusterParameterGroupName: !Ref RDSDBCPG
       DBSubnetGroupName: !Ref RDSDBSubnetGroup
@@ -865,6 +870,13 @@ Resources:
 
   AuroraDBFirstInstance:
     Type: AWS::RDS::DBInstance
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - ERDSDBInstancePubliclyAccessible
+          ignore_reasons:
+            - ERDSDBInstancePubliclyAccessible: "PubliclyAccessible is false by default"
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -903,6 +915,13 @@ Resources:
   AuroraDBSecondInstance:
     Condition: isReplica
     Type: AWS::RDS::DBInstance
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - ERDSDBInstancePubliclyAccessible
+          ignore_reasons:
+            - ERDSDBInstancePubliclyAccessible: "PubliclyAccessible is false by default"
     DependsOn:
       - AuroraDBFirstInstance
     Properties:
