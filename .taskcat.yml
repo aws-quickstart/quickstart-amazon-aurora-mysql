@@ -18,7 +18,7 @@ tests:
   aurora-mysql:
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
-      DBEngineVersion: Aurora-MySQL5.7.12
+#@      DBEngineVersion: Aurora-MySQL5.7.12
       DBMasterUserPassword: Passw0rd1!
       DBMultiAZ: "false"
       EnableBastion: "false"
