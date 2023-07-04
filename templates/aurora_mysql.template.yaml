@@ -353,7 +353,8 @@ Parameters:
     MaxValue: 35
   DBEngineVersion:
     Description: >-
-      Select Database Engine Version. Aurora Serverless v2 with Aurora MySQL is supported for versions 3.02.0 and higher.
+      Select Database Engine Version. 
+      Aurora Serverless v2 with Aurora MySQL is supported for versions 3.02.0 and higher.
       Aurora I/O-Optimized configuration is available in Aurora MySQL version 3.03.1 and higher.
       For supported engines and Region availability for Aurora Serverless v2 with Aurora MySQL, refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.ServerlessV2.html
     Type: String
