@@ -15,7 +15,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Network configuration"
+          default: Network configuration
         Parameters:
           - AvailabilityZones
           - VPCCIDR
@@ -24,19 +24,19 @@ Metadata:
           - PublicSubnet1CIDR
           - PublicSubnet2CIDR
       - Label:
-          default: "Linux bastion configuration"
+          default: Linux Bastion Host configuration
         Parameters:
           - EnableBastion
           - KeyPairName
           - RemoteAccessCIDR
           - EnableTCPForwarding
       - Label:
-          default: "Database configuration"
+          default: Database General configuration
         Parameters:
           - DBEngineVersion
+          - DBInstanceClass
           - ServerlessMinCapacity
           - ServerlessMaxCapacity
-          - DBInstanceClass
           - DBPort
           - DBName
           - DBMasterUsername
@@ -46,10 +46,14 @@ Metadata:
           - DBAutoMinorVersionUpgrade
           - DBBackupRetentionPeriod
           - EnableIAMDBAuth
-          - DBStorageEncrypted
           - DBBackTrack
       - Label:
-          default: "Database Monitoring configuration"
+          default: Database Storage configuration
+        Parameters:  
+          - DBStorageEncrypted
+          - StorageType
+      - Label:
+          default: Database Monitoring configuration
         Parameters:
           - DBExportLogToCloudwatch
           - EnablePerformanceInsights
@@ -59,7 +63,7 @@ Metadata:
           - EnableEventSubscription
           - NotificationList
       - Label:
-          default: "[Optional] Database tags"
+          default: Database tags (optional)
         Parameters:
           - EnvironmentStage
           - Application
@@ -68,7 +72,7 @@ Metadata:
           - Confidentiality
           - Compliance
       - Label:
-          default: "Quick Start configuration"
+          default: Quick Start configuration
         Parameters:
           - QSS3BucketName
           - QSS3BucketRegion
@@ -78,11 +82,10 @@ Metadata:
 # Parameter labels
 ###############################################################################
     ParameterLabels:
+
       #VPC stack related parameter labels
       AvailabilityZones:
         default: Availability Zones
-      VPCCIDR:
-        default: VPC CIDR
       PrivateSubnet1CIDR:
         default: Private subnet 1 CIDR
       PrivateSubnet2CIDR:
@@ -91,17 +94,19 @@ Metadata:
         default: Public subnet 1 CIDR
       PublicSubnet2CIDR:
         default: Public subnet 2 CIDR
+      VPCCIDR:
+        default: VPC CIDR
 
       #Bastion host related parameter labels
       EnableBastion:
         default: Create bastion stack
+      EnableTCPForwarding:
+        default: Enable TCP Forwarding
       KeyPairName:
         default: Key Name
       RemoteAccessCIDR:
         default: Permitted IP range
-      EnableTCPForwarding:
-        default: Enable TCP Forwarding
-
+      
       #Quickstart related parameter labels
       QSS3BucketName:
         default: Quick Start S3 bucket name
@@ -110,11 +115,19 @@ Metadata:
       QSS3KeyPrefix:
         default: Quick Start S3 key prefix
 
-      #RDS related parameter labels
-      DBStorageEncrypted:
-        default: Database encryption enabled
+      #Aurora related parameter labels
+      Application:
+        default: Application name
+      ApplicationVersion:
+        default: Application version
+      Compliance:
+        default: Compliance classifier
+      Confidentiality:
+        default: Confidentiality classifier
       DBAutoMinorVersionUpgrade:
         default: Database auto minor version upgrade
+      DBBackTrack:
+        default: Backtrack window
       DBBackupRetentionPeriod:
         default: Database backup retention period
       DBEngineVersion:
@@ -133,6 +146,8 @@ Metadata:
         default: Database name
       DBPort:
         default: Database port
+      DBStorageEncrypted:
+        default: Database encryption enabled
       EnableEnhancedMonitoring:
         default: Enable Enhanced Monitoring
       EnableEventSubscription:
@@ -141,6 +156,8 @@ Metadata:
         default: Enable IAM Database Authentication
       EnablePerformanceInsights:
         default: Enable RDS Performance Insights
+      EnvironmentStage:
+        default: Environment stage
       ManageMasterUserPassword:
         default: Manage DB master user password with AWS Secrets Manager
       MonitoringInterval:
@@ -149,35 +166,25 @@ Metadata:
         default: SNS notification email
       PerformanceInsightsRetentionPeriod:
         default: Number of days to retain Performance Insights data
-      DBBackTrack:
-        default: Backtrack window
+      ProjectCostCenter:
+        default: Project cost center
       ServerlessMinCapacity:
         default: Minimum ACUs
       ServerlessMaxCapacity:
         default: Maximum ACUs
-      Application:
-        default: Application name
-      ApplicationVersion:
-        default: Application version
-      Compliance:
-        default: Compliance classifier
-      Confidentiality:
-        default: Confidentiality classifier
-      ProjectCostCenter:
-        default: Project cost center
-      EnvironmentStage:
-        default: Environment stage
+      StorageType:
+        default: Aurora Storage Type
 
 ###############################################################################
 # Parameters
 ###############################################################################
 Parameters:
 
-  #VPC stack related parameter labels
+  #VPC stack related parameters
   AvailabilityZones:
     Description: >-
       List of Availability Zones to use for the subnets in the VPC. Only
-      three Availability Zones are used for this deployment, and the logical
+      two Availability Zones are used for this deployment, and the logical
       order of your selections is preserved.
     Type: List<AWS::EC2::AvailabilityZone::Name>
   PrivateSubnet1CIDR:
@@ -211,7 +218,7 @@ Parameters:
     Description: "CIDR block for the VPC."
     Type: String
 
-  #Bastion host related parameter labels
+  #Bastion host related parameters
   EnableBastion:
     AllowedValues:
       - "true"
@@ -237,33 +244,54 @@ Parameters:
     Default: 10.0.0.0/16
     Type: String
 
-  #Quickstart related parameter labels
+  #Quickstart related parameters
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase
-      letters, uppercase letters, and hyphens (-). It cannot start or end with a
-      hyphen (-)."
+    ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
     Default: aws-quickstart
-    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name
-      can include numbers, lowercase letters, uppercase letters, and hyphens
-      (-). It cannot start or end with a hyphen (-)."
+    Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
     Type: String
   QSS3BucketRegion:
     Default: us-east-1
-    Description: "The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is
-      hosted. When using your own bucket, you must specify this value."
+    Description: "The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value."
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
-    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase
-      letters, uppercase letters, hyphens (-), and forward slash (/)."
+    ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Default: quickstart-amazon-aurora-mysql/
-    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-),
-      and forward slash (/)."
+    Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
 
-  #Aurora related parameter labels
+  #Aurora related parameters
+  Application:
+    Type: String
+    Default: ""
+    Description: "[Optional] Name of the application for the associated AWS resource."
+  ApplicationVersion:
+    Type: String
+    Description: "[Optional] Version of the application."
+    Default: ""
+  Compliance:
+    Type: String
+    Default: ""
+    Description: "[Optional] Compliance level for the AWS resource."
+    AllowedValues:
+      - hipaa
+      - sox
+      - fips
+      - other
+      - ""
+  Confidentiality:
+    Type: String
+    Default: ""
+    Description: "[Optional] Confidentiality classification of the data that is associated with the AWS resource."
+    AllowedValues:
+      - public
+      - private
+      - confidential
+      - pii/phi
+      - none
+      - ""
   DBStorageEncrypted:
     Default: "true"
     AllowedValues:
@@ -278,6 +306,12 @@ Parameters:
     Default: "false"
     Description: "Select 'true' to set up auto minor version upgrade."
     Type: String
+  DBBackTrack:
+    Description: "The target backtrack window, in seconds. To disable backtracking, set this value to 0."
+    Type: Number
+    Default: 0
+    MinValue: 0
+    MaxValue: 259200
   DBBackupRetentionPeriod:
     Default: 35
     Description: "The number of days for which automatic database snapshots are retained."
@@ -285,174 +319,80 @@ Parameters:
     MinValue: 0
     MaxValue: 35
   DBEngineVersion:
-    Description: "The database engine version."
+    Description: >-
+      Select Database Engine Version. 
+      Aurora Serverless v2 with Aurora MySQL is supported for versions 3.02.0 and higher.
+      Aurora I/O-Optimized configuration is available in Aurora MySQL version 3.03.1 and higher.
+      For supported engines and Region availability for Aurora Serverless v2 with Aurora MySQL, refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.ServerlessV2.html
     Type: String
-    Default: Aurora-MySQL-3.02.2-MySQL8.0.23
+    Default: Aurora-MySQL-3.03.1-MySQL8.0.23
     AllowedValues:
-      - Aurora-MySQL5.7-2.07.0
-      - Aurora-MySQL5.7-2.07.1
-      - Aurora-MySQL5.7-2.07.2
-      - Aurora-MySQL5.7-2.07.3
-      - Aurora-MySQL5.7-2.07.4
-      - Aurora-MySQL5.7-2.07.5
-      - Aurora-MySQL5.7-2.07.6
-      - Aurora-MySQL5.7-2.07.7
-      - Aurora-MySQL5.7-2.07.8
-      - Aurora-MySQL5.7-2.09.0
-      - Aurora-MySQL5.7-2.09.1
-      - Aurora-MySQL5.7-2.09.2
-      - Aurora-MySQL5.7-2.09.3
-      - Aurora-MySQL5.7-2.10.0
-      - Aurora-MySQL5.7-2.10.1
-      - Aurora-MySQL5.7-2.10.2
-      - Aurora-MySQL5.7-2.10.3
-      - Aurora-MySQL5.7-2.11.0
+      - Aurora-MySQL5.7-2.07.9
+      - Aurora-MySQL5.7-2.11.1
+      - Aurora-MySQL5.7-2.11.2
+      - Aurora-MySQL5.7-2.11.3
       - Aurora-MySQL-3.01.0-MySQL8.0.23
       - Aurora-MySQL-3.01.1-MySQL8.0.23
       - Aurora-MySQL-3.02.0-MySQL8.0.23
       - Aurora-MySQL-3.02.1-MySQL8.0.23
       - Aurora-MySQL-3.02.2-MySQL8.0.23
+      - Aurora-MySQL-3.02.3-MySQL8.0.23
+      - Aurora-MySQL-3.03.0-MySQL8.0.23
+      - Aurora-MySQL-3.03.1-MySQL8.0.23
   DBExportLogToCloudwatch:
     Default: ''
     Description: "Specify the comma-delimited list of database logs (error, slowquery, audit, general) to export to CloudWatch Logs."
     Type: CommaDelimitedList
   DBInstanceClass:
-    Default: db.r6g.large
+    Default: db.r6g.2xlarge
     Description: "The database instance type.  Please see supported instance types for the MySQL version selected
       https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora"
     Type: String
     AllowedValues:
-      - db.serverless
-      - db.m4.large
-      - db.m4.xlarge
-      - db.m4.2xlarge
-      - db.m4.4xlarge
-      - db.m4.10xlarge
-      - db.m4.16xlarge
-      - db.m5.large
-      - db.m5.xlarge
-      - db.m5.2xlarge
-      - db.m5.4xlarge
-      - db.m5.8xlarge
-      - db.m5.12xlarge
-      - db.m5.16xlarge
-      - db.m5.24xlarge
-      - db.m5d.large
-      - db.m5d.xlarge
-      - db.m5d.2xlarge
-      - db.m5d.4xlarge
-      - db.m5d.8xlarge
-      - db.m5d.12xlarge
-      - db.m5d.16xlarge
-      - db.m5d.24xlarge
-      - db.m6g.large
-      - db.m6g.xlarge
-      - db.m6g.2xlarge
-      - db.m6g.4xlarge
-      - db.m6g.8xlarge
-      - db.m6g.12xlarge
-      - db.m6g.16xlarge
-      - db.m6gd.large
-      - db.m6gd.xlarge
-      - db.m6gd.2xlarge
-      - db.m6gd.4xlarge
-      - db.m6gd.8xlarge
-      - db.m6gd.12xlarge
-      - db.m6gd.16xlarge
-      - db.m6i.large
-      - db.m6i.xlarge
-      - db.m6i.2xlarge
-      - db.m6i.4xlarge
-      - db.m6i.8xlarge
-      - db.m6i.12xlarge
-      - db.m6i.16xlarge
-      - db.m6i.24xlarge
-      - db.m6i.32xlarge
-      - db.r4.large
-      - db.r4.xlarge
-      - db.r4.2xlarge
-      - db.r4.4xlarge
-      - db.r4.8xlarge
-      - db.r4.16xlarge
-      - db.r5.large
-      - db.r5.xlarge
-      - db.r5.2xlarge
-      - db.r5.4xlarge
-      - db.r5.8xlarge
       - db.r5.12xlarge
       - db.r5.16xlarge
       - db.r5.24xlarge
-      - db.r5b.large
-      - db.r5b.xlarge
-      - db.r5b.2xlarge
-      - db.r5b.4xlarge
-      - db.r5b.8xlarge
-      - db.r5b.12xlarge
-      - db.r5b.16xlarge
-      - db.r5b.24xlarge
-      - db.r5d.large
-      - db.r5d.xlarge
-      - db.r5d.2xlarge
-      - db.r5d.4xlarge
-      - db.r5d.8xlarge
-      - db.r5d.12xlarge
-      - db.r5d.16xlarge
-      - db.r5d.24xlarge
-      - db.r6g.large
-      - db.r6g.xlarge
+      - db.r5.2xlarge
+      - db.r5.4xlarge
+      - db.r5.8xlarge
+      - db.r5.large
+      - db.r5.xlarge
+      - db.r6g.12xlarge
+      - db.r6g.16xlarge
       - db.r6g.2xlarge
       - db.r6g.4xlarge
       - db.r6g.8xlarge
-      - db.r6g.12xlarge
-      - db.r6g.16xlarge
-      - db.r6gd.large
-      - db.r6gd.xlarge
-      - db.r6gd.2xlarge
-      - db.r6gd.4xlarge
-      - db.r6gd.8xlarge
-      - db.r6gd.12xlarge
-      - db.r6gd.16xlarge
-      - db.r6i.large
-      - db.r6i.xlarge
-      - db.r6i.2xlarge
-      - db.r6i.4xlarge
-      - db.r6i.8xlarge
+      - db.r6g.large
+      - db.r6g.xlarge
       - db.r6i.12xlarge
       - db.r6i.16xlarge
       - db.r6i.24xlarge
+      - db.r6i.2xlarge
       - db.r6i.32xlarge
-      - db.x2g.large
-      - db.x2g.xlarge
+      - db.r6i.4xlarge
+      - db.r6i.8xlarge
+      - db.r6i.large
+      - db.r6i.xlarge
+      - db.r7g.12xlarge
+      - db.r7g.16xlarge
+      - db.r7g.2xlarge
+      - db.r7g.4xlarge
+      - db.r7g.8xlarge
+      - db.r7g.large
+      - db.r7g.xlarge
+      - db.serverless
+      - db.t3.large
+      - db.t3.medium
+      - db.t3.small
+      - db.t4g.large
+      - db.t4g.medium
+      - db.x2g.12xlarge
+      - db.x2g.16xlarge
       - db.x2g.2xlarge
       - db.x2g.4xlarge
       - db.x2g.8xlarge
-      - db.x2g.12xlarge
-      - db.x2g.16xlarge
-      - db.x2iedn.xlarge
-      - db.x2iedn.2xlarge
-      - db.x2iedn.4xlarge
-      - db.x2iedn.8xlarge
-      - db.x2iedn.16xlarge
-      - db.x2iedn.24xlarge
-      - db.x2iedn.32xlarge
-      - db.t2.micro
-      - db.t2.small
-      - db.t2.medium
-      - db.t2.large
-      - db.t2.xlarge
-      - db.t2.2xlarge
-      - db.t3.micro
-      - db.t3.small
-      - db.t3.medium
-      - db.t3.large
-      - db.t3.xlarge
-      - db.t3.2xlarge
-      - db.t4g.2xlarge
-      - db.t4g.large
-      - db.t4g.medium
-      - db.t4g.micro
-      - db.t4g.small
-      - db.t4g.xlarge
+      - db.x2g.large
+      - db.x2g.xlarge
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
@@ -520,6 +460,16 @@ Parameters:
     Default: "true"
     Description: "Enables RDS Performance Insights."
     Type: String
+  EnvironmentStage:
+    Type: String
+    Description: "[Optional] Environment stage of the associated AWS resource."
+    AllowedValues:
+      - dev
+      - test
+      - pre-prod
+      - prod
+      - none
+    Default: none
   ManageMasterUserPassword:
     AllowedValues:
       - "true"
@@ -555,13 +505,11 @@ Parameters:
     Type: Number
     MinValue: 7
     MaxValue: 713
-  DBBackTrack:
-    Description: "The target backtrack window, in seconds. To disable backtracking,
-      set this value to 0."
-    Type: Number
-    Default: 0
-    MinValue: 0
-    MaxValue: 259200
+  ProjectCostCenter:
+    Type: String
+    Default: ""
+    Description: "[Optional] Designates the cost center associated with the project
+      of the given AWS resource."
   ServerlessMinCapacity:
     Default: 8
     Description: >-
@@ -580,51 +528,15 @@ Parameters:
     Type: String
     AllowedPattern: ([1-9]?(\.(0|5))?|[1-8][0-9](\.(0|5))?|9[0-9]|1[01][0-9](\.(0|5))?|12[0-7](\.(0|5))?|128)
     ConstraintDescription: "Only values from 1 to 128, in increments of 0.5"
-  ProjectCostCenter:
+  StorageType:
     Type: String
-    Default: ""
-    Description: "[Optional] Designates the cost center associated with the project
-      of the given AWS resource."
-  EnvironmentStage:
-    Type: String
-    Description: "[Optional] Environment stage of the associated AWS resource."
+    Description: >-
+      Designates the storage type to associate with the Aurora DB cluster. Choose aurora-iopt1 for Aurora I/O Optimized storage.
+      For details refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html#aurora-storage-type
     AllowedValues:
-      - dev
-      - test
-      - pre-prod
-      - prod
-      - none
-    Default: none
-  Application:
-    Type: String
-    Default: ""
-    Description: "[Optional] Name of the application for the associated AWS resource."
-  ApplicationVersion:
-    Type: String
-    Description: "[Optional] Version of the application."
-    Default: ""
-  Confidentiality:
-    Type: String
-    Default: ""
-    Description: "[Optional] Confidentiality classification of the data that is
-      associated with the AWS resource."
-    AllowedValues:
-      - public
-      - private
-      - confidential
-      - pii/phi
-      - none
-      - ""
-  Compliance:
-    Type: String
-    Default: ""
-    Description: "[Optional] Compliance level for the AWS resource."
-    AllowedValues:
-      - hipaa
-      - sox
-      - fips
-      - other
-      - ""
+      - aurora
+      - aurora-iopt1
+    Default: aurora
 
 ###############################################################################
 # Conditions
@@ -690,7 +602,7 @@ Resources:
         QSS3BucketRegion: !Ref QSS3BucketRegion
         QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-linux-bastion/
 
-  AuroraDB:
+  AMSNS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
@@ -714,9 +626,10 @@ Resources:
             - Outputs.PrivateSubnet2AID
         DBAccessCIDR: !Ref VPCCIDR
         #Database General configuration
-        DBBackTrack: !Ref DBBackTrack
         DBEngineVersion: !Ref DBEngineVersion
         DBInstanceClass: !Ref DBInstanceClass
+        ServerlessMinCapacity: !Ref ServerlessMinCapacity
+        ServerlessMaxCapacity: !Ref ServerlessMaxCapacity
         DBPort: !Ref DBPort
         DBName: !Ref DBName
         DBMasterUsername: !Ref DBMasterUsername
@@ -725,10 +638,11 @@ Resources:
         DBMultiAZ: !Ref DBMultiAZ
         DBAutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
         DBBackupRetentionPeriod: !Ref DBBackupRetentionPeriod
-        DBStorageEncrypted: !Ref DBStorageEncrypted
         EnableIAMDBAuth: !Ref EnableIAMDBAuth
-        ServerlessMinCapacity: !Ref ServerlessMinCapacity
-        ServerlessMaxCapacity: !Ref ServerlessMaxCapacity
+        DBBackTrack: !Ref DBBackTrack
+        #Database Storage configuration
+        DBStorageEncrypted: !Ref DBStorageEncrypted
+        StorageType: !Ref StorageType
         #Database Monitoring configuration
         DBExportLogToCloudwatch: !Join
           - ','
