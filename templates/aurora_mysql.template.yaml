@@ -17,7 +17,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "Database Network configuration"
+          default: Database Network configuration
         Parameters:
           - VPCID
           - Subnet1ID
@@ -26,12 +26,12 @@ Metadata:
           - DBAccessCIDR
           - PubliclyAccessible
       - Label:
-          default: "Database configuration"
+          default: Database General configuration
         Parameters:
           - DBEngineVersion
+          - DBInstanceClass
           - ServerlessMinCapacity
           - ServerlessMaxCapacity
-          - DBInstanceClass
           - DBPort
           - DBName
           - DBMasterUsername
@@ -41,10 +41,14 @@ Metadata:
           - DBAutoMinorVersionUpgrade
           - DBBackupRetentionPeriod
           - EnableIAMDBAuth
-          - DBStorageEncrypted
           - DBBackTrack
       - Label:
-          default: "Database Monitoring configuration"
+          default: Database Storage configuration
+        Parameters:  
+          - DBStorageEncrypted
+          - StorageType
+      - Label:
+          default: Database Monitoring configuration
         Parameters:
           - DBExportLogToCloudwatch
           - EnablePerformanceInsights
@@ -54,7 +58,7 @@ Metadata:
           - EnableEventSubscription  
           - NotificationList
       - Label:
-          default: "[Optional] Database tags"
+          default: Database tags (optional)
         Parameters:
           - EnvironmentStage
           - Application
@@ -79,10 +83,10 @@ Metadata:
         default: Custom security group ID
       DBAccessCIDR:
         default: Database connection CIDR
-      DBStorageEncrypted:
-        default: Database encryption enabled
       DBAutoMinorVersionUpgrade:
         default: Database auto minor version upgrade
+      DBBackTrack:
+        default: Backtrack window
       DBBackupRetentionPeriod:
         default: Database backup retention period
       DBEngineVersion:
@@ -101,6 +105,8 @@ Metadata:
         default: Database name
       DBPort:
         default: Database port
+      DBStorageEncrypted:
+        default: Database encryption enabled
       EnableEnhancedMonitoring:
         default: Enable Enhanced Monitoring
       EnableEventSubscription:
@@ -123,23 +129,198 @@ Metadata:
        default: Project cost center
       PubliclyAccessible:
        default: Publicly Accessible
-      Subnet1ID:
-        default: Private subnet 1 ID
-      Subnet2ID:
-        default: Private subnet 2 ID
-      VPCID:
-        default: VPC ID
       ServerlessMinCapacity:
         default: Minimum ACUs
       ServerlessMaxCapacity:
         default: Maximum ACUs
-      DBBackTrack:
-        default: Backtrack window
+      Subnet1ID:
+        default: Private subnet 1 ID
+      Subnet2ID:
+        default: Private subnet 2 ID
+      StorageType:
+        default: Aurora Storage Type
+      VPCID:
+        default: VPC ID
+
+###############################################################################
+# Mappings
+###############################################################################
+
+Mappings:
+  DBFamilyMap:
+    "Aurora-MySQL5.7-2.07.9":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.11.1":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.11.2":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL5.7-2.11.3":
+      "family": "aurora-mysql5.7"
+    "Aurora-MySQL-3.01.0-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.01.1-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.02.0-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.02.1-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.02.2-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.02.3-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.03.0-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+    "Aurora-MySQL-3.03.1-MySQL8.0.23":
+      "family": "aurora-mysql8.0"
+
+  DBEngineVersionMap:
+    "Aurora-MySQL5.7-2.07.9":
+      "engineversion": "5.7.mysql_aurora.2.07.9"
+    "Aurora-MySQL5.7-2.11.1":
+      "engineversion": "5.7.mysql_aurora.2.11.1"
+    "Aurora-MySQL5.7-2.11.2":
+      "engineversion": "5.7.mysql_aurora.2.11.2"
+    "Aurora-MySQL5.7-2.11.3":
+      "engineversion": "5.7.mysql_aurora.2.11.3"
+    "Aurora-MySQL-3.01.0-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.01.0"
+    "Aurora-MySQL-3.01.1-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.01.1"
+    "Aurora-MySQL-3.02.0-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.02.0"
+    "Aurora-MySQL-3.02.1-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.02.1"
+    "Aurora-MySQL-3.02.2-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.02.2"
+    "Aurora-MySQL-3.02.3-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.02.3"
+    "Aurora-MySQL-3.03.0-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.03.0"
+    "Aurora-MySQL-3.03.1-MySQL8.0.23":
+      "engineversion": "8.0.mysql_aurora.3.03.1"
+
+###############################################################################
+# Conditions
+###############################################################################
+Conditions:
+  CreateSecurityGroup: !Equals
+    - !Ref CustomDBSecurityGroup
+    - ''
+  CreateKMSKey: !Or
+    - !Condition UseDatabaseEncryption
+    - !Condition UseSecretsManager
+    - !Condition EnablePI
+  DoCreateDatabase:
+    !Not
+      - !Equals
+        - !Ref DBName
+        - ''
+  isExportCWLogs: !Not 
+    - !Equals 
+      - !Join ["", !Ref DBExportLogToCloudwatch]
+      - ''
+  IsASV2:
+    !Equals
+    - !Ref DBInstanceClass
+    - 'db.serverless'
+  isReplica: !Equals
+    - !Ref DBMultiAZ
+    - 'true'
+  EventSubscription: !Equals
+    - !Ref EnableEventSubscription
+    - 'true'
+  EnableEM: !Equals
+    - !Ref EnableEnhancedMonitoring
+    - 'true'
+  EnablePI: !Equals
+    - !Ref EnablePerformanceInsights
+    - 'true'
+  UseDatabaseEncryption: !Equals
+    - !Ref DBStorageEncrypted
+    - "true"
+  UseSecretsManager: !Equals
+    - !Ref ManageMasterUserPassword
+    - "true"
+
+###############################################################################
+# Rules
+###############################################################################
+Rules:
+  SubnetsInVPC:
+    Assertions:
+      - Assert: !Equals [!ValueOf ["Subnet1ID", "VpcId"], !Ref VPCID]
+        AssertDescription: "Private subnet 1 ID doesn't belong to the specified VPC"
+      - Assert: !Equals [!ValueOf ["Subnet2ID", "VpcId"], !Ref VPCID]
+        AssertDescription: "Private subnet 2 ID doesn't belong to the specified VPC"
+  SubnetsUnique:
+    Assertions:
+      - Assert: !Not [!Equals [!Ref Subnet1ID, !Ref Subnet2ID]]
+        AssertDescription: "Please provide 2 distinct private subnets"
+
+###############################################################################
+# Outputs
+###############################################################################
+Outputs:
+  DBName:
+    Condition: DoCreateDatabase
+    Description: "Amazon Aurora database name"
+    Value: !Ref DBName
+  DBMasterUsername:
+    Description: "Amazon Aurora database master username"
+    Value: !Ref DBMasterUsername
+  MasterUserSecret:
+    Condition: UseSecretsManager
+    Description: "Master Credentials ARN"
+    Value: !Sub "${AuroraDBCluster.MasterUserSecret.SecretArn}"
+  RDSEndPointAddress:
+    Description: "Amazon Aurora write endpoint"
+    Value: !Sub "${AuroraDBCluster.Endpoint.Address}"
+  RDSReadEndPointAddress:
+    Description: "Amazon Aurora read endpoint"
+    Value: !Sub "${AuroraDBCluster.ReadEndpoint.Address}"
+  RDSEndPointPort:
+    Description: "Amazon Aurora port"
+    Value: !Sub "${AuroraDBCluster.Endpoint.Port}"
+  RDSEndPoints:
+    Description: "Full Amazon Aurora write endpoint"
+    Value: !If [DoCreateDatabase, !Sub "${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/${DBName}", !Sub "${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/mysql"]
+  RDSEncryptionKey:
+    Condition: UseDatabaseEncryption
+    Description: "The alias of the encryption key created for RDS"
+    Value: !Ref EncryptionKeyAlias
 
 ###############################################################################
 # Parameters
 ###############################################################################
 Parameters:
+  Application:
+    Type: String
+    Default: ''
+    Description: "[Optional] Name of the application for the associated AWS resource."
+  ApplicationVersion:
+    Type: String
+    Description: "[Optional] Version of the application."
+    Default: ''
+  Compliance:
+    Type: String
+    Default: ''
+    Description: "[Optional] Compliance level for the AWS resource."
+    AllowedValues:
+      - hipaa
+      - sox
+      - fips
+      - other
+      - ''
+  Confidentiality:
+    Type: String
+    Default: ''
+    Description: "[Optional] Confidentiality classification of the data that is associated with the AWS resource."
+    AllowedValues:
+      - public
+      - private
+      - confidential
+      - pii/phi
+      - ''
   CustomDBSecurityGroup:
     Description: "ID of the security group (e.g., sg-0234se). One will be created for you if left empty."
     Type: String
@@ -150,13 +331,6 @@ Parameters:
     Description: "Allowed CIDR block for external access (use VPC CIDR)."
     Type: String
     Default: 10.0.0.0/16
-  DBStorageEncrypted:
-    Default: "true"
-    AllowedValues:
-      - "true"
-      - "false"
-    Description: "To disable database encryption, choose 'false'."
-    Type: String
   DBAutoMinorVersionUpgrade:
     AllowedValues:
       - "true"
@@ -164,6 +338,13 @@ Parameters:
     Default: "false"
     Description: "Select 'true' to set up auto minor version upgrade."
     Type: String
+  DBBackTrack:
+    Description: "The target backtrack window, in seconds. To disable backtracking,
+      set this value to 0."
+    Type: Number
+    Default: 0
+    MinValue: 0
+    MaxValue: 259200
   DBBackupRetentionPeriod:
     Default: 35
     Description: "The number of days for which automatic database snapshots are retained."
@@ -171,33 +352,26 @@ Parameters:
     MinValue: 0
     MaxValue: 35
   DBEngineVersion:
-    Description: "Select Database Engine Version"
+    Description: >-
+      Select Database Engine Version. 
+      Aurora Serverless v2 with Aurora MySQL is supported for versions 3.02.0 and higher.
+      Aurora I/O-Optimized configuration is available in Aurora MySQL version 3.03.1 and higher.
+      For supported engines and Region availability for Aurora Serverless v2 with Aurora MySQL, refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.ServerlessV2.html
     Type: String
-    Default: Aurora-MySQL-3.02.2-MySQL8.0.23
+    Default: Aurora-MySQL-3.03.1-MySQL8.0.23
     AllowedValues:
-      - Aurora-MySQL5.7-2.07.0
-      - Aurora-MySQL5.7-2.07.1
-      - Aurora-MySQL5.7-2.07.2
-      - Aurora-MySQL5.7-2.07.3
-      - Aurora-MySQL5.7-2.07.4
-      - Aurora-MySQL5.7-2.07.5
-      - Aurora-MySQL5.7-2.07.6
-      - Aurora-MySQL5.7-2.07.7
-      - Aurora-MySQL5.7-2.07.8
-      - Aurora-MySQL5.7-2.09.0
-      - Aurora-MySQL5.7-2.09.1
-      - Aurora-MySQL5.7-2.09.2
-      - Aurora-MySQL5.7-2.09.3
-      - Aurora-MySQL5.7-2.10.0
-      - Aurora-MySQL5.7-2.10.1
-      - Aurora-MySQL5.7-2.10.2
-      - Aurora-MySQL5.7-2.10.3
-      - Aurora-MySQL5.7-2.11.0
+      - Aurora-MySQL5.7-2.07.9
+      - Aurora-MySQL5.7-2.11.1
+      - Aurora-MySQL5.7-2.11.2
+      - Aurora-MySQL5.7-2.11.3
       - Aurora-MySQL-3.01.0-MySQL8.0.23
       - Aurora-MySQL-3.01.1-MySQL8.0.23
       - Aurora-MySQL-3.02.0-MySQL8.0.23
       - Aurora-MySQL-3.02.1-MySQL8.0.23
       - Aurora-MySQL-3.02.2-MySQL8.0.23
+      - Aurora-MySQL-3.02.3-MySQL8.0.23
+      - Aurora-MySQL-3.03.0-MySQL8.0.23
+      - Aurora-MySQL-3.03.1-MySQL8.0.23
   DBExportLogToCloudwatch:
     Default: ''
     Description: "Specify the comma-delimited list of database logs (error, slowquery, audit, general) to export to CloudWatch Logs."
@@ -208,139 +382,52 @@ Parameters:
       MySQL version selected:
       https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora
     Type: String
-    Default: db.r6g.large
+    Default: db.r6g.2xlarge
     AllowedValues:
-      - db.serverless
-      - db.m4.large
-      - db.m4.xlarge
-      - db.m4.2xlarge
-      - db.m4.4xlarge
-      - db.m4.10xlarge
-      - db.m4.16xlarge
-      - db.m5.large
-      - db.m5.xlarge
-      - db.m5.2xlarge
-      - db.m5.4xlarge
-      - db.m5.8xlarge
-      - db.m5.12xlarge
-      - db.m5.16xlarge
-      - db.m5.24xlarge
-      - db.m5d.large
-      - db.m5d.xlarge
-      - db.m5d.2xlarge
-      - db.m5d.4xlarge
-      - db.m5d.8xlarge
-      - db.m5d.12xlarge
-      - db.m5d.16xlarge
-      - db.m5d.24xlarge
-      - db.m6g.large
-      - db.m6g.xlarge
-      - db.m6g.2xlarge
-      - db.m6g.4xlarge
-      - db.m6g.8xlarge
-      - db.m6g.12xlarge
-      - db.m6g.16xlarge
-      - db.m6gd.large
-      - db.m6gd.xlarge
-      - db.m6gd.2xlarge
-      - db.m6gd.4xlarge
-      - db.m6gd.8xlarge
-      - db.m6gd.12xlarge
-      - db.m6gd.16xlarge
-      - db.m6i.large
-      - db.m6i.xlarge
-      - db.m6i.2xlarge
-      - db.m6i.4xlarge
-      - db.m6i.8xlarge
-      - db.m6i.12xlarge
-      - db.m6i.16xlarge
-      - db.m6i.24xlarge
-      - db.m6i.32xlarge
-      - db.r4.large
-      - db.r4.xlarge
-      - db.r4.2xlarge
-      - db.r4.4xlarge
-      - db.r4.8xlarge
-      - db.r4.16xlarge
-      - db.r5.large
-      - db.r5.xlarge
-      - db.r5.2xlarge
-      - db.r5.4xlarge
-      - db.r5.8xlarge
       - db.r5.12xlarge
       - db.r5.16xlarge
       - db.r5.24xlarge
-      - db.r5b.large
-      - db.r5b.xlarge
-      - db.r5b.2xlarge
-      - db.r5b.4xlarge
-      - db.r5b.8xlarge
-      - db.r5b.12xlarge
-      - db.r5b.16xlarge
-      - db.r5b.24xlarge
-      - db.r5d.large
-      - db.r5d.xlarge
-      - db.r5d.2xlarge
-      - db.r5d.4xlarge
-      - db.r5d.8xlarge
-      - db.r5d.12xlarge
-      - db.r5d.16xlarge
-      - db.r5d.24xlarge
-      - db.r6g.large
-      - db.r6g.xlarge
+      - db.r5.2xlarge
+      - db.r5.4xlarge
+      - db.r5.8xlarge
+      - db.r5.large
+      - db.r5.xlarge
+      - db.r6g.12xlarge
+      - db.r6g.16xlarge
       - db.r6g.2xlarge
       - db.r6g.4xlarge
       - db.r6g.8xlarge
-      - db.r6g.12xlarge
-      - db.r6g.16xlarge
-      - db.r6gd.large
-      - db.r6gd.xlarge
-      - db.r6gd.2xlarge
-      - db.r6gd.4xlarge
-      - db.r6gd.8xlarge
-      - db.r6gd.12xlarge
-      - db.r6gd.16xlarge
-      - db.r6i.large
-      - db.r6i.xlarge
-      - db.r6i.2xlarge
-      - db.r6i.4xlarge
-      - db.r6i.8xlarge
+      - db.r6g.large
+      - db.r6g.xlarge
       - db.r6i.12xlarge
       - db.r6i.16xlarge
       - db.r6i.24xlarge
+      - db.r6i.2xlarge
       - db.r6i.32xlarge
-      - db.x2g.large
-      - db.x2g.xlarge
+      - db.r6i.4xlarge
+      - db.r6i.8xlarge
+      - db.r6i.large
+      - db.r6i.xlarge
+      - db.r7g.12xlarge
+      - db.r7g.16xlarge
+      - db.r7g.2xlarge
+      - db.r7g.4xlarge
+      - db.r7g.8xlarge
+      - db.r7g.large
+      - db.r7g.xlarge
+      - db.serverless
+      - db.t3.large
+      - db.t3.medium
+      - db.t3.small
+      - db.t4g.large
+      - db.t4g.medium
+      - db.x2g.12xlarge
+      - db.x2g.16xlarge
       - db.x2g.2xlarge
       - db.x2g.4xlarge
       - db.x2g.8xlarge
-      - db.x2g.12xlarge
-      - db.x2g.16xlarge
-      - db.x2iedn.xlarge
-      - db.x2iedn.2xlarge
-      - db.x2iedn.4xlarge
-      - db.x2iedn.8xlarge
-      - db.x2iedn.16xlarge
-      - db.x2iedn.24xlarge
-      - db.x2iedn.32xlarge
-      - db.t2.micro
-      - db.t2.small
-      - db.t2.medium
-      - db.t2.large
-      - db.t2.xlarge
-      - db.t2.2xlarge
-      - db.t3.micro
-      - db.t3.small
-      - db.t3.medium
-      - db.t3.large
-      - db.t3.xlarge
-      - db.t3.2xlarge
-      - db.t4g.2xlarge
-      - db.t4g.large
-      - db.t4g.medium
-      - db.t4g.micro
-      - db.t4g.small
-      - db.t4g.xlarge
+      - db.x2g.large
+      - db.x2g.xlarge
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
@@ -381,6 +468,13 @@ Parameters:
     ConstraintDescription: "Must be in the range [1150-65535]."
     MinValue: 1150
     MaxValue: 65535
+  DBStorageEncrypted:
+    Default: "true"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "To disable database encryption, choose 'false'."
+    Type: String
   EnableEnhancedMonitoring:
     AllowedValues:
       - "true"
@@ -409,6 +503,16 @@ Parameters:
     Default: "true"
     Description: "Enables RDS Performance Insights."
     Type: String
+  EnvironmentStage:
+    Type: String
+    Description: "[Optional] Environment stage of the associated AWS resource."
+    AllowedValues:
+      - dev
+      - test
+      - pre-prod
+      - prod
+      - none
+    Default: none
   ManageMasterUserPassword:
     AllowedValues:
       - "true"
@@ -434,19 +538,16 @@ Parameters:
     Description: "The email notification used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications."
     AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
     ConstraintDescription: "Provide a valid email address."
-  DBBackTrack:
-    Description: "The target backtrack window, in seconds. To disable backtracking,
-      set this value to 0."
-    Type: Number
-    Default: 0
-    MinValue: 0
-    MaxValue: 259200
   PerformanceInsightsRetentionPeriod:
     Default: 7
     Description: "The number of days for which automatic database snapshots are retained. Specify days based on (month * 31), where month is a number of months from 1-23."
     Type: Number
     MinValue: 7
     MaxValue: 713
+  ProjectCostCenter:
+    Type: String
+    Default: ''
+    Description: "[Optional] Cost center associated with the project of the associated AWS resource."
   PubliclyAccessible:
     AllowedValues:
       - "true"
@@ -454,16 +555,6 @@ Parameters:
     Default: "false"
     Description: "Indicates whether the DB instance is an internet-facing instance."
     Type: String
-  Subnet1ID:
-    Description: "ID of the private subnet in Availability Zone 1."
-    Type: 'AWS::EC2::Subnet::Id'
-  Subnet2ID:
-    Description: "ID of the private subnet in Availability Zone 2."
-    Type: 'AWS::EC2::Subnet::Id'
-  VPCID:
-    Description: "ID of the VPC you are deploying Aurora into (e.g., vpc-0343606e)."
-    Type: 'AWS::EC2::VPC::Id'
-    Default: ''
   ServerlessMinCapacity:
     Default: 8
     Description: >-
@@ -482,207 +573,25 @@ Parameters:
     Type: String
     AllowedPattern: ([1-9]?(\.(0|5))?|[1-8][0-9](\.(0|5))?|9[0-9]|1[01][0-9](\.(0|5))?|12[0-7](\.(0|5))?|128)
     ConstraintDescription: "Only values from 1 to 128, in increments of 0.5."
-  EnvironmentStage:
+  StorageType:
     Type: String
-    Description: "[Optional] Environment stage of the associated AWS resource."
+    Description: >-
+      Designates the storage type to associate with the Aurora DB cluster. Choose aurora-iopt1 for Aurora I/O Optimized storage.
+      For details refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.StorageReliability.html#aurora-storage-type
     AllowedValues:
-      - dev
-      - test
-      - pre-prod
-      - prod
-      - none
-    Default: none
-  Application:
-    Type: String
+      - aurora
+      - aurora-iopt1
+    Default: aurora
+  Subnet1ID:
+    Description: "ID of the private subnet in Availability Zone 1."
+    Type: 'AWS::EC2::Subnet::Id'
+  Subnet2ID:
+    Description: "ID of the private subnet in Availability Zone 2."
+    Type: 'AWS::EC2::Subnet::Id'
+  VPCID:
+    Description: "ID of the VPC you are deploying Aurora into (e.g., vpc-0343606e)."
+    Type: 'AWS::EC2::VPC::Id'
     Default: ''
-    Description: "[Optional] Name of the application for the associated AWS resource."
-  ApplicationVersion:
-    Type: String
-    Description: "[Optional] Version of the application."
-    Default: ''
-  ProjectCostCenter:
-    Type: String
-    Default: ''
-    Description: "[Optional] Cost center associated with the project of the associated AWS resource."
-  Confidentiality:
-    Type: String
-    Default: ''
-    Description: "[Optional] Confidentiality classification of the data that is associated with the AWS resource."
-    AllowedValues:
-      - public
-      - private
-      - confidential
-      - pii/phi
-      - ''
-  Compliance:
-    Type: String
-    Default: ''
-    Description: "[Optional] Compliance level for the AWS resource."
-    AllowedValues:
-      - hipaa
-      - sox
-      - fips
-      - other
-      - ''
-
-###############################################################################
-# Mappings
-###############################################################################
-
-Mappings:
-  DBFamilyMap:
-    "Aurora-MySQL5.7-2.07.0":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.1":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.2":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.3":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.4":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.5":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.6":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.7":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.07.8":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.09.0":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.09.1":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.09.2":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.09.3":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.10.0":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.10.1":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.10.2":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.10.3":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL5.7-2.11.0":
-      "family": "aurora-mysql5.7"
-    "Aurora-MySQL-3.01.0-MySQL8.0.23":
-      "family": "aurora-mysql8.0"
-    "Aurora-MySQL-3.01.1-MySQL8.0.23":
-      "family": "aurora-mysql8.0"
-    "Aurora-MySQL-3.02.0-MySQL8.0.23":
-      "family": "aurora-mysql8.0"
-    "Aurora-MySQL-3.02.1-MySQL8.0.23":
-      "family": "aurora-mysql8.0"
-    "Aurora-MySQL-3.02.2-MySQL8.0.23":
-      "family": "aurora-mysql8.0"
-
-  DBEngineVersionMap:
-    "Aurora-MySQL5.7-2.07.0":
-      "engineversion": "5.7.mysql_aurora.2.07.0"
-    "Aurora-MySQL5.7-2.07.1":
-      "engineversion": "5.7.mysql_aurora.2.07.1"
-    "Aurora-MySQL5.7-2.07.2":
-      "engineversion": "5.7.mysql_aurora.2.07.2"
-    "Aurora-MySQL5.7-2.07.3":
-      "engineversion": "5.7.mysql_aurora.2.07.3"
-    "Aurora-MySQL5.7-2.07.4":
-      "engineversion": "5.7.mysql_aurora.2.07.4"
-    "Aurora-MySQL5.7-2.07.5":
-      "engineversion": "5.7.mysql_aurora.2.07.5"
-    "Aurora-MySQL5.7-2.07.6":
-      "engineversion": "5.7.mysql_aurora.2.07.6"
-    "Aurora-MySQL5.7-2.07.7":
-      "engineversion": "5.7.mysql_aurora.2.07.7"
-    "Aurora-MySQL5.7-2.07.8":
-      "engineversion": "5.7.mysql_aurora.2.07.8"
-    "Aurora-MySQL5.7-2.09.0":
-      "engineversion": "5.7.mysql_aurora.2.09.0"
-    "Aurora-MySQL5.7-2.09.1":
-      "engineversion": "5.7.mysql_aurora.2.09.1"
-    "Aurora-MySQL5.7-2.09.2":
-      "engineversion": "5.7.mysql_aurora.2.09.2"
-    "Aurora-MySQL5.7-2.09.3":
-      "engineversion": "5.7.mysql_aurora.2.09.3"
-    "Aurora-MySQL5.7-2.10.0":
-      "engineversion": "5.7.mysql_aurora.2.10.0"
-    "Aurora-MySQL5.7-2.10.1":
-      "engineversion": "5.7.mysql_aurora.2.10.1"
-    "Aurora-MySQL5.7-2.10.2":
-      "engineversion": "5.7.mysql_aurora.2.10.2"
-    "Aurora-MySQL5.7-2.10.3":
-      "engineversion": "5.7.mysql_aurora.2.10.3"
-    "Aurora-MySQL5.7-2.11.0":
-      "engineversion": "5.7.mysql_aurora.2.11.0"
-    "Aurora-MySQL-3.01.0-MySQL8.0.23":
-      "engineversion": "8.0.mysql_aurora.3.01.0"
-    "Aurora-MySQL-3.01.1-MySQL8.0.23":
-      "engineversion": "8.0.mysql_aurora.3.01.1"
-    "Aurora-MySQL-3.02.0-MySQL8.0.23":
-      "engineversion": "8.0.mysql_aurora.3.02.0"
-    "Aurora-MySQL-3.02.1-MySQL8.0.23":
-      "engineversion": "8.0.mysql_aurora.3.02.1"
-    "Aurora-MySQL-3.02.2-MySQL8.0.23":
-      "engineversion": "8.0.mysql_aurora.3.02.2"
-
-###############################################################################
-# Conditions
-###############################################################################
-Conditions:
-  IsASV2:
-    !Equals
-    - !Ref DBInstanceClass
-    - 'db.serverless'
-  isReplica: !Equals
-    - !Ref DBMultiAZ
-    - 'true'
-  isExportCWLogs: !Not 
-    - !Equals 
-      - !Join ["", !Ref DBExportLogToCloudwatch]
-      - ''
-  CreateSecurityGroup: !Equals
-    - !Ref CustomDBSecurityGroup
-    - ''
-  CreateKMSKey: !Or
-    - !Condition UseDatabaseEncryption
-    - !Condition UseSecretsManager
-    - !Condition EnablePI
-  DoCreateDatabase:
-    !Not
-      - !Equals
-        - !Ref DBName
-        - ''
-  EventSubscription: !Equals
-    - !Ref EnableEventSubscription
-    - 'true'
-  EnableEM: !Equals
-    - !Ref EnableEnhancedMonitoring
-    - 'true'
-  EnablePI: !Equals
-    - !Ref EnablePerformanceInsights
-    - 'true'
-  UseDatabaseEncryption: !Equals
-    - !Ref DBStorageEncrypted
-    - "true"
-  UseSecretsManager: !Equals
-    - !Ref ManageMasterUserPassword
-    - "true"
-
-###############################################################################
-# Rules
-###############################################################################
-Rules:
-  SubnetsInVPC:
-    Assertions:
-      - Assert: !Equals [!ValueOf ["Subnet1ID", "VpcId"], !Ref VPCID]
-        AssertDescription: "Private subnet 1 ID doesn't belong to the specified VPC"
-      - Assert: !Equals [!ValueOf ["Subnet2ID", "VpcId"], !Ref VPCID]
-        AssertDescription: "Private subnet 2 ID doesn't belong to the specified VPC"
-  SubnetsUnique:
-    Assertions:
-      - Assert: !Not [!Equals [!Ref Subnet1ID, !Ref Subnet2ID]]
-        AssertDescription: "Please provide 2 distinct private subnets"
 
 ###############################################################################
 # Resources
@@ -824,14 +733,14 @@ Resources:
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       BacktrackWindow: !Ref DBBackTrack
-      DBClusterIdentifier: !Sub ams-${AWS::StackName}
-      DBClusterParameterGroupName: !Ref RDSDBCPG
-      DBSubnetGroupName: !Ref RDSDBSubnetGroup
       DatabaseName:
         !If
         - DoCreateDatabase
         - !Ref DBName
         - !Ref AWS::NoValue
+      DBClusterIdentifier: !Sub ams-${AWS::StackName}
+      DBClusterParameterGroupName: !Ref RDSDBCPG
+      DBSubnetGroupName: !Ref RDSDBSubnetGroup
       EnableCloudwatchLogsExports: !If [isExportCWLogs, !Ref DBExportLogToCloudwatch, !Ref "AWS::NoValue"]
       EnableIAMDatabaseAuthentication: !Ref EnableIAMDBAuth
       Engine: aurora-mysql
@@ -847,6 +756,7 @@ Resources:
         MinCapacity: !If [IsASV2, !Ref ServerlessMinCapacity, !Ref 'AWS::NoValue']
         MaxCapacity: !If [IsASV2, !Ref ServerlessMaxCapacity, !Ref 'AWS::NoValue']
       StorageEncrypted: !If [UseDatabaseEncryption, !Ref DBStorageEncrypted, !Ref 'AWS::NoValue']
+      StorageType: !Ref StorageType
       Tags:
         -
           Key: Name
@@ -875,7 +785,7 @@ Resources:
           - [!Ref RDSSecurityGroup]
           - [!Ref CustomDBSecurityGroup]
 
-  AuroraDBFirstInstance:
+  Inst1:
     Type: AWS::RDS::DBInstance
     Metadata:
       cfn-lint:
@@ -919,7 +829,7 @@ Resources:
           Key: Compliance
           Value: !Ref Compliance
 
-  AuroraDBSecondInstance:
+  Inst2:
     Condition: isReplica
     Type: AWS::RDS::DBInstance
     Metadata:
@@ -929,8 +839,6 @@ Resources:
             - ERDSDBInstancePubliclyAccessible
           ignore_reasons:
             - ERDSDBInstancePubliclyAccessible: "PubliclyAccessible is false by default"
-    DependsOn:
-      - AuroraDBFirstInstance
     Properties:
       AutoMinorVersionUpgrade: !Ref DBAutoMinorVersionUpgrade
       DBClusterIdentifier: !Ref AuroraDBCluster
@@ -976,7 +884,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDBFirstInstance
+          Ref: Inst1
       MetricName: CPUUtilization
       Statistic: Maximum
       Namespace: 'AWS/RDS'
@@ -998,7 +906,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDBSecondInstance
+          Ref: Inst2
       MetricName: CPUUtilization
       Statistic: Maximum
       Namespace: 'AWS/RDS'
@@ -1019,7 +927,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDBFirstInstance
+          Ref: Inst1
       MetricName: 'FreeLocalStorage'
       Statistic: Average
       Namespace: 'AWS/RDS'
@@ -1041,7 +949,7 @@ Resources:
       Dimensions:
       - Name: DBInstanceIdentifier
         Value:
-          Ref: AuroraDBSecondInstance
+          Ref: Inst2
       MetricName: 'FreeLocalStorage'
       Statistic: Average
       Namespace: 'AWS/RDS'
@@ -1085,8 +993,8 @@ Resources:
       - security patching
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds:
-      - !Ref AuroraDBFirstInstance
-      - !If [isReplica, !Ref AuroraDBSecondInstance, !Ref "AWS::NoValue"]
+      - !Ref Inst1
+      - !If [isReplica, !Ref Inst2, !Ref "AWS::NoValue"]
       SourceType: 'db-instance'
   
   DBParameterGroupEventSubscription:
@@ -1098,35 +1006,3 @@ Resources:
       SnsTopicArn: !Ref DBSNSTopic
       SourceIds: [!Ref RDSDBPG]
       SourceType: 'db-parameter-group'
-
-###############################################################################
-# Outputs
-###############################################################################
-Outputs:
-  DBName:
-    Condition: DoCreateDatabase
-    Description: "Amazon Aurora database name"
-    Value: !Ref DBName
-  DBMasterUsername:
-    Description: "Amazon Aurora database master username"
-    Value: !Ref DBMasterUsername
-  MasterUserSecret:
-    Condition: UseSecretsManager
-    Description: "Master Credentials ARN"
-    Value: !Sub "${AuroraDBCluster.MasterUserSecret.SecretArn}"
-  RDSEndPointAddress:
-    Description: "Amazon Aurora write endpoint"
-    Value: !Sub "${AuroraDBCluster.Endpoint.Address}"
-  RDSReadEndPointAddress:
-    Description: "Amazon Aurora read endpoint"
-    Value: !Sub "${AuroraDBCluster.ReadEndpoint.Address}"
-  RDSEndPointPort:
-    Description: "Amazon Aurora port"
-    Value: !Sub "${AuroraDBCluster.Endpoint.Port}"
-  RDSEndPoints:
-    Description: "Full Amazon Aurora write endpoint"
-    Value: !If [DoCreateDatabase, !Sub "${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/${DBName}", !Sub "${AuroraDBCluster.Endpoint.Address}:${AuroraDBCluster.Endpoint.Port}/mysql"]
-  RDSEncryptionKey:
-    Condition: UseDatabaseEncryption
-    Description: "The alias of the encryption key created for RDS"
-    Value: !Ref EncryptionKeyAlias
