@@ -1,10 +1,12 @@
 This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
 
+https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html[Amazon Aurora^] is a fully managed relational database engine that's compatible with MySQL and PostgreSQL. With Aurora, you can use the code, tools, and applications you use today with your existing MySQL and PostgreSQL databases. For some workloads, Aurora can deliver up to five times the throughput of MySQL without requiring changes to most of your existing applications.
+
+As part of Amazon Relational Database Service (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html[Amazon RDS^]), Aurora takes advantage of Amazon RDS features for database management and administration. It eliminates the need to maintain database infrastructure: servers, replication, backups, and so on.  
+
+
 // Fill in the info in <angle brackets> for use on the landing page only: 
-This Amazon Web Services (AWS) Partner Solution deploys [<product name>](<partner's marketing product page>) in the AWS Cloud so that <purpose>. This solution is for <target users> who want to <do what> so that <why>. For more information, refer to the [<product name> documentation](<URL>).
+This Amazon Web Services (AWS) Partner Solution deploys [<product name>](<partner's marketing product page>) in the AWS Cloud so that <purpose>. This solution is for users who are looking for a repeatable, customizable reference architecture for {partner-product-short-name} using AWS CloudFormation.
 
-// Deploying this solution does not guarantee an organization’s compliance with any laws, certifications, policies, or other regulations. [Uncomment this statement only for solutions that relate to compliance. We'll add the corresponding reference part to the landing page and get legal approval before publishing.]
+You can also use this Partner Solution as a building block for other automated deployments. To do this, use the existing-VPC deployment option, which creates only the Aurora database components. The template for this option plugs in to your existing AWS CloudFormation templates and replaces your MySQL database.
 
-// For advanced information about the product, troubleshooting, or additional functionality, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/operational/index.html[Operational Guide^].
-
-// For information about using this Partner Solution for migrations, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/migration/index.html[Migration Guide^].
