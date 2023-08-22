@@ -1,6 +1,5 @@
----
 AWSTemplateFormatVersion: 2010-09-09
-Description: "AWS VPC + Bastion Host + Aurora MySql, Do Not Remove Apache License Version 2.0 (qs-1r51947bu) Jun,15,2019"
+Description: "AWS VPC + Linux bastion host + Aurora MySQL, Do Not Remove Apache License Version 2.0 (qs-1r51947bu) Jun,15,2019"
 Metadata:
   LICENSE: Apache License Version 2.0
   cfn-lint:
@@ -14,69 +13,69 @@ Metadata:
 ###############################################################################
   AWS::CloudFormation::Interface:
     ParameterGroups:
-      - Label:
-          default: Network configuration
-        Parameters:
-          - AvailabilityZones
-          - VPCCIDR
-          - PrivateSubnet1CIDR
-          - PrivateSubnet2CIDR
-          - PublicSubnet1CIDR
-          - PublicSubnet2CIDR
-      - Label:
-          default: Linux Bastion Host configuration
-        Parameters:
-          - EnableBastion
-          - KeyPairName
-          - RemoteAccessCIDR
-          - EnableTCPForwarding
-      - Label:
-          default: Database General configuration
-        Parameters:
-          - DBEngineVersion
-          - DBInstanceClass
-          - ServerlessMinCapacity
-          - ServerlessMaxCapacity
-          - DBPort
-          - DBName
-          - DBMasterUsername
-          - ManageMasterUserPassword
-          - DBMasterUserPassword
-          - DBMultiAZ
-          - DBAutoMinorVersionUpgrade
-          - DBBackupRetentionPeriod
-          - EnableIAMDBAuth
-          - DBBackTrack
-      - Label:
-          default: Database Storage configuration
-        Parameters:  
-          - DBStorageEncrypted
-          - StorageType
-      - Label:
-          default: Database Monitoring configuration
-        Parameters:
-          - DBExportLogToCloudwatch
-          - EnablePerformanceInsights
-          - PerformanceInsightsRetentionPeriod
-          - EnableEnhancedMonitoring
-          - MonitoringInterval
-          - EnableEventSubscription
-          - NotificationList
-      - Label:
-          default: Database tags (optional)
-        Parameters:
-          - EnvironmentStage
-          - Application
-          - ApplicationVersion
-          - ProjectCostCenter
-          - Confidentiality
-          - Compliance
-      - Label:
-          default: Quick Start configuration
-        Parameters:
-          - QSS3BucketName
-          - QSS3BucketRegion
-          - QSS3KeyPrefix
+    - Label:
+        default: Network configuration
+      Parameters:
+        - AvailabilityZones
+        - VPCCIDR
+        - PrivateSubnet1CIDR
+        - PrivateSubnet2CIDR
+        - PublicSubnet1CIDR
+        - PublicSubnet2CIDR
+    - Label:
+        default: Linux Bastion Host configuration
+      Parameters:
+        - EnableBastion
+        - KeyPairName
+        - RemoteAccessCIDR
+        - EnableTCPForwarding
+    - Label:
+        default: Database General configuration
+      Parameters:
+        - DBEngineVersion
+        - DBInstanceClass
+        - ServerlessMinCapacity
+        - ServerlessMaxCapacity
+        - DBPort
+        - DBName
+        - DBMasterUsername
+        - ManageMasterUserPassword
+        - DBMasterUserPassword
+        - DBMultiAZ
+        - DBAutoMinorVersionUpgrade
+        - DBBackupRetentionPeriod
+        - EnableIAMDBAuth
+        - DBBackTrack
+    - Label:
+        default: Database Storage configuration
+      Parameters:  
+        - DBStorageEncrypted
+        - StorageType
+    - Label:
+        default: Database Monitoring configuration
+      Parameters:
+        - DBExportLogToCloudwatch
+        - EnablePerformanceInsights
+        - PerformanceInsightsRetentionPeriod
+        - EnableEnhancedMonitoring
+        - MonitoringInterval
+        - EnableEventSubscription
+        - NotificationList
+    - Label:
+        default: "[Optional] Database tags"
+      Parameters:
+        - EnvironmentStage
+        - Application
+        - ApplicationVersion
+        - ProjectCostCenter
+        - Confidentiality
+        - Compliance
+    - Label:
+        default: Quick Start configuration
+      Parameters:
+        - QSS3BucketName
+        - QSS3BucketRegion
+        - QSS3KeyPrefix
 
 ###############################################################################
 # Parameter labels
@@ -106,7 +105,7 @@ Metadata:
         default: Key Name
       RemoteAccessCIDR:
         default: Permitted IP range
-      
+
       #Quickstart related parameter labels
       QSS3BucketName:
         default: Quick Start S3 bucket name
@@ -133,7 +132,7 @@ Metadata:
       DBEngineVersion:
         default: Database Engine Version
       DBExportLogToCloudwatch:
-        default: Export database logs to CloudWatch 
+        default: Export Database Logs to CloudWatch
       DBInstanceClass:
         default: Database instance class
       DBMasterUsername:
@@ -141,7 +140,7 @@ Metadata:
       DBMasterUserPassword:
         default: Database master password
       DBMultiAZ:
-        default: Aurora Multi-AZ DB Instance deployment
+        default: Multi-AZ deployment
       DBName:
         default: Database name
       DBPort:
@@ -169,9 +168,9 @@ Metadata:
       ProjectCostCenter:
         default: Project cost center
       ServerlessMinCapacity:
-        default: Minimum ACUs
+        default: Minimum Aurora Serverless v2 capacity units (ACUs)
       ServerlessMaxCapacity:
-        default: Maximum ACUs
+        default: Maximum Aurora Serverless v2 capacity units (ACUs)
       StorageType:
         default: Aurora Storage Type
 
@@ -182,40 +181,40 @@ Parameters:
 
   #VPC stack related parameters
   AvailabilityZones:
-    Description: >-
-      List of Availability Zones to use for the subnets in the VPC. Only
-      two Availability Zones are used for this deployment, and the logical
-      order of your selections is preserved.
-    Type: List<AWS::EC2::AvailabilityZone::Name>
+   Description: >-
+      List of Availability Zones to use for the subnets in the VPC. Only two
+      Availability Zones are used for this deployment, and the logical order of
+      your selections is preserved.
+   Type: 'List<AWS::EC2::AvailabilityZone::Name>'
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/16-28"
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/19
-    Description: "CIDR block for private subnet 1 located in Availability Zone 1."
+    Description: CIDR block for private subnet 1 located in Availability Zone 1.
     Type: String
   PrivateSubnet2CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/16-28"
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.32.0/19
-    Description: "CIDR block for private subnet 2 located in Availability Zone 2."
+    Description: CIDR block for private subnet 2 located in Availability Zone 2.
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/16-28"
-    Default: 10.0.96.0/20
-    Description: "CIDR block for the public subnet 1 located in Availability Zone 1."
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.128.0/20
+    Description: CIDR block for the public subnet 1 located in Availability Zone 1.
     Type: String
   PublicSubnet2CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/16-28"
-    Default: 10.0.128.0/20
-    Description: "CIDR block for the public subnet 2 located in Availability Zone 2."
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.144.0/20
+    Description: CIDR block for the public subnet 2 located in Availability Zone 2.
     Type: String
   VPCCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
-    ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/16-28"
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/16
-    Description: "CIDR block for the VPC."
+    Description: CIDR block for the VPC.
     Type: String
 
   #Bastion host related parameters
@@ -229,16 +228,16 @@ Parameters:
   EnableTCPForwarding:
     Type: String
     Description: "Enable/Disable TCP Forwarding for the bastion host."
-    Default: "false"
+    Default: 'false'
     AllowedValues:
-      - "true"
-      - "false"
+      - 'true'
+      - 'false'
   KeyPairName:
     ConstraintDescription: "Name of an existing EC2 key pair."
     Description: "Name of an existing public/private key pair, for connecting to the bastion host."
     Type: AWS::EC2::KeyPair::KeyName
   RemoteAccessCIDR:
-    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    AllowedPattern: "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/([0-9]|[1-2][0-9]|3[0-2]))$"
     ConstraintDescription: "CIDR block parameter must be in the form x.x.x.x/x"
     Description: "Allowed CIDR block for external SSH access to the bastion host."
     Default: 10.0.0.0/16
@@ -246,52 +245,23 @@ Parameters:
 
   #Quickstart related parameters
   QSS3BucketName:
-    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    AllowedPattern: "^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$"
     ConstraintDescription: "Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
     Default: aws-quickstart
     Description: "S3 bucket name for the Quick Start assets. Quick Start bucket name can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-)."
     Type: String
   QSS3BucketRegion:
     Default: us-east-1
-    Description: "The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value."
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
-    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    AllowedPattern: "^[0-9a-zA-Z-/]*$"
     ConstraintDescription: "Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Default: quickstart-amazon-aurora-mysql/
     Description: "S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/)."
     Type: String
 
   #Aurora related parameters
-  Application:
-    Type: String
-    Default: ""
-    Description: "[Optional] Name of the application for the associated AWS resource."
-  ApplicationVersion:
-    Type: String
-    Description: "[Optional] Version of the application."
-    Default: ""
-  Compliance:
-    Type: String
-    Default: ""
-    Description: "[Optional] Compliance level for the AWS resource."
-    AllowedValues:
-      - hipaa
-      - sox
-      - fips
-      - other
-      - ""
-  Confidentiality:
-    Type: String
-    Default: ""
-    Description: "[Optional] Confidentiality classification of the data that is associated with the AWS resource."
-    AllowedValues:
-      - public
-      - private
-      - confidential
-      - pii/phi
-      - none
-      - ""
   DBStorageEncrypted:
     Default: "true"
     AllowedValues:
@@ -325,29 +295,33 @@ Parameters:
       Aurora I/O-Optimized configuration is available in Aurora MySQL version 3.03.1 and higher.
       For supported engines and Region availability for Aurora Serverless v2 with Aurora MySQL, refer https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.ServerlessV2.html
     Type: String
-    Default: Aurora-MySQL-3.03.1-MySQL8.0.23
+    Default: Aurora-MySQL-3.04.0-MySQL8.0.28
     AllowedValues:
       - Aurora-MySQL5.7-2.07.9
+      - Aurora-MySQL5.7-2.07.10
       - Aurora-MySQL5.7-2.11.1
       - Aurora-MySQL5.7-2.11.2
       - Aurora-MySQL5.7-2.11.3
+      - Aurora-MySQL5.7-2.12.0
       - Aurora-MySQL-3.01.0-MySQL8.0.23
       - Aurora-MySQL-3.01.1-MySQL8.0.23
       - Aurora-MySQL-3.02.0-MySQL8.0.23
       - Aurora-MySQL-3.02.1-MySQL8.0.23
       - Aurora-MySQL-3.02.2-MySQL8.0.23
       - Aurora-MySQL-3.02.3-MySQL8.0.23
-      - Aurora-MySQL-3.03.0-MySQL8.0.23
-      - Aurora-MySQL-3.03.1-MySQL8.0.23
+      - Aurora-MySQL-3.03.0-MySQL8.0.26
+      - Aurora-MySQL-3.03.1-MySQL8.0.26
+      - Aurora-MySQL-3.04.0-MySQL8.0.28
   DBExportLogToCloudwatch:
     Default: ''
     Description: "Specify the comma-delimited list of database logs (error, slowquery, audit, general) to export to CloudWatch Logs."
     Type: CommaDelimitedList
   DBInstanceClass:
-    Default: db.r6g.2xlarge
-    Description: "The database instance type.  Please see supported instance types for the MySQL version selected
-      https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora"
+    Description: >-
+      The database instance type. 
+      Please see supported instance types for the MySQL version selected https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.DBInstanceClass.html#Concepts.DBInstanceClass.SupportAurora
     Type: String
+    Default: db.r6g.2xlarge
     AllowedValues:
       - db.r5.12xlarge
       - db.r5.16xlarge
@@ -396,18 +370,15 @@ Parameters:
   DBMasterUsername:
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
     ConstraintDescription: "Must begin with a letter and contain only alphanumeric characters."
-    Default: admin
-    Description: "The database master username."
+    Description: (Required) The database master username. Must begin with a letter and contain only alphanumeric characters.
     MaxLength: "16"
     MinLength: "1"
     Type: String
   DBMasterUserPassword:
     AllowedPattern: ^(?=^.{8,255}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)((?=.*[^A-Za-z0-9])(?!.*[@/"'])).*$
-    ConstraintDescription: Min 8 chars. Must include 1 uppercase, 1 lowercase, 1
-      number, 1 (non / @ " ') symbol
-    Default: Gjht56Ft$
-    Description: "The database master user password. Required if _Manage DB master user password with AWS Secrets Manager_ option is set to 'false'."
-    MaxLength: "64"
+    ConstraintDescription: Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol
+    Description: (Required) The database master user password. Min 8 chars. Must include 1 uppercase, 1 lowercase, 1 number, 1 (non / @ " ') symbol. Ignored if 'Manage DB master user password with AWS Secrets Manager' option is set to 'true'.
+    MaxLength: "41"
     MinLength: "8"
     NoEcho: "True"
     Type: String
@@ -416,14 +387,14 @@ Parameters:
       - "true"
       - "false"
     Default: "true"
-    Description: "Select 'true' to deploy a read-replica."
+    Description: "Specifies if the database instance is a multiple Availability Zone deployment."
     Type: String
   DBName:
     AllowedPattern: "[a-zA-Z0-9]*"
     Description: "Name of the initial Aurora MySQL database to create."
     MaxLength: "64"
     MinLength: "0"
-    Default: sampleapp
+    Default: 'sampleapp'
     Type: String
   DBPort:
     Default: 3306
@@ -460,16 +431,6 @@ Parameters:
     Default: "true"
     Description: "Enables RDS Performance Insights."
     Type: String
-  EnvironmentStage:
-    Type: String
-    Description: "[Optional] Environment stage of the associated AWS resource."
-    AllowedValues:
-      - dev
-      - test
-      - pre-prod
-      - prod
-      - none
-    Default: none
   ManageMasterUserPassword:
     AllowedValues:
       - "true"
@@ -479,8 +440,7 @@ Parameters:
     Type: String
   MonitoringInterval:
     Default: 10
-    Description: "The interval, in seconds, between points when Enhanced Monitoring
-      metrics are collected for the database."
+    Description: "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the database."
     Type: Number
     AllowedValues:
       - 1
@@ -489,32 +449,24 @@ Parameters:
       - 15
       - 30
       - 60
-    ConstraintDescription: "Valid values are 0, 1, 5, 10, 15, 30, 60 seconds."
+    ConstraintDescription: Valid values are 0, 1, 5, 10, 15, 30, 60 seconds.
   NotificationList:
     Type: String
-    Default: db-ops@domain.com
-    Description: "The email notification used to configure an SNS topic for sending
-      CloudWatch alarm and RDS event notifications."
-    AllowedPattern: ^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$
-    ConstraintDescription: "Provide a valid email address."
+    Default: 'db-ops@domain.com'
+    Description: The email notification used to configure an SNS topic for sending CloudWatch alarm and RDS event notifications.
+    AllowedPattern: '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
+    ConstraintDescription: Provide a valid email address.
   PerformanceInsightsRetentionPeriod:
     Default: 7
-    Description: "The number of days for which automatic database snapshots are
-      retained. Specify days based on (month * 31), where month is a number of
-      months from 1-23"
+    Description: "The number of days for which automatic database snapshots are retained. Specify days based on (month * 31), where month is a number of months from 1-23."
     Type: Number
     MinValue: 7
     MaxValue: 713
-  ProjectCostCenter:
-    Type: String
-    Default: ""
-    Description: "[Optional] Designates the cost center associated with the project
-      of the given AWS resource."
   ServerlessMinCapacity:
     Default: 8
     Description: >-
       Required if "db.serverless" is chosen as the database instance class.
-      Specify maximum Aurora Serverless v2 Capacity Units (ACUs) in the range of 1 to 128 in increments of 0.5. 
+      Specify minimum Aurora Serverless v2 Capacity Units (ACUs) in the range of 0.5 to 128 in increments of 0.5.
       1 ACU provides 2 GiB of memory and corresponding compute and networking.
     Type: String
     AllowedPattern: ([0-9]?(\.(0|5))?|[1-8][0-9](\.(0|5))?|9[0-9]|1[01][0-9](\.(0|5))?|12[0-7](\.(0|5))?|128)
@@ -538,6 +490,51 @@ Parameters:
       - aurora-iopt1
     Default: aurora
 
+  #Optional parameters
+  Application:
+    Type: String
+    Default: ""
+    Description: "[Optional] Name of the application for the associated AWS resource."
+  ApplicationVersion:
+    Type: String
+    Description: "[Optional] Version of the application."
+    Default: ""
+  Compliance:
+    Type: String
+    Default: ""
+    Description: "[Optional] Compliance level for the AWS resource."
+    AllowedValues:
+      - hipaa
+      - sox
+      - fips
+      - other
+      - ""
+  Confidentiality:
+    Type: String
+    Default: ""
+    Description: "[Optional] Confidentiality classification of the data that is associated with the AWS resource."
+    AllowedValues:
+      - public
+      - private
+      - confidential
+      - pii/phi
+      - none
+      - ""
+  EnvironmentStage:
+    Type: String
+    Description: "[Optional] Environment stage of the associated AWS resource."
+    AllowedValues:
+      - dev
+      - test
+      - pre-prod
+      - prod
+      - none
+    Default: none
+  ProjectCostCenter:
+    Type: String
+    Default: ""
+    Description: "[Optional] Designates the cost center associated with the project of the given AWS resource."
+
 ###############################################################################
 # Conditions
 ############################################################################### 
@@ -551,6 +548,7 @@ Conditions:
 # Resources
 ###############################################################################
 Resources:
+  
   VPCStack:
     Type: 'AWS::CloudFormation::Stack'
     Properties:
@@ -575,7 +573,7 @@ Resources:
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
         PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         VPCCIDR: !Ref VPCCIDR
-    
+  
   BastionStack:
     Condition: EnableBastionAccess
     Type: 'AWS::CloudFormation::Stack'
@@ -614,16 +612,16 @@ Resources:
         #Database Network configuration
         VPCID:
           Fn::GetAtt:
-            - VPCStack
-            - Outputs.VPCID
+          - VPCStack
+          - Outputs.VPCID
         Subnet1ID:
           Fn::GetAtt:
-            - VPCStack
-            - Outputs.PrivateSubnet1AID
+          - VPCStack
+          - Outputs.PrivateSubnet1AID
         Subnet2ID:
           Fn::GetAtt:
-            - VPCStack
-            - Outputs.PrivateSubnet2AID
+          - VPCStack
+          - Outputs.PrivateSubnet2AID
         DBAccessCIDR: !Ref VPCCIDR
         #Database General configuration
         DBEngineVersion: !Ref DBEngineVersion
